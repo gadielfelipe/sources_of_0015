@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(for year in 1988 2000 2011 2012)",
+      "Bash(do)",
+      "Bash(echo \"=== shape $year ===\")",
+      "Read(//c/Users/Usuario/OneDrive - Global Green Growth Institute/Documentos/2025/Outputs/Output4/Indicadores/**)",
+      "Bash(done)"
+    ]
+  }
+}
