@@ -82,11 +82,14 @@
       return Math.max(5, Math.min(Math.sqrt(mm + 1) * 2.8 + 4, 22));
     }
 
+    const ALERTA_NIVEL = { 'BAJA': 0, 'MODERADA': 1, 'ALTA': 2, 'CRÍTICA': 3 };
+
     function parseRows(raw) {
       return raw.map(r => {
-        const cod   = r['COD_MPIO'] ?? r['\uFEFFCOD_MPIO'] ?? '';
-        const mm    = parseFloat(r.precip_acum_mm) || 0;
-        const alert = parseInt(r.alerta, 10) || 0;
+        const cod              = r['COD_MPIO'] ?? r['\uFEFFCOD_MPIO'] ?? '';
+        const mm               = parseFloat(r.precip_acum_mm) || 0;
+        const alerta_compuesta = (r.alerta_compuesta ?? 'BAJA').trim();
+        const alert            = ALERTA_NIVEL[alerta_compuesta] ?? 0;  // siempre derivado de alerta_compuesta
         return {
           COD_MPIO:             String(cod),
           NOM_MPIO:             (r.NOM_MPIO         ?? '').trim(),
@@ -97,7 +100,7 @@
           precip_max_10min:     parseFloat(r.precip_max_10min)    || 0,
           n_estaciones:         parseInt(r.n_estaciones, 10)      || 0,
           alerta:               alert,
-          alerta_compuesta:     (r.alerta_compuesta  ?? 'BAJA').trim(),
+          alerta_compuesta,
           frecuencia_extremos:  parseFloat(r.frecuencia_extremos) || 0,
           frecuencia_reciente:  parseFloat(r.frecuencia_reciente) || 0,
           ratio_reciente:       parseFloat(r.ratio_reciente)      || 0,
