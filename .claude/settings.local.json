@@ -6,7 +6,8 @@
       "Bash(do)",
       "Bash(echo \"=== shape $year ===\")",
       "Read(//c/Users/Usuario/OneDrive - Global Green Growth Institute/Documentos/2025/Outputs/Output4/Indicadores/**)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(ls -la \"c:\\\\Users\\\\Usuario\\\\OneDrive - Global Green Growth Institute\\\\Documentos\\\\2025\\\\Outputs\\\\Output1\\\\Stress Test\\\\3.Data\\\\Scripts Python\\\\webpage_climate\"\" 2>/dev/null || echo \"Directory listing failed \")"
     ]
   }
 }
