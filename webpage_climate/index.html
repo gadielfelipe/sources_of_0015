@@ -275,8 +275,8 @@
           const color  = CATEGORIA_COLORS[m.categoria] ?? '#adb5bd';
           const radius = Math.max(5, Math.min(m.tamano, 22));
 
-          // Pulsing ring for alerta municipalities
-          if (m.alerta > 0) {
+          // Pulsing ring solo para ALTA (2) y CRÍTICA (3)
+          if (m.alerta >= 2) {
             const size = radius * 2;
             const pulseIcon = L.divIcon({
               className: '',
@@ -288,11 +288,16 @@
               .addTo(layerGroup.current);
           }
 
+          const borderColor = m.alerta >= 2 ? '#e03131'
+                            : m.alerta === 1 ? '#f0b429'
+                            : '#ffffff';
+          const borderWeight = m.alerta >= 1 ? 2.0 : 0.8;
+
           L.circleMarker([m.LATITUD, m.LONGITUD], {
             radius,
             fillColor:   color,
-            color:       m.alerta > 0 ? '#e03131' : '#ffffff',
-            weight:      m.alerta > 0 ? 2.5 : 0.8,
+            color:       borderColor,
+            weight:      borderWeight,
             opacity:     1,
             fillOpacity: 0.82,
           })
