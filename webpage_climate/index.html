@@ -106,6 +106,8 @@
           ratio_reciente:       parseFloat(r.ratio_reciente)      || 0,
           tendencia:            (r.tendencia         ?? 'sin_datos').trim(),
           fecha:                (r.fecha             ?? '').trim(),
+          tipo_alerta:          (r.tipo_alerta        ?? 'Sin alerta').trim(),
+          sequia_categoria:     (r.sequia_categoria   ?? 'NORMAL').trim(),
           categoria:            r.categoria ? r.categoria.trim() : precipCategoria(mm),
           tamano:               parseFloat(r.tama\u00f1o) || precipTamano(mm),
         };
@@ -137,21 +139,40 @@
       'sin_datos':    '\u2014 Sin datos',
     };
 
+    const TIPO_ALERTA_ICON = {
+      'Exceso de lluvias':  '\uD83C\uDF27\uFE0F',
+      'Sequ\u00eda recurrente': '\u2600\uFE0F',
+      'Ambos':              '\u26A0\uFE0F',
+      'Sin alerta':         '\u2713',
+    };
+
     function buildPopup(m) {
-      const badge    = ALERTA_BADGE[m.alerta_compuesta]  ?? ALERTA_BADGE['BAJA'];
-      const tendLabel= TENDENCIA_LABEL[m.tendencia]      ?? m.tendencia;
+      const badge      = ALERTA_BADGE[m.alerta_compuesta]  ?? ALERTA_BADGE['BAJA'];
+      const tendLabel  = TENDENCIA_LABEL[m.tendencia]      ?? m.tendencia;
+      const tipoIcon   = TIPO_ALERTA_ICON[m.tipo_alerta]   ?? '';
+      const tipoLabel  = m.tipo_alerta ?? 'Sin alerta';
+      const fechaLabel = m.fecha ? `<p style="margin-top:6px;color:#888;font-size:11px;">Datos al: <b>${m.fecha}</b></p>` : '';
+      const tipoStyle  = m.tipo_alerta === 'Exceso de lluvias'    ? 'color:#1a5276;'
+                       : m.tipo_alerta === 'Sequ\u00eda recurrente' ? 'color:#b7770d;'
+                       : m.tipo_alerta === 'Ambos'                 ? 'color:#7b0000;'
+                       : 'color:#27ae60;';
       return `
-        <div style="font-family:Arial,sans-serif;font-size:13px;min-width:200px;">
+        <div style="font-family:Arial,sans-serif;font-size:13px;min-width:210px;">
           <div style="color:#1a5276;font-size:14px;font-weight:700;margin-bottom:2px;">${m.NOM_MPIO}</div>
           <div style="color:#666;font-size:12px;margin-bottom:6px;">${m.NOM_DPTO}</div>
           <hr style="margin:4px 0;border-color:#eee;">
           <p><b>Precipit. acum.:</b> ${m.precip_acum_mm.toFixed(1)} mm</p>
           <p><b>M\u00e1x. 10 min:</b> ${m.precip_max_10min.toFixed(1)} mm</p>
-          <p><b>Frec. extremos hist.:</b> ${(m.frecuencia_extremos * 100).toFixed(1)}%</p>
-          <p><b>Frec. extremos 2a:</b> ${(m.frecuencia_reciente * 100).toFixed(1)}%</p>
-          <p><b>Tendencia 2 a\u00f1os:</b> ${tendLabel}</p>
+          <hr style="margin:6px 0;border-color:#eee;">
+          <p style="font-size:12px;font-weight:600;color:#444;margin-bottom:2px;">Alerta hist\u00f3rica</p>
+          <p><b>Nivel:</b> ${badge}</p>
+          <p><b>Tipo:</b> <span style="${tipoStyle}font-weight:600;">${tipoIcon} ${tipoLabel}</span></p>
+          <p><b>Sequ\u00eda:</b> ${m.sequia_categoria}</p>
+          <p><b>Frec. lluvia extrema hist.:</b> ${(m.frecuencia_extremos * 100).toFixed(1)}%</p>
+          <p><b>Frec. lluvia extrema 2a:</b> ${(m.frecuencia_reciente * 100).toFixed(1)}%</p>
+          <p><b>Tendencia lluvia 2 a\u00f1os:</b> ${tendLabel}</p>
           <p><b>Estaciones:</b> ${m.n_estaciones}</p>
-          <p style="margin-top:6px;"><b>Alerta:</b> ${badge}</p>
+          ${fechaLabel}
         </div>`;
     }
 
@@ -180,14 +201,21 @@
 
     // ─── Header ───────────────────────────────────────────────────────────────
 
-    function Header() {
+    function Header({ dataFecha }) {
       return (
         <header className="bg-[#1a5276] text-white px-5 py-3 flex items-center justify-between shadow-md">
           <div className="flex items-center gap-4">
             <img src="assets/logo.png" alt="Logo" style={{height:'50px'}} className="object-contain" />
             <div>
               <h1 className="text-base font-bold leading-tight">Circular 0015 indicadores</h1>
-              <p className="text-xs text-blue-200">Precipitaci&oacute;n diaria y alerta hist&oacute;rica &mdash; Colombia</p>
+              <p className="text-xs text-blue-200">
+                Precipitaci&oacute;n diaria y alerta hist&oacute;rica &mdash; Colombia
+                {dataFecha && (
+                  <span className="ml-2 bg-white/15 rounded px-1.5 py-0.5 text-white font-semibold">
+                    Datos al: {dataFecha}
+                  </span>
+                )}
+              </p>
             </div>
           </div>
           <span className="text-xs text-blue-300 hidden sm:block">Fuente: IDEAM &ndash; datos.gov.co</span>
@@ -524,12 +552,18 @@
         return ['ALL', ...Array.from(set).sort()];
       }, [allData]);
 
+      // Fecha de los datos: toma el primer valor no vacío del campo fecha
+      const dataFecha = useMemo(() => {
+        const row = allData.find(d => d.fecha && d.fecha !== '');
+        return row ? row.fecha : null;
+      }, [allData]);
+
       if (loading) return <LoadingScreen />;
       if (error)   return <ErrorScreen message={error} />;
 
       return (
         <div className="min-h-screen bg-[#eaf0fb]">
-          <Header />
+          <Header dataFecha={dataFecha} />
           <main className="p-4">
             <KpiCards kpis={kpis} />
             <div className="flex flex-col lg:flex-row gap-4">
