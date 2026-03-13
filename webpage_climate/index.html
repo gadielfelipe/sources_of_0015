@@ -106,7 +106,6 @@
           ratio_reciente:       parseFloat(r.ratio_reciente)      || 0,
           tendencia:            (r.tendencia         ?? 'sin_datos').trim(),
           fecha:                (r.fecha             ?? '').trim(),
-          tipo_alerta:          (r.tipo_alerta        ?? 'Sin alerta').trim(),
           sequia_categoria:     (r.sequia_categoria   ?? 'NORMAL').trim(),
           categoria:            r.categoria ? r.categoria.trim() : precipCategoria(mm),
           tamano:               parseFloat(r.tama\u00f1o) || precipTamano(mm),
@@ -139,23 +138,10 @@
       'sin_datos':    '\u2014 Sin datos',
     };
 
-    const TIPO_ALERTA_ICON = {
-      'Exceso de lluvias':  '\uD83C\uDF27\uFE0F',
-      'Sequ\u00eda recurrente': '\u2600\uFE0F',
-      'Ambos':              '\u26A0\uFE0F',
-      'Sin alerta':         '\u2713',
-    };
-
     function buildPopup(m) {
       const badge      = ALERTA_BADGE[m.alerta_compuesta]  ?? ALERTA_BADGE['BAJA'];
       const tendLabel  = TENDENCIA_LABEL[m.tendencia]      ?? m.tendencia;
-      const tipoIcon   = TIPO_ALERTA_ICON[m.tipo_alerta]   ?? '';
-      const tipoLabel  = m.tipo_alerta ?? 'Sin alerta';
       const fechaLabel = m.fecha ? `<p style="margin-top:6px;color:#888;font-size:11px;">Datos al: <b>${m.fecha}</b></p>` : '';
-      const tipoStyle  = m.tipo_alerta === 'Exceso de lluvias'    ? 'color:#1a5276;'
-                       : m.tipo_alerta === 'Sequ\u00eda recurrente' ? 'color:#b7770d;'
-                       : m.tipo_alerta === 'Ambos'                 ? 'color:#7b0000;'
-                       : 'color:#27ae60;';
       return `
         <div style="font-family:Arial,sans-serif;font-size:13px;min-width:210px;">
           <div style="color:#1a5276;font-size:14px;font-weight:700;margin-bottom:2px;">${m.NOM_MPIO}</div>
@@ -166,7 +152,6 @@
           <hr style="margin:6px 0;border-color:#eee;">
           <p style="font-size:12px;font-weight:600;color:#444;margin-bottom:2px;">Alerta hist\u00f3rica</p>
           <p><b>Nivel:</b> ${badge}</p>
-          <p><b>Tipo:</b> <span style="${tipoStyle}font-weight:600;">${tipoIcon} ${tipoLabel}</span></p>
           <p><b>Sequ\u00eda:</b> ${m.sequia_categoria}</p>
           <p><b>Frec. lluvia extrema hist.:</b> ${(m.frecuencia_extremos * 100).toFixed(1)}%</p>
           <p><b>Frec. lluvia extrema 2a:</b> ${(m.frecuencia_reciente * 100).toFixed(1)}%</p>
