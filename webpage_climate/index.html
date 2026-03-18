@@ -28,6 +28,13 @@
       position: absolute;
       pointer-events: none;
     }
+    .sequia-pulse {
+      animation: pulse-ring 1.8s ease-out infinite;
+      border-radius: 50%;
+      border: 2px solid #7a4419;
+      position: absolute;
+      pointer-events: none;
+    }
 
     .table-scroll { max-height: 260px; overflow-y: auto; }
     .leaflet-popup-content p { margin: 3px 0; }
@@ -399,7 +406,7 @@
           const color  = CATEGORIA_COLORS[m.categoria] ?? '#adb5bd';
           const radius = Math.max(5, Math.min(m.tamano, 22));
 
-          // Pulsing ring solo para ALTA (2) y CRÍTICA (3)
+          // Pulsing ring rojo para ALTA (2) y CRÍTICA (3)
           if (m.alerta >= 2) {
             const size = radius * 2;
             const pulseIcon = L.divIcon({
@@ -409,6 +416,19 @@
               iconAnchor: [0, 0],
             });
             L.marker([m.LATITUD, m.LONGITUD], { icon: pulseIcon, interactive: false, zIndexOffset: -100 })
+              .addTo(layerGroup.current);
+          }
+
+          // Pulsing ring café para Sequía recurrente SEVERA
+          if (m.sequia_categoria === 'SEVERA') {
+            const size = radius * 2;
+            const sequiaPulseIcon = L.divIcon({
+              className: '',
+              html: `<div class="sequia-pulse" style="width:${size}px;height:${size}px;margin-left:-${radius}px;margin-top:-${radius}px;"></div>`,
+              iconSize: [0, 0],
+              iconAnchor: [0, 0],
+            });
+            L.marker([m.LATITUD, m.LONGITUD], { icon: sequiaPulseIcon, interactive: false, zIndexOffset: -100 })
               .addTo(layerGroup.current);
           }
 
