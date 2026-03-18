@@ -139,27 +139,42 @@
     };
 
     function buildPopup(m) {
-      const badge      = ALERTA_BADGE[m.alerta_compuesta]  ?? ALERTA_BADGE['BAJA'];
-      const tendLabel  = TENDENCIA_LABEL[m.tendencia]      ?? m.tendencia;
-      const fechaLabel = m.fecha ? `<p style="margin-top:6px;color:#888;font-size:11px;">Datos al: <b>${m.fecha}</b></p>` : '';
-      const sequiaLabel = m.sequia_categoria && m.sequia_categoria !== 'NORMAL'
-        ? `<p><b>Sequ\u00eda:</b> <span style="color:#b7770d;font-weight:600;">${m.sequia_categoria}</span></p>`
+      const badge     = ALERTA_BADGE[m.alerta_compuesta] ?? ALERTA_BADGE['BAJA'];
+      const tendLabel = TENDENCIA_LABEL[m.tendencia]     ?? m.tendencia;
+      const fechaLabel = m.fecha
+        ? `<p style="margin-top:6px;color:#888;font-size:11px;">Datos al: <b>${m.fecha}</b></p>`
         : '';
+
+      // Señal sobre el día actual
+      const extremeToday = m.precip_acum_mm >= 30
+        ? `<p style="color:#e03131;font-weight:600;margin-top:3px;">\u26a0 Probable evento extremo hoy</p>`
+        : (m.precip_acum_mm === 0 && m.sequia_categoria !== 'NORMAL')
+        ? `<p style="color:#b7770d;font-weight:600;margin-top:3px;">\u2600\ufe0f Sin lluvia \u2014 posible sequ\u00eda activa</p>`
+        : '';
+
+      // Sección sequía solo si hay alerta real
+      const sequiaSection = m.sequia_categoria && m.sequia_categoria !== 'NORMAL' ? `
+          <hr style="margin:6px 0;border-color:#eee;">
+          <p style="font-size:12px;font-weight:600;color:#b7770d;margin-bottom:2px;">\uD83C\uDF35 Sequ\u00eda recurrente</p>
+          <p><b>Categor\u00eda:</b> <span style="color:#b7770d;font-weight:600;">${m.sequia_categoria}</span></p>` : '';
+
       return `
-        <div style="font-family:Arial,sans-serif;font-size:13px;min-width:210px;">
+        <div style="font-family:Arial,sans-serif;font-size:13px;min-width:220px;">
           <div style="color:#1a5276;font-size:14px;font-weight:700;margin-bottom:2px;">${m.NOM_MPIO}</div>
           <div style="color:#666;font-size:12px;margin-bottom:6px;">${m.NOM_DPTO}</div>
           <hr style="margin:4px 0;border-color:#eee;">
-          <p><b>Precipit. acum.:</b> ${m.precip_acum_mm.toFixed(1)} mm</p>
+          <p style="font-size:12px;font-weight:600;color:#1a5276;margin-bottom:2px;">\uD83C\uDF27\uFE0F Precipitaci\u00f3n hoy</p>
+          <p><b>Acumulada:</b> ${m.precip_acum_mm.toFixed(1)} mm</p>
           <p><b>M\u00e1x. 10 min:</b> ${m.precip_max_10min.toFixed(1)} mm</p>
+          ${extremeToday}
           <hr style="margin:6px 0;border-color:#eee;">
-          <p style="font-size:12px;font-weight:600;color:#444;margin-bottom:2px;">Alerta hist\u00f3rica</p>
+          <p style="font-size:12px;font-weight:600;color:#444;margin-bottom:2px;">\uD83D\uDCCA Alerta hist\u00f3rica \u2014 lluvias</p>
           <p><b>Nivel:</b> ${badge}</p>
-          ${sequiaLabel}
-          <p><b>Frec. lluvia extrema hist.:</b> ${(m.frecuencia_extremos * 100).toFixed(1)}%</p>
-          <p><b>Frec. lluvia extrema 2a:</b> ${(m.frecuencia_reciente * 100).toFixed(1)}%</p>
-          <p><b>Tendencia lluvia 2 a\u00f1os:</b> ${tendLabel}</p>
-          <p><b>Estaciones:</b> ${m.n_estaciones}</p>
+          <p><b>Frec. extremos hist.:</b> ${(m.frecuencia_extremos * 100).toFixed(1)}%</p>
+          <p><b>Frec. extremos 2 a\u00f1os:</b> ${(m.frecuencia_reciente * 100).toFixed(1)}%</p>
+          <p><b>Tendencia:</b> ${tendLabel}</p>
+          ${sequiaSection}
+          <p style="color:#888;font-size:11px;margin-top:4px;">Estaciones: ${m.n_estaciones}</p>
           ${fechaLabel}
         </div>`;
     }
