@@ -147,7 +147,7 @@
 
       // Señal sobre el día actual
       const extremeToday = m.precip_acum_mm >= 30
-        ? `<p style="color:#e03131;font-weight:600;margin-top:3px;">\u26a0 Probable evento extremo hoy</p>`
+        ? `<p style="color:#e03131;font-weight:600;margin-top:3px;">\u26a0 Probable evento extremo reciente</p>`
         : (m.precip_acum_mm === 0 && m.sequia_categoria !== 'NORMAL')
         ? `<p style="color:#b7770d;font-weight:600;margin-top:3px;">\u2600\ufe0f Sin lluvia \u2014 posible sequ\u00eda activa</p>`
         : '';
