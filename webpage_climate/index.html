@@ -123,6 +123,96 @@
       return { total, enAlerta, promedio, maximo: maxRow.precip_acum_mm, maxMpio: maxRow.NOM_MPIO };
     }
 
+    // ─── CSV Download Helper ──────────────────────────────────────────────────
+
+    function downloadCSV(data, filename) {
+      if (!data.length) return;
+      const headers = ['COD_MPIO','NOM_MPIO','NOM_DPTO','precip_acum_mm','precip_max_10min',
+                       'alerta_compuesta','frecuencia_extremos','frecuencia_reciente',
+                       'ratio_reciente','tendencia','sequia_categoria','n_estaciones','fecha'];
+      const rows = data.map(r =>
+        headers.map(h => {
+          const v = r[h] ?? '';
+          return typeof v === 'string' && v.includes(',') ? `"${v}"` : v;
+        }).join(',')
+      );
+      const csv = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // ─── Cartera Report Helper ────────────────────────────────────────────────
+
+    function exportReportePDF(result, mergedRows, dataFecha) {
+      const fmtCOP = v => v.toLocaleString('es-CO', { style:'currency', currency:'COP', maximumFractionDigits:0 });
+      const alertaColor = a =>
+        a === 'CRÍTICA' ? '#7b0000' : a === 'ALTA' ? '#e03131' :
+        a === 'MODERADA' ? '#b7770d' : a === 'BAJA' ? '#27ae60' : '#999';
+
+      const tableRows = mergedRows.map(r => `
+        <tr style="${r.alerta_lluvias === 'ALTA' ? 'background:#fff0f0' : r.alerta_lluvias === 'CRÍTICA' ? 'background:#fdf0f0' : ''}">
+          <td>${r.cod}</td><td>${r.nombre}</td>
+          <td style="text-align:right">${fmtCOP(r.cartera_total)}</td>
+          <td style="text-align:center;color:${alertaColor(r.alerta_lluvias)};font-weight:600">${r.alerta_lluvias}</td>
+        </tr>`).join('');
+
+      const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<title>Reporte Cartera – Alerta Lluvias ALTA</title>
+<style>
+  body{font-family:Arial,sans-serif;padding:24px;color:#333;font-size:13px}
+  h1{color:#1a5276;margin-bottom:4px}
+  .meta{color:#888;font-size:12px;margin-bottom:18px}
+  .kpi-row{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+  .kpi{background:#eaf0fb;padding:14px 20px;border-radius:8px;border-left:4px solid #1a5276;min-width:200px}
+  .kpi.red{border-color:#e03131}
+  .kpi-val{font-size:1.6em;font-weight:700;color:#1a5276}
+  .kpi.red .kpi-val{color:#e03131}
+  .kpi-lbl{font-size:11px;color:#555;margin-top:2px}
+  .indicator-box{background:#1a5276;color:white;border-radius:10px;padding:20px 28px;margin-bottom:20px;display:inline-block}
+  .indicator-val{font-size:2.4em;font-weight:700}
+  .indicator-lbl{font-size:12px;opacity:0.85;margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{background:#1a5276;color:white;padding:8px 10px;text-align:left}
+  td{padding:6px 10px;border-bottom:1px solid #eee}
+  @media print{body{padding:10px}.no-print{display:none}}
+</style></head><body>
+<h1>Reporte: Cartera en Municipios con Alerta de Lluvias ALTA</h1>
+<div class="meta">Fuente datos climáticos: IDEAM – datos.gov.co &nbsp;|&nbsp;
+  Fecha datos: <b>${dataFecha ?? 'N/A'}</b> &nbsp;|&nbsp;
+  Generado: <b>${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'})}</b></div>
+<div class="indicator-box">
+  <div class="indicator-val">${result.indicator}%</div>
+  <div class="indicator-lbl">Cartera en alerta ALTA / Cartera total</div>
+</div>
+<div class="kpi-row">
+  <div class="kpi red">
+    <div class="kpi-val">${fmtCOP(result.cartaAlta)}</div>
+    <div class="kpi-lbl">Cartera en municipios con alerta ALTA</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-val">${fmtCOP(result.totalCartera)}</div>
+    <div class="kpi-lbl">Cartera total</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-val">${result.nAlta} / ${result.nTotal}</div>
+    <div class="kpi-lbl">Municipios en alerta ALTA / Total en cartera</div>
+  </div>
+</div>
+<h2 style="color:#1a5276;margin-bottom:8px">Detalle por municipio</h2>
+<table><thead><tr>
+  <th>Código</th><th>Municipio</th><th style="text-align:right">Cartera total</th><th style="text-align:center">Alerta lluvias</th>
+</tr></thead><tbody>${tableRows}</tbody></table>
+</body></html>`;
+
+      const w = window.open('', '_blank');
+      w.document.write(html);
+      w.document.close();
+      setTimeout(() => w.print(), 400);
+    }
+
     const ALERTA_BADGE = {
       'CRÍTICA': '<span style="color:#7b0000;font-weight:700;">\u26a0 CRÍTICA</span>',
       'ALTA':    '<span style="color:#e03131;font-weight:600;">\u26a0 ALTA</span>',
@@ -350,10 +440,19 @@
 
     // ─── Side Panel ───────────────────────────────────────────────────────────
 
-    function FilterBox({ departments, deptFilter, alertOnly, onDeptChange, onAlertToggle }) {
+    function FilterBox({ departments, deptFilter, alertOnly, onDeptChange, onAlertToggle, allData, dataFecha }) {
       return (
         <div className="bg-white rounded-xl shadow-md p-4">
-          <h2 className="text-[#1a5276] font-semibold mb-3 text-sm">Filtros</h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-[#1a5276] font-semibold text-sm">Filtros</h2>
+            <button
+              onClick={() => downloadCSV(allData, `datos_municipios_${dataFecha ?? 'export'}.csv`)}
+              title="Descargar datos actuales como CSV"
+              className="flex items-center gap-1.5 text-xs bg-[#27ae60] hover:bg-[#1e8449] text-white font-medium px-2.5 py-1 rounded-lg transition-colors"
+            >
+              &#x2B07;&#xFE0F; Descargar datos
+            </button>
+          </div>
           <label className="block text-xs font-medium text-gray-600 mb-1">Departamento</label>
           <select
             value={deptFilter}
@@ -492,7 +591,187 @@
       );
     }
 
-    function SidePanel({ data, allData, departments, deptFilter, alertOnly, onDeptChange, onAlertToggle }) {
+    // ─── Cartera Analysis Box ─────────────────────────────────────────────────
+
+    function CarteraBox({ alertaHistData, allData, dataFecha }) {
+      const [carteraData,   setCarteraData]   = useState(null);
+      const [carteraResult, setCarteraResult] = useState(null);
+      const [carteraError,  setCarteraError]  = useState(null);
+      const fileRef = useRef(null);
+
+      function downloadSample() {
+        const url = 'data/cartera_municipios_codigos.csv';
+        const a   = document.createElement('a');
+        a.href = url; a.download = 'cartera_municipios_codigos.csv'; a.click();
+      }
+
+      function handleFile(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        setCarteraError(null); setCarteraData(null); setCarteraResult(null);
+
+        Papa.parse(file, {
+          header: true,
+          skipEmptyLines: true,
+          complete: ({ data, errors }) => {
+            if (errors.length) console.warn('Cartera CSV warnings:', errors);
+            if (!data.length) { setCarteraError('El archivo está vacío.'); return; }
+
+            const firstRow = data[0];
+            const keys     = Object.keys(firstRow);
+
+            // Detect columns flexibly
+            const codCol    = keys.find(k => /cod/i.test(k) && /mpio|muni/i.test(k))
+                           ?? keys.find(k => /cod/i.test(k))
+                           ?? keys[0];
+            const carteraCol = keys.find(k => /cartera/i.test(k));
+            const nameCol    = keys.find(k => /nom/i.test(k) && /mpio|muni/i.test(k))
+                            ?? keys.find(k => /nombre|name/i.test(k));
+
+            if (!carteraCol) {
+              setCarteraError('No se encontró columna "cartera_total" en el archivo. Verifique el formato.');
+              return;
+            }
+
+            let totalCartera = 0, cartaAlta = 0, nTotal = 0, nAlta = 0;
+            const merged = [];
+
+            data.forEach(r => {
+              const cod    = (r[codCol] ?? '').toString().trim();
+              const val    = parseFloat((r[carteraCol] ?? '').toString().replace(/[^0-9.-]/g,'')) || 0;
+              const nombre = nameCol ? (r[nameCol] ?? cod) : cod;
+              // Look up alerta from loaded historical data, fallback to allData
+              const alerta = alertaHistData[cod]
+                          ?? alertaHistData[cod.padStart(5,'0')]
+                          ?? 'Sin datos';
+              totalCartera += val; nTotal++;
+              if (alerta === 'ALTA') { cartaAlta += val; nAlta++; }
+              merged.push({ cod, nombre, cartera_total: val, alerta_lluvias: alerta, _col: carteraCol });
+            });
+
+            const indicator = totalCartera > 0
+              ? (cartaAlta / totalCartera * 100).toFixed(2)
+              : '0.00';
+
+            setCarteraData(merged);
+            setCarteraResult({ totalCartera, cartaAlta, indicator, nTotal, nAlta, carteraCol });
+          },
+          error: err => setCarteraError('Error al leer el archivo: ' + err.message),
+        });
+        e.target.value = '';
+      }
+
+      function handleExportCSV() {
+        if (!carteraData) return;
+        const headers = ['cod','nombre','cartera_total','alerta_lluvias'];
+        const rows    = carteraData.map(r =>
+          [r.cod, `"${r.nombre}"`, r.cartera_total, r.alerta_lluvias].join(',')
+        );
+        const csv  = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = 'cartera_alerta_lluvias.csv'; a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      const fmtM = v => (v / 1e6).toFixed(1) + ' M';
+
+      return (
+        <div className="bg-white rounded-xl shadow-md p-4">
+          <h2 className="text-[#1a5276] font-semibold mb-3 text-sm">Análisis de Cartera</h2>
+
+          {/* Action buttons */}
+          <div className="flex gap-2 flex-wrap mb-3">
+            <button
+              onClick={downloadSample}
+              className="flex items-center gap-1.5 text-xs bg-[#eaf0fb] hover:bg-[#d0e4f7] text-[#1a5276] font-medium px-3 py-1.5 rounded-lg border border-[#b6d0e8] transition-colors"
+            >
+              &#x1F4CB; Archivo de ejemplo
+            </button>
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="flex items-center gap-1.5 text-xs bg-[#1a5276] hover:bg-[#154360] text-white font-medium px-3 py-1.5 rounded-lg transition-colors"
+            >
+              &#x1F4C2; Cargar cartera
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept=".csv,.xlsx,.xls"
+              onChange={handleFile}
+              className="hidden"
+            />
+          </div>
+
+          <p className="text-[11px] text-gray-400 mb-3 leading-tight">
+            Cargue un CSV con columnas <code>COD_MPIO</code> y <code>cartera_total</code>.
+            Se cruza con la alerta histórica de lluvias.
+          </p>
+
+          {/* Error */}
+          {carteraError && (
+            <div className="text-xs text-[#e03131] bg-red-50 rounded-lg px-3 py-2 mb-2">
+              &#x26A0; {carteraError}
+            </div>
+          )}
+
+          {/* Results */}
+          {carteraResult && (
+            <div>
+              {/* Indicator */}
+              <div className="bg-[#1a5276] text-white rounded-lg px-4 py-3 mb-3 text-center">
+                <div className="text-2xl font-bold">{carteraResult.indicator}%</div>
+                <div className="text-[11px] text-blue-200 mt-0.5">
+                  Cartera en alerta ALTA / Cartera total
+                </div>
+              </div>
+
+              {/* KPIs */}
+              <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-2">
+                  <div className="font-bold text-[#e03131] text-sm">
+                    {fmtM(carteraResult.cartaAlta)} COP
+                  </div>
+                  <div className="text-gray-500 mt-0.5">
+                    Cartera en alerta ALTA
+                    <span className="ml-1 text-[#e03131]">({carteraResult.nAlta} mpios)</span>
+                  </div>
+                </div>
+                <div className="bg-[#eaf0fb] border border-[#b6d0e8] rounded-lg p-2">
+                  <div className="font-bold text-[#1a5276] text-sm">
+                    {fmtM(carteraResult.totalCartera)} COP
+                  </div>
+                  <div className="text-gray-500 mt-0.5">
+                    Cartera total
+                    <span className="ml-1 text-[#1a5276]">({carteraResult.nTotal} mpios)</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Export buttons */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => exportReportePDF(carteraResult, carteraData, dataFecha)}
+                  className="flex-1 text-xs bg-[#e03131] hover:bg-[#c0392b] text-white font-medium px-3 py-1.5 rounded-lg transition-colors"
+                >
+                  &#x1F4C4; Exportar PDF
+                </button>
+                <button
+                  onClick={handleExportCSV}
+                  className="flex-1 text-xs bg-[#27ae60] hover:bg-[#1e8449] text-white font-medium px-3 py-1.5 rounded-lg transition-colors"
+                >
+                  &#x1F4BE; Exportar CSV
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function SidePanel({ data, allData, departments, deptFilter, alertOnly, onDeptChange, onAlertToggle,
+                         alertaHistData, dataFecha }) {
       return (
         <div className="flex flex-col gap-3 lg:w-[35%]">
           <FilterBox
@@ -501,10 +780,13 @@
             alertOnly={alertOnly}
             onDeptChange={onDeptChange}
             onAlertToggle={onAlertToggle}
+            allData={allData}
+            dataFecha={dataFecha}
           />
           <StatsBox filteredCount={data.length} total={allData.length} />
           <ChartBox allData={allData} />
           <TableBox data={data} />
+          <CarteraBox alertaHistData={alertaHistData} allData={allData} dataFecha={dataFecha} />
         </div>
       );
     }
@@ -512,12 +794,14 @@
     // ─── App ──────────────────────────────────────────────────────────────────
 
     function App() {
-      const [allData,    setAllData]    = useState([]);
-      const [deptFilter, setDeptFilter] = useState('ALL');
-      const [alertOnly,  setAlertOnly]  = useState(false);
-      const [loading,    setLoading]    = useState(true);
-      const [error,      setError]      = useState(null);
+      const [allData,       setAllData]       = useState([]);
+      const [alertaHistData,setAlertaHistData] = useState({});
+      const [deptFilter,    setDeptFilter]    = useState('ALL');
+      const [alertOnly,     setAlertOnly]     = useState(false);
+      const [loading,       setLoading]       = useState(true);
+      const [error,         setError]         = useState(null);
 
+      // Load daily precipitation data
       useEffect(() => {
         Papa.parse('data/datos_municipios.csv', {
           download:       true,
@@ -539,6 +823,25 @@
             setError(msg);
             setLoading(false);
           }
+        });
+      }, []);
+
+      // Load historical alert data (alerta_lluvias per municipality)
+      useEffect(() => {
+        Papa.parse('data/alerta_historica_municipal.csv', {
+          download:       true,
+          header:         true,
+          skipEmptyLines: true,
+          encoding:       'UTF-8',
+          complete: ({ data }) => {
+            const map = {};
+            data.forEach(r => {
+              const cod = (r['COD_MPIO'] ?? r['\uFEFFCOD_MPIO'] ?? '').toString().trim();
+              if (cod) map[cod] = (r.alerta_lluvias ?? 'BAJA').trim();
+            });
+            setAlertaHistData(map);
+          },
+          error: err => console.warn('No se pudo cargar alerta_historica_municipal.csv:', err),
         });
       }, []);
 
@@ -581,6 +884,8 @@
                 alertOnly={alertOnly}
                 onDeptChange={setDeptFilter}
                 onAlertToggle={() => setAlertOnly(v => !v)}
+                alertaHistData={alertaHistData}
+                dataFecha={dataFecha}
               />
             </div>
           </main>
