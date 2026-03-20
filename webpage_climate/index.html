@@ -406,7 +406,7 @@
             ))}
             <div className="border-t border-gray-200 pt-1 mt-1 flex items-center gap-2">
               <div className="w-3 h-3 rounded-full border-2 border-[#f0b429] flex-shrink-0" />
-              <span className="text-gray-700">Con alerta activa</span>
+              <span className="text-gray-700">Alerta SEVERA</span>
             </div>
           </>)}
         </div>
@@ -454,8 +454,8 @@
             const color  = SEQUIA_COLORS[cat] ?? '#adb5bd';
             const radius = 6;
 
-            // Pulsing ring amarillo para cualquier categoría no NORMAL
-            if (cat !== 'NORMAL') {
+            // Pulsing ring amarillo solo para SEVERA
+            if (cat === 'SEVERA') {
               const r2   = radius + 5;
               const size = r2 * 2;
               const pulseIcon = L.divIcon({
@@ -471,8 +471,8 @@
             L.circleMarker([m.LATITUD, m.LONGITUD], {
               radius,
               fillColor:   color,
-              color:       cat !== 'NORMAL' ? '#f0b429' : '#ffffff',
-              weight:      cat !== 'NORMAL' ? 2.0 : 0.8,
+              color:       cat === 'SEVERA' ? '#f0b429' : '#ffffff',
+              weight:      cat === 'SEVERA' ? 2.0 : 0.8,
               opacity:     1,
               fillOpacity: 0.85,
             })
