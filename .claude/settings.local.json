@@ -8,7 +8,18 @@
       "Read(//c/Users/Usuario/OneDrive - Global Green Growth Institute/Documentos/2025/Outputs/Output4/Indicadores/**)",
       "Bash(done)",
       "Bash(ls -la \"c:\\\\Users\\\\Usuario\\\\OneDrive - Global Green Growth Institute\\\\Documentos\\\\2025\\\\Outputs\\\\Output1\\\\Stress Test\\\\3.Data\\\\Scripts Python\\\\webpage_climate\"\" 2>/dev/null || echo \"Directory listing failed \")",
-      "Bash(python -c \":*)"
+      "Bash(python -c \":*)",
+      "Bash(where jupyter:*)",
+      "Bash(python -m jupyter --version)",
+      "Bash(where python:*)",
+      "Bash(conda info:*)",
+      "Bash(python -c \"import sys; print\\(sys.executable\\)\")",
+      "Bash(python -m pip show papermill)",
+      "Bash(python -m pip install nbconvert)",
+      "Bash(find 'c:/Users/Usuario/OneDrive - Global Green Growth Institute/Documentos/2025/Outputs/Output1/Stress Test/3.Data/Scripts Python/webpage_climate/data/' -type f -name *.csv)",
+      "Bash(python \"C:/Users/Usuario/AppData/Local/Temp/build_notebook.py\")",
+      "Bash(pip show:*)",
+      "Bash(taskkill /F /IM python.exe)"
     ]
   }
 }
