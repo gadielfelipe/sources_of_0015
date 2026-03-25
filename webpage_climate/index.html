@@ -141,6 +141,7 @@
           sequia_categoria:     (r.sequia_categoria   ?? 'NORMAL').trim(),
           categoria:            r.categoria ? r.categoria.trim() : precipCategoria(mm),
           tamano:               parseFloat(r.tama\u00f1o) || precipTamano(mm),
+          municipio_afectado:   parseInt(r.municipio_afectado) || 0,
         };
       }).filter(r => !isNaN(r.LATITUD) && !isNaN(r.LONGITUD));
     }
@@ -281,6 +282,17 @@
           <p style="font-size:12px;font-weight:600;color:#b7770d;margin-bottom:2px;">\uD83C\uDF35 Sequ\u00eda recurrente</p>
           <p><b>Categor\u00eda:</b> <span style="color:#b7770d;font-weight:600;">${m.sequia_categoria}</span></p>` : '';
 
+      // Sección inundaciones históricas
+      const isAlertaAlta = m.alerta_compuesta === 'ALTA' || m.alerta_compuesta === 'CRÍTICA';
+      const floodSection = m.municipio_afectado === 1
+        ? isAlertaAlta
+          ? `<hr style="margin:6px 0;border-color:#eee;">
+             <p style="font-size:12px;font-weight:700;color:#1a5276;margin-bottom:2px;">\uD83C\uDF0A Municipio hist\u00f3ricamente afectado por inundaciones</p>
+             <p style="font-size:11px;color:#e03131;font-weight:600;">\u26a0 Alto riesgo: alerta activa + antecedente de inundaci\u00f3n</p>`
+          : `<hr style="margin:6px 0;border-color:#eee;">
+             <p style="font-size:12px;font-weight:600;color:#1a5276;margin-bottom:2px;">\uD83C\uDF0A Municipio hist\u00f3ricamente afectado por inundaciones</p>`
+        : '';
+
       return `
         <div style="font-family:Arial,sans-serif;font-size:13px;min-width:220px;">
           <div style="color:#1a5276;font-size:14px;font-weight:700;margin-bottom:2px;">${m.NOM_MPIO}</div>
@@ -297,6 +309,7 @@
           <p><b>Frec. extremos 2 a\u00f1os:</b> ${(m.frecuencia_reciente * 100).toFixed(1)}%</p>
           <p><b>Tendencia:</b> ${tendLabel}</p>
           ${sequiaSection}
+          ${floodSection}
           <p style="color:#888;font-size:11px;margin-top:4px;">Estaciones: ${m.n_estaciones}</p>
           ${fechaLabel}
         </div>`;
