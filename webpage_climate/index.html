@@ -12,7 +12,198 @@
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
   <style>
+    /* ── Global ────────────────────────────────────────────── */
+    html { scroll-behavior: smooth; }
+
+    /* ── Hero Landing ──────────────────────────────────────── */
+    .hero-section {
+      position: relative;
+      height: 100vh;
+      min-height: 600px;
+      background: #030d1a;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Coordinate grid */
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,180,255,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,180,255,0.07) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* Diagonal accent lines */
+    .hero-grid::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,180,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,180,255,0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    /* Scanning line */
+    .hero-scan {
+      position: absolute;
+      left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(0,200,255,0.55) 50%, transparent 100%);
+      animation: heroScan 7s linear infinite;
+      z-index: 1;
+    }
+    @keyframes heroScan {
+      0%   { top: -2%; opacity: 0; }
+      4%   { opacity: 1; }
+      96%  { opacity: 1; }
+      100% { top: 102%; opacity: 0; }
+    }
+
+    /* Radial glow center */
+    .hero-glow {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(ellipse at center, rgba(0,80,180,0.18) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Data dots */
+    .hero-dot {
+      position: absolute;
+      border-radius: 50%;
+      background: #00b4ff;
+      animation: dotPulse 3.5s ease-in-out infinite;
+    }
+    @keyframes dotPulse {
+      0%, 100% { opacity: 0.25; transform: scale(1); }
+      50%       { opacity: 0.7;  transform: scale(1.5); }
+    }
+
+    /* Content */
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 28px;
+      max-width: 860px;
+      animation: heroFadeIn 1.4s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    @keyframes heroFadeIn {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: 'Space Mono', 'Courier New', monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.22em;
+      color: #00b4ff;
+      text-transform: uppercase;
+      border: 1px solid rgba(0,180,255,0.35);
+      padding: 6px 18px;
+      border-radius: 2px;
+      margin-bottom: 32px;
+      background: rgba(0,180,255,0.06);
+    }
+
+    .hero-title {
+      font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 300;
+      font-size: clamp(22px, 4vw, 48px);
+      color: #dce8f5;
+      line-height: 1.22;
+      letter-spacing: -0.01em;
+      margin-bottom: 0;
+    }
+    .hero-title strong {
+      font-weight: 600;
+      color: #ffffff;
+      display: block;
+      font-size: clamp(26px, 4.8vw, 56px);
+      letter-spacing: -0.025em;
+    }
+    .hero-title em {
+      font-style: normal;
+      color: #a8c8e8;
+      font-size: 0.82em;
+      font-weight: 300;
+    }
+
+    .hero-rule {
+      width: 40px;
+      height: 1px;
+      background: rgba(0,180,255,0.45);
+      margin: 30px auto;
+    }
+
+    .hero-sub {
+      font-family: 'Space Mono', 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: rgba(140,190,230,0.65);
+      text-transform: uppercase;
+    }
+
+    /* Corner marks */
+    .hero-corner {
+      position: absolute;
+      width: 20px; height: 20px;
+      z-index: 2;
+      opacity: 0.4;
+    }
+    .hero-corner.tl { top: 24px; left: 24px; border-top: 1px solid #00b4ff; border-left: 1px solid #00b4ff; }
+    .hero-corner.tr { top: 24px; right: 24px; border-top: 1px solid #00b4ff; border-right: 1px solid #00b4ff; }
+    .hero-corner.bl { bottom: 24px; left: 24px; border-bottom: 1px solid #00b4ff; border-left: 1px solid #00b4ff; }
+    .hero-corner.br { bottom: 24px; right: 24px; border-bottom: 1px solid #00b4ff; border-right: 1px solid #00b4ff; }
+
+    /* Scroll indicator */
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 2;
+      text-decoration: none;
+    }
+    .hero-scroll-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.25em;
+      color: rgba(0,180,255,0.5);
+      text-transform: uppercase;
+    }
+    .hero-scroll-line {
+      width: 1px;
+      height: 36px;
+      background: linear-gradient(to bottom, rgba(0,180,255,0.5), transparent);
+      animation: scrollLine 1.8s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%   { transform: scaleY(0); transform-origin: top; opacity: 0; }
+      40%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+      100% { transform: scaleY(1); transform-origin: top; opacity: 0; }
+    }
+
+    /* ── Dashboard wrapper ─────────────────────────────────── */
+    #dashboard { position: relative; }
+
     .map-div { height: 520px; }
     @media (max-width: 768px) { .map-div { height: 340px; } }
 
@@ -317,6 +508,64 @@
           <p style="color:#888;font-size:11px;margin-top:4px;">Estaciones: ${m.n_estaciones}</p>
           ${fechaLabel}
         </div>`;
+    }
+
+    // ─── Landing Hero ─────────────────────────────────────────────────────────
+
+    const DOTS = [
+      { top:'14%', left:'9%',  size:3, delay:'0s'   },
+      { top:'71%', left:'16%', size:4, delay:'0.7s'  },
+      { top:'38%', left:'88%', size:5, delay:'1.3s'  },
+      { top:'65%', left:'80%', size:3, delay:'0.4s'  },
+      { top:'22%', left:'58%', size:3, delay:'2.1s'  },
+      { top:'82%', left:'63%', size:4, delay:'1.0s'  },
+      { top:'50%', left:'95%', size:3, delay:'1.7s'  },
+      { top:'8%',  left:'42%', size:3, delay:'0.5s'  },
+      { top:'90%', left:'35%', size:3, delay:'1.4s'  },
+      { top:'30%', left:'5%',  size:4, delay:'0.9s'  },
+    ];
+
+    function LandingHero() {
+      return (
+        <section className="hero-section">
+          <div className="hero-grid" />
+          <div className="hero-scan" />
+          <div className="hero-glow" />
+
+          {/* Corner markers */}
+          <div className="hero-corner tl" />
+          <div className="hero-corner tr" />
+          <div className="hero-corner bl" />
+          <div className="hero-corner br" />
+
+          {/* Data dots */}
+          {DOTS.map((d, i) => (
+            <div key={i} className="hero-dot" style={{
+              top: d.top, left: d.left,
+              width: d.size + 'px', height: d.size + 'px',
+              animationDelay: d.delay,
+            }} />
+          ))}
+
+          {/* Main content */}
+          <div className="hero-content">
+            <div className="hero-badge">SFC Colombia &nbsp;&middot;&nbsp; Circular 0015 &nbsp;&middot;&nbsp; 2025</div>
+            <h1 className="hero-title">
+              Herramienta para la implementaci&oacute;n de la
+              <strong>Circular 0015 de 2025</strong>
+              <em>Superintendencia Financiera de Colombia</em>
+            </h1>
+            <div className="hero-rule" />
+            <p className="hero-sub">By GGGI &mdash; Sustainable Finance</p>
+          </div>
+
+          {/* Scroll indicator */}
+          <a href="#dashboard" className="hero-scroll">
+            <span className="hero-scroll-label">Explorar</span>
+            <div className="hero-scroll-line" />
+          </a>
+        </section>
+      );
     }
 
     // ─── Loading / Error ──────────────────────────────────────────────────────
@@ -978,6 +1227,8 @@
 
       return (
         <div className="min-h-screen bg-[#eaf0fb]">
+          <LandingHero />
+          <div id="dashboard">
           <Header dataFecha={dataFecha} />
           <main className="p-4">
             <KpiCards kpis={kpis} activeMap={activeMap} />
@@ -1028,6 +1279,7 @@
               />
             </div>
           </main>
+          </div>
         </div>
       );
     }
