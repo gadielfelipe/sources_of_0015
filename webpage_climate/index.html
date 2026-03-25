@@ -118,10 +118,13 @@
 
     function parseRows(raw) {
       return raw.map(r => {
-        const cod              = r['COD_MPIO'] ?? r['\uFEFFCOD_MPIO'] ?? '';
-        const mm               = parseFloat(r.precip_acum_mm) || 0;
-        const alerta_compuesta = (r.alerta_compuesta ?? 'BAJA').trim();
-        const alert            = ALERTA_NIVEL[alerta_compuesta] ?? 0;  // siempre derivado de alerta_compuesta
+        const cod                   = r['COD_MPIO'] ?? r['\uFEFFCOD_MPIO'] ?? '';
+        const mm                    = parseFloat(r.precip_acum_mm) || 0;
+        const alerta_compuesta_raw  = (r.alerta_compuesta ?? 'BAJA').trim();
+        const afectado              = parseInt(r.municipio_afectado) || 0;
+        // Alerta efectiva: solo válida si el municipio tiene antecedente histórico de inundación
+        const alerta_compuesta      = afectado === 1 ? alerta_compuesta_raw : 'BAJA';
+        const alert                 = ALERTA_NIVEL[alerta_compuesta] ?? 0;
         return {
           COD_MPIO:             String(cod),
           NOM_MPIO:             (r.NOM_MPIO         ?? '').trim(),
@@ -133,6 +136,7 @@
           n_estaciones:         parseInt(r.n_estaciones, 10)      || 0,
           alerta:               alert,
           alerta_compuesta,
+          alerta_compuesta_raw,   // nivel histórico original (antes de filtro inundación)
           frecuencia_extremos:  parseFloat(r.frecuencia_extremos) || 0,
           frecuencia_reciente:  parseFloat(r.frecuencia_reciente) || 0,
           ratio_reciente:       parseFloat(r.ratio_reciente)      || 0,
@@ -141,7 +145,7 @@
           sequia_categoria:     (r.sequia_categoria   ?? 'NORMAL').trim(),
           categoria:            r.categoria ? r.categoria.trim() : precipCategoria(mm),
           tamano:               parseFloat(r.tama\u00f1o) || precipTamano(mm),
-          municipio_afectado:   parseInt(r.municipio_afectado) || 0,
+          municipio_afectado:   afectado,
         };
       }).filter(r => !isNaN(r.LATITUD) && !isNaN(r.LONGITUD));
     }
@@ -282,10 +286,10 @@
           <p style="font-size:12px;font-weight:600;color:#b7770d;margin-bottom:2px;">\uD83C\uDF35 Sequ\u00eda recurrente</p>
           <p><b>Categor\u00eda:</b> <span style="color:#b7770d;font-weight:600;">${m.sequia_categoria}</span></p>` : '';
 
-      // Sección inundaciones históricas
-      const isAlertaAlta = m.alerta_compuesta === 'ALTA' || m.alerta_compuesta === 'CRÍTICA';
+      // Sección inundaciones históricas — aparece para TODOS los municipios afectados
+      const tieneAlertaEfectiva = m.alerta_compuesta === 'ALTA' || m.alerta_compuesta === 'CRÍTICA';
       const floodSection = m.municipio_afectado === 1
-        ? isAlertaAlta
+        ? tieneAlertaEfectiva
           ? `<hr style="margin:6px 0;border-color:#eee;">
              <p style="font-size:12px;font-weight:700;color:#1a5276;margin-bottom:2px;">\uD83C\uDF0A Municipio hist\u00f3ricamente afectado por inundaciones</p>
              <p style="font-size:11px;color:#e03131;font-weight:600;">\u26a0 Alto riesgo: alerta activa + antecedente de inundaci\u00f3n</p>`
