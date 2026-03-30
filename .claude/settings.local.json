@@ -19,7 +19,9 @@
       "Bash(find 'c:/Users/Usuario/OneDrive - Global Green Growth Institute/Documentos/2025/Outputs/Output1/Stress Test/3.Data/Scripts Python/webpage_climate/data/' -type f -name *.csv)",
       "Bash(python \"C:/Users/Usuario/AppData/Local/Temp/build_notebook.py\")",
       "Bash(pip show:*)",
-      "Bash(taskkill /F /IM python.exe)"
+      "Bash(taskkill /F /IM python.exe)",
+      "Bash(python -m pip list)",
+      "Bash(python -c \"import geopandas; print\\(geopandas.__version__\\)\")"
     ]
   }
 }
