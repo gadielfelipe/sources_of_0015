@@ -290,6 +290,22 @@
       { label: 'Extrema',  color: '#7b0000' },
     ];
 
+    const AMENAZA_MM_COLORS = {
+      'MUY_BAJA': '#218a21',
+      'BAJA':     '#90ee90',
+      'MEDIA':    '#ffd900',
+      'ALTA':     '#ff800d',
+      'MUY_ALTA': '#d91919',
+      '':         '#adb5bd',
+    };
+    const DESLIZ_LEGEND_ENTRIES = [
+      { label: 'Muy baja',                      color: '#218a21' },
+      { label: 'Baja',                          color: '#90ee90' },
+      { label: 'Media',                         color: '#ffd900' },
+      { label: 'Alta',                          color: '#ff800d' },
+      { label: 'Muy alta',                      color: '#d91919' },
+    ];
+
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
     function precipCategoria(mm) {
@@ -632,13 +648,18 @@
       );
     }
 
-    function KpiCards({ kpis, activeMap }) {
-      const alertaValue = activeMap === 'sequias' ? kpis.enAlertaSequia : kpis.enAlerta;
-      const alertaLabel = activeMap === 'sequias' ? 'Sequ\u00eda SEVERA' : 'En alerta hist\u00f3rica';
+    function KpiCards({ kpis, activeMap, amenazasData }) {
+      const alertaValue = activeMap === 'sequias'       ? kpis.enAlertaSequia
+                        : activeMap === 'deslizamientos' ? Object.values(amenazasData).filter(d => d.alerta_deslizamiento === 'ALTA').length
+                        : kpis.enAlerta;
+      const alertaLabel = activeMap === 'sequias'       ? 'Sequ\u00eda SEVERA'
+                        : activeMap === 'deslizamientos' ? 'Alerta deslizamiento'
+                        : 'En alerta hist\u00f3rica';
+      const alertaAccent = activeMap === 'sequias' ? 'gold' : 'red';
       return (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-          <KpiCard label="Total municipios"        value={kpis.total}            icon="&#x1F3D9;" />
-          <KpiCard label={alertaLabel}             value={alertaValue}           icon="&#x26A0;&#xFE0F;" accent={activeMap === 'sequias' ? 'gold' : 'red'} />
+          <KpiCard label="Total municipios"               value={kpis.total}            icon="&#x1F3D9;" />
+          <KpiCard label={alertaLabel}                    value={alertaValue}           icon="&#x26A0;&#xFE0F;" accent={alertaAccent} />
           <KpiCard label="Promedio precipitaci&oacute;n"  value={`${kpis.promedio} mm`} icon="&#x1F4A7;" accent="green" />
           <KpiCard label="M&aacute;x. precipitaci&oacute;n" value={`${kpis.maximo} mm`}   icon="&#x1F4CD;" accent="gold" sub={kpis.maxMpio} />
         </div>
@@ -665,6 +686,18 @@
               <div className="w-3 h-3 rounded-full border-2 border-[#e03131] flex-shrink-0" />
               <span className="text-gray-700">En alerta</span>
             </div>
+          </>) : mode === 'deslizamientos' ? (<>
+            <div className="font-semibold text-[#7b3f00] mb-1">Amenaza MM · SGC</div>
+            {DESLIZ_LEGEND_ENTRIES.map(e => (
+              <div key={e.label} className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{background: e.color}} />
+                <span className="text-gray-700">{e.label}</span>
+              </div>
+            ))}
+            <div className="border-t border-gray-200 pt-1 mt-1 flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full border-2 border-[#d91919] flex-shrink-0" />
+              <span className="text-gray-700">Alerta IDEAM activa</span>
+            </div>
           </>) : (<>
             <div className="font-semibold text-[#b7770d] mb-1">Sequ&iacute;a recurrente</div>
             {SEQUIA_LEGEND_ENTRIES.map(e => (
@@ -678,6 +711,98 @@
               <span className="text-gray-700">Alerta SEVERA</span>
             </div>
           </>)}
+        </div>
+      );
+    }
+
+    // ─── Deslizamientos Map Panel ─────────────────────────────────────────────
+
+    function DeslizMapPanel({ amenazasData, visible = true }) {
+      const mapDiv      = useRef(null);
+      const leafletMap  = useRef(null);
+      const layerGroup  = useRef(null);
+      const initialized = useRef(false);
+
+      useEffect(() => {
+        if (initialized.current) return;
+        initialized.current = true;
+        const map = L.map(mapDiv.current, { center: [4.5, -74.0], zoom: 5 });
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; OpenStreetMap contributors &copy; CARTO', maxZoom: 19,
+        }).addTo(map);
+        map.fitBounds([[1, -79], [13, -67]]);
+        layerGroup.current = L.layerGroup().addTo(map);
+        leafletMap.current = map;
+      }, []);
+
+      useEffect(() => {
+        if (visible && leafletMap.current) setTimeout(() => leafletMap.current.invalidateSize(), 50);
+      }, [visible]);
+
+      useEffect(() => {
+        if (!layerGroup.current) return;
+        layerGroup.current.clearLayers();
+        const entries = Object.values(amenazasData).filter(d => !isNaN(d.lat) && !isNaN(d.lon));
+
+        entries.forEach(d => {
+          const color      = AMENAZA_MM_COLORS[d.amenaza_mm] ?? '#adb5bd';
+          const hasAlerta  = d.alerta_deslizamiento === 'ALTA';
+          const radius     = hasAlerta ? 9 : 6;
+          const weight     = hasAlerta ? 2.5 : 0.8;
+          const fillOpac   = hasAlerta ? 0.92 : 0.65;
+          const borderCol  = hasAlerta ? '#7b0000' : '#fff';
+
+          const marker = L.circleMarker([d.lat, d.lon], {
+            radius, color: borderCol, weight, fillColor: color, fillOpacity: fillOpac,
+          });
+
+          // Pulse ring for active IDEAM alert
+          if (hasAlerta) {
+            const iconHtml = `<div class="alert-pulse" style="width:22px;height:22px;margin-top:-11px;margin-left:-11px;border-color:#d91919;"></div>`;
+            L.marker([d.lat, d.lon], { icon: L.divIcon({ html: iconHtml, className: '', iconSize: [0,0] }) }).addTo(layerGroup.current);
+          }
+
+          const acum3  = d.acum_3dias_mm  != null ? `${d.acum_3dias_mm.toFixed(1)} mm` : 'N/D';
+          const acum10 = d.acum_10dias_mm != null ? `${d.acum_10dias_mm.toFixed(1)} mm` : 'N/D';
+          const dias   = d.dias_lluvia    != null ? d.dias_lluvia : 'N/D';
+          const amenazaLabel = { 'MUY_BAJA':'Muy baja','BAJA':'Baja','MEDIA':'Media','ALTA':'Alta','MUY_ALTA':'Muy alta' }[d.amenaza_mm] ?? d.amenaza_mm;
+          const alertaBadge  = hasAlerta
+            ? `<span style="color:#d91919;font-weight:700;">\u26a0 ALTA \u2014 Alerta IDEAM</span>`
+            : `<span style="color:#27ae60;">\u2713 Sin alerta activa</span>`;
+
+          const fechaLine = d.fecha_ideam
+            ? `<p style="color:#888;font-size:11px;margin-top:4px;">Alerta al: <b>${d.fecha_ideam}</b></p>` : '';
+
+          const acumSection = hasAlerta ? `
+            <hr style="margin:6px 0;border-color:#eee;">
+            <p style="font-size:12px;font-weight:600;color:#7b3f00;margin-bottom:2px;">\uD83C\uDF27 Precipitaci\u00f3n acumulada</p>
+            <p><b>\u00daltimos 3 d\u00edas:</b> ${acum3}</p>
+            <p><b>\u00daltimos 10 d\u00edas:</b> ${acum10}</p>
+            <p><b>D\u00edas con lluvia:</b> ${dias}</p>` : '';
+
+          const popup = `
+            <div style="font-family:Arial,sans-serif;font-size:13px;min-width:210px;">
+              <div style="color:#1a5276;font-size:14px;font-weight:700;margin-bottom:2px;">${d.nom_mpio}</div>
+              <div style="color:#666;font-size:12px;margin-bottom:6px;">${d.nom_dpto}</div>
+              <hr style="margin:4px 0;border-color:#eee;">
+              <p style="font-size:12px;font-weight:600;color:#7b3f00;margin-bottom:2px;">\u26f0 Amenaza MM \u2014 SGC 1:500k</p>
+              <p><b>Nivel est\u00e1tico:</b> <span style="color:${color};font-weight:600;">${amenazaLabel}</span></p>
+              <hr style="margin:6px 0;border-color:#eee;">
+              <p style="font-size:12px;font-weight:600;color:#444;margin-bottom:2px;">\uD83D\uDCE1 Alerta diaria IDEAM</p>
+              <p>${alertaBadge}</p>
+              ${acumSection}
+              ${fechaLine}
+            </div>`;
+
+          marker.bindPopup(popup, { maxWidth: 240 });
+          marker.addTo(layerGroup.current);
+        });
+      }, [amenazasData]);
+
+      return (
+        <div className="relative rounded-xl overflow-hidden shadow">
+          <div ref={mapDiv} className="map-div" />
+          <Legend mode="deslizamientos" />
         </div>
       );
     }
@@ -1151,13 +1276,14 @@
     // ─── App ──────────────────────────────────────────────────────────────────
 
     function App() {
-      const [allData,       setAllData]       = useState([]);
-      const [alertaHistData,setAlertaHistData] = useState({});
-      const [deptFilter,    setDeptFilter]    = useState('ALL');
-      const [alertOnly,     setAlertOnly]     = useState(false);
-      const [loading,       setLoading]       = useState(true);
-      const [error,         setError]         = useState(null);
-      const [activeMap,     setActiveMap]     = useState('lluvias');
+      const [allData,         setAllData]         = useState([]);
+      const [alertaHistData,  setAlertaHistData]   = useState({});
+      const [amenazasData,    setAmenazasData]     = useState({});
+      const [deptFilter,      setDeptFilter]       = useState('ALL');
+      const [alertOnly,       setAlertOnly]        = useState(false);
+      const [loading,         setLoading]          = useState(true);
+      const [error,           setError]            = useState(null);
+      const [activeMap,       setActiveMap]        = useState('lluvias');
 
       // Load daily precipitation data
       useEffect(() => {
@@ -1203,6 +1329,37 @@
         });
       }, []);
 
+      // Load amenazas municipales (SGC raster + IDEAM daily landslide alerts)
+      useEffect(() => {
+        Papa.parse('data/amenazas_municipal.csv', {
+          download:       true,
+          header:         true,
+          skipEmptyLines: true,
+          encoding:       'UTF-8',
+          complete: ({ data }) => {
+            const map = {};
+            data.forEach(r => {
+              const cod = (r['cod_divipola'] ?? r['\uFEFFcod_divipola'] ?? '').toString().trim();
+              if (cod) map[cod] = {
+                amenaza_mm:           (r.amenaza_mm           ?? '').trim(),
+                amenaza_mm_val:       parseInt(r.amenaza_mm_val) || 0,
+                alerta_deslizamiento: (r.alerta_deslizamiento ?? '').trim(),
+                acum_3dias_mm:        parseFloat(r.acum_3dias_mm)  || null,
+                acum_10dias_mm:       parseFloat(r.acum_10dias_mm) || null,
+                dias_lluvia:          parseFloat(r.dias_lluvia)    || null,
+                fecha_ideam:          (r.fecha_ideam ?? '').trim(),
+                lat:                  parseFloat(r.LATITUD),
+                lon:                  parseFloat(r.LONGITUD),
+                nom_mpio:             (r.NOM_MPIO ?? '').trim(),
+                nom_dpto:             (r.NOM_DPTO ?? '').trim(),
+              };
+            });
+            setAmenazasData(map);
+          },
+          error: err => console.warn('No se pudo cargar amenazas_municipal.csv:', err),
+        });
+      }, []);
+
       const filteredData = useMemo(() => {
         return allData
           .filter(d => deptFilter === 'ALL' || d.NOM_DPTO === deptFilter)
@@ -1231,7 +1388,7 @@
           <div id="dashboard">
           <Header dataFecha={dataFecha} />
           <main className="p-4">
-            <KpiCards kpis={kpis} activeMap={activeMap} />
+            <KpiCards kpis={kpis} activeMap={activeMap} amenazasData={amenazasData} />
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="lg:w-[65%]">
                 {/* Tabs selector */}
@@ -1256,6 +1413,16 @@
                   >
                     &#x2600;&#xFE0F; Alertas Sequ&iacute;as
                   </button>
+                  <button
+                    onClick={() => setActiveMap('deslizamientos')}
+                    className={`flex items-center gap-1.5 text-sm font-semibold px-4 py-1.5 rounded-lg border transition-colors ${
+                      activeMap === 'deslizamientos'
+                        ? 'bg-[#7b3f00] text-white border-[#7b3f00]'
+                        : 'bg-white text-[#7b3f00] border-[#d4a875] hover:bg-[#fdf5ec]'
+                    }`}
+                  >
+                    &#x26F0;&#xFE0F; Alertas Deslizamientos
+                  </button>
                 </div>
                 {/* Mapa Lluvias */}
                 <div style={{display: activeMap === 'lluvias' ? 'block' : 'none'}}>
@@ -1264,6 +1431,10 @@
                 {/* Mapa Sequías */}
                 <div style={{display: activeMap === 'sequias' ? 'block' : 'none'}}>
                   <MapPanel data={filteredData} mode="sequias" visible={activeMap === 'sequias'} />
+                </div>
+                {/* Mapa Deslizamientos */}
+                <div style={{display: activeMap === 'deslizamientos' ? 'block' : 'none'}}>
+                  <DeslizMapPanel amenazasData={amenazasData} visible={activeMap === 'deslizamientos'} />
                 </div>
               </div>
               <SidePanel
