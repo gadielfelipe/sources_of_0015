@@ -4,175 +4,151 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Circular 0015 indicadores</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='32' fill='%231a5276'/><path d='M12 44 Q20 20 32 28 Q44 36 52 12' stroke='%2327ae60' stroke-width='4' fill='none' stroke-linecap='round'/><path d='M22 52 Q26 30 32 36 Q38 42 44 24' stroke='%23f0b429' stroke-width='2.5' fill='none' stroke-linecap='round'/></svg>">
-
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='32' fill='%230a0f1a'/><path d='M12 44 Q20 20 32 28 Q44 36 52 12' stroke='%23c8a96e' stroke-width='4' fill='none' stroke-linecap='round'/><path d='M22 52 Q26 30 32 36 Q38 42 44 24' stroke='%234fa89b' stroke-width='2.5' fill='none' stroke-linecap='round'/></svg>">
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Cinematic Earth Intelligence -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
   <style>
-    /* ── Global ────────────────────────────────────────────── */
-    html { scroll-behavior: smooth; }
+    :root {
+      --bg-primary:    #0a0f1a;
+      --bg-secondary:  #0d1a12;
+      --bg-card:       #111827;
+      --bg-card-hover: #1a2535;
+      --accent-gold:   #c8a96e;
+      --accent-teal:   #4fa89b;
+      --text-primary:  #f5f0e8;
+      --text-muted:    #8a9ab0;
+      --danger:        #c0392b;
+      --warning:       #e67e22;
+      --border:        rgba(200,169,110,0.15);
+      --border-strong: rgba(200,169,110,0.35);
+    }
 
-    /* ── Hero Landing ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Lora', Georgia, serif;
+      min-height: 100vh;
+    }
+
+    /* ── Scrollbar ─────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-gold); }
+
+    /* ── Video Hero ─────────────────────────────────────── */
     .hero-section {
       position: relative;
       height: 100vh;
       min-height: 600px;
-      background: #030d1a;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-
-    /* Coordinate grid */
-    .hero-grid {
+    .hero-video {
       position: absolute;
       inset: 0;
-      background-image:
-        linear-gradient(rgba(0,180,255,0.07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,180,255,0.07) 1px, transparent 1px);
-      background-size: 60px 60px;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
     }
-
-    /* Diagonal accent lines */
-    .hero-grid::after {
-      content: '';
+    .hero-overlay {
       position: absolute;
       inset: 0;
-      background-image:
-        linear-gradient(rgba(0,180,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,180,255,0.03) 1px, transparent 1px);
-      background-size: 20px 20px;
-    }
-
-    /* Scanning line */
-    .hero-scan {
-      position: absolute;
-      left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent 0%, rgba(0,200,255,0.55) 50%, transparent 100%);
-      animation: heroScan 7s linear infinite;
+      background: linear-gradient(
+        to bottom,
+        rgba(10,15,26,0.60) 0%,
+        rgba(10,15,26,0.30) 40%,
+        rgba(10,15,26,0.75) 80%,
+        rgba(10,15,26,0.97) 100%
+      );
       z-index: 1;
     }
-    @keyframes heroScan {
-      0%   { top: -2%; opacity: 0; }
-      4%   { opacity: 1; }
-      96%  { opacity: 1; }
-      100% { top: 102%; opacity: 0; }
-    }
-
-    /* Radial glow center */
-    .hero-glow {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 600px; height: 600px;
-      background: radial-gradient(ellipse at center, rgba(0,80,180,0.18) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* Data dots */
-    .hero-dot {
-      position: absolute;
-      border-radius: 50%;
-      background: #00b4ff;
-      animation: dotPulse 3.5s ease-in-out infinite;
-    }
-    @keyframes dotPulse {
-      0%, 100% { opacity: 0.25; transform: scale(1); }
-      50%       { opacity: 0.7;  transform: scale(1.5); }
-    }
-
-    /* Content */
     .hero-content {
       position: relative;
       z-index: 2;
       text-align: center;
       padding: 0 28px;
-      max-width: 860px;
-      animation: heroFadeIn 1.4s cubic-bezier(0.16,1,0.3,1) forwards;
+      max-width: 900px;
+      animation: heroFadeIn 1.6s cubic-bezier(0.16,1,0.3,1) forwards;
     }
     @keyframes heroFadeIn {
-      from { opacity: 0; transform: translateY(28px); }
+      from { opacity: 0; transform: translateY(32px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
     .hero-badge {
       display: inline-block;
-      font-family: 'Space Mono', 'Courier New', monospace;
-      font-size: 10.5px;
-      letter-spacing: 0.22em;
-      color: #00b4ff;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      color: var(--accent-gold);
       text-transform: uppercase;
-      border: 1px solid rgba(0,180,255,0.35);
-      padding: 6px 18px;
+      border: 1px solid var(--border-strong);
+      padding: 7px 20px;
       border-radius: 2px;
-      margin-bottom: 32px;
-      background: rgba(0,180,255,0.06);
+      margin-bottom: 36px;
+      background: rgba(200,169,110,0.07);
     }
-
     .hero-title {
-      font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+      font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 300;
-      font-size: clamp(22px, 4vw, 48px);
-      color: #dce8f5;
-      line-height: 1.22;
+      font-size: clamp(26px, 4.5vw, 62px);
+      color: var(--text-primary);
+      line-height: 1.18;
       letter-spacing: -0.01em;
-      margin-bottom: 0;
     }
     .hero-title strong {
       font-weight: 600;
-      color: #ffffff;
+      color: var(--accent-gold);
       display: block;
-      font-size: clamp(26px, 4.8vw, 56px);
-      letter-spacing: -0.025em;
+      font-size: clamp(32px, 5.5vw, 74px);
+      letter-spacing: -0.02em;
     }
     .hero-title em {
-      font-style: normal;
-      color: #a8c8e8;
-      font-size: 0.82em;
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 0.72em;
       font-weight: 300;
+      display: block;
+      margin-top: 8px;
+      font-family: 'Lora', serif;
     }
-
     .hero-rule {
-      width: 40px;
+      width: 48px;
       height: 1px;
-      background: rgba(0,180,255,0.45);
-      margin: 30px auto;
+      background: var(--accent-gold);
+      opacity: 0.5;
+      margin: 36px auto;
     }
-
     .hero-sub {
-      font-family: 'Space Mono', 'Courier New', monospace;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      color: rgba(140,190,230,0.65);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.24em;
+      color: var(--text-muted);
       text-transform: uppercase;
     }
-
-    /* Corner marks */
     .hero-corner {
       position: absolute;
-      width: 20px; height: 20px;
+      width: 22px; height: 22px;
       z-index: 2;
-      opacity: 0.4;
+      opacity: 0.45;
     }
-    .hero-corner.tl { top: 24px; left: 24px; border-top: 1px solid #00b4ff; border-left: 1px solid #00b4ff; }
-    .hero-corner.tr { top: 24px; right: 24px; border-top: 1px solid #00b4ff; border-right: 1px solid #00b4ff; }
-    .hero-corner.bl { bottom: 24px; left: 24px; border-bottom: 1px solid #00b4ff; border-left: 1px solid #00b4ff; }
-    .hero-corner.br { bottom: 24px; right: 24px; border-bottom: 1px solid #00b4ff; border-right: 1px solid #00b4ff; }
-
-    /* Scroll indicator */
+    .hero-corner.tl { top: 28px; left: 28px; border-top: 1px solid var(--accent-gold); border-left: 1px solid var(--accent-gold); }
+    .hero-corner.tr { top: 28px; right: 28px; border-top: 1px solid var(--accent-gold); border-right: 1px solid var(--accent-gold); }
+    .hero-corner.bl { bottom: 28px; left: 28px; border-bottom: 1px solid var(--accent-gold); border-left: 1px solid var(--accent-gold); }
+    .hero-corner.br { bottom: 28px; right: 28px; border-bottom: 1px solid var(--accent-gold); border-right: 1px solid var(--accent-gold); }
     .hero-scroll {
       position: absolute;
-      bottom: 36px;
+      bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
@@ -183,17 +159,17 @@
       text-decoration: none;
     }
     .hero-scroll-label {
-      font-family: 'Space Mono', monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 9px;
-      letter-spacing: 0.25em;
-      color: rgba(0,180,255,0.5);
+      letter-spacing: 0.28em;
+      color: rgba(200,169,110,0.55);
       text-transform: uppercase;
     }
     .hero-scroll-line {
       width: 1px;
-      height: 36px;
-      background: linear-gradient(to bottom, rgba(0,180,255,0.5), transparent);
-      animation: scrollLine 1.8s ease-in-out infinite;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(200,169,110,0.6), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
     }
     @keyframes scrollLine {
       0%   { transform: scaleY(0); transform-origin: top; opacity: 0; }
@@ -201,49 +177,402 @@
       100% { transform: scaleY(1); transform-origin: top; opacity: 0; }
     }
 
-    /* ── Dashboard wrapper ─────────────────────────────────── */
-    #dashboard { position: relative; }
+    /* ── Navbar ─────────────────────────────────────────── */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.35s ease, box-shadow 0.35s ease;
+      background: transparent;
+    }
+    .navbar.scrolled {
+      background: rgba(10,15,26,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--border);
+    }
+    .navbar-logo { display: flex; align-items: center; gap: 14px; }
+    .navbar-logo img { height: 42px; object-fit: contain; }
+    .navbar-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .navbar-subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .navbar-date-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--accent-gold);
+      border: 1px solid var(--border-strong);
+      padding: 3px 9px;
+      border-radius: 2px;
+      background: rgba(200,169,110,0.07);
+    }
+    .navbar-source {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+    }
+    @media (max-width: 640px) { .navbar-source { display: none; } }
 
+    /* ── Dashboard ──────────────────────────────────────── */
+    #dashboard { background: var(--bg-primary); min-height: 100vh; }
+    .dashboard-main { padding: 24px 20px; }
+
+    /* ── KPI Grid ───────────────────────────────────────── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    @media (min-width: 1024px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+    .kpi-card {
+      background: var(--bg-card);
+      border-radius: 2px;
+      padding: 18px 16px;
+      border-left: 3px solid var(--accent-teal);
+      border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      cursor: default;
+    }
+    .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+    .kpi-card.accent-red   { border-left-color: var(--danger); }
+    .kpi-card.accent-gold  { border-left-color: var(--accent-gold); }
+    .kpi-card.accent-green { border-left-color: var(--accent-teal); }
+    .kpi-icon { font-size: 20px; margin-bottom: 10px; }
+    .kpi-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--accent-gold);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .kpi-label {
+      font-family: 'Lora', serif;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .kpi-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ── Map layout ─────────────────────────────────────── */
+    .map-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    @media (min-width: 1024px) {
+      .map-layout { flex-direction: row; }
+      .map-main { width: 65%; }
+      .map-side { width: 35%; }
+    }
     .map-div { height: 520px; }
     @media (max-width: 768px) { .map-div { height: 340px; } }
+    .map-panel-wrap {
+      background: var(--bg-card);
+      border-radius: 2px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+    }
 
+    /* ── Tab bar ─────────────────────────────────────────── */
+    .tab-bar { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .tab-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      padding: 8px 16px;
+      border-radius: 2px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover { color: var(--text-primary); border-color: var(--accent-gold); }
+    .tab-btn.active-lluvias { background: rgba(79,168,155,0.15); color: var(--accent-teal); border-color: var(--accent-teal); }
+    .tab-btn.active-sequias { background: rgba(230,126,34,0.15); color: var(--warning); border-color: var(--warning); }
+    .tab-btn.active-desliz  { background: rgba(200,169,110,0.12); color: var(--accent-gold); border-color: var(--accent-gold); }
+
+    /* ── Legend ─────────────────────────────────────────── */
+    .map-legend {
+      position: absolute;
+      bottom: 28px;
+      left: 10px;
+      z-index: 1000;
+      background: rgba(10,15,26,0.90);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 12px 14px;
+      pointer-events: none;
+      backdrop-filter: blur(8px);
+    }
+    .legend-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .legend-label { color: var(--text-muted); font-family: 'DM Mono', monospace; font-size: 10px; }
+    .legend-divider { border: none; border-top: 1px solid var(--border); margin: 6px 0; }
+
+    /* ── Side panel ─────────────────────────────────────── */
+    .side-panel { display: flex; flex-direction: column; gap: 14px; }
+    .panel-card {
+      background: var(--bg-card);
+      border-radius: 2px;
+      border: 1px solid var(--border);
+      padding: 18px;
+    }
+    .panel-card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent-gold);
+      letter-spacing: 0.04em;
+      margin-bottom: 14px;
+    }
+
+    /* ── Form controls ──────────────────────────────────── */
+    .form-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .form-select {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-strong);
+      border-radius: 2px;
+      padding: 9px 12px;
+      font-family: 'Lora', serif;
+      font-size: 13px;
+      color: var(--text-primary);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .form-select:focus { border-color: var(--accent-gold); }
+    .form-select option { background: var(--bg-card); color: var(--text-primary); }
+    .form-checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      cursor: pointer;
+    }
+    .form-checkbox { width: 15px; height: 15px; accent-color: var(--danger); cursor: pointer; }
+    .form-checkbox-label { font-family: 'Lora', serif; font-size: 13px; color: var(--text-primary); }
+
+    /* ── Buttons ─────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      border-radius: 2px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: none;
+    }
+    .btn-primary { background: rgba(200,169,110,0.10); border-color: var(--border-strong); color: var(--accent-gold); }
+    .btn-primary:hover { background: rgba(200,169,110,0.20); }
+    .btn-danger { background: rgba(192,57,43,0.12); border-color: rgba(192,57,43,0.38); color: var(--danger); }
+    .btn-danger:hover { background: rgba(192,57,43,0.25); }
+    .btn-success { background: rgba(79,168,155,0.12); border-color: rgba(79,168,155,0.35); color: var(--accent-teal); }
+    .btn-success:hover { background: rgba(79,168,155,0.24); }
+    .btn-dark { background: rgba(138,154,176,0.08); border-color: var(--border); color: var(--text-muted); }
+    .btn-dark:hover { color: var(--text-primary); border-color: var(--border-strong); }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+
+    /* ── Stats box ──────────────────────────────────────── */
+    .stats-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stats-count { font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500; color: var(--accent-gold); }
+    .stats-label { font-family: 'Lora', serif; font-size: 13px; color: var(--text-muted); }
+
+    /* ── Table ──────────────────────────────────────────── */
+    .table-scroll { max-height: 260px; overflow-y: auto; }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      padding: 8px 8px;
+      text-align: left;
+      position: sticky;
+      top: 0;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table th.right { text-align: right; }
+    .data-table th.center { text-align: center; }
+    .data-table td {
+      padding: 7px 8px;
+      border-bottom: 1px solid rgba(200,169,110,0.06);
+      color: var(--text-primary);
+      font-family: 'Lora', serif;
+      font-size: 12px;
+    }
+    .data-table tr:hover td { background: rgba(200,169,110,0.04); }
+    .td-right { text-align: right; font-family: 'DM Mono', monospace; color: var(--accent-gold); }
+    .td-center { text-align: center; }
+    .td-muted { color: var(--text-muted); font-size: 11px; }
+    @media (max-width: 640px) { .hide-sm { display: none; } }
+
+    /* ── Cartera ────────────────────────────────────────── */
+    .indicator-box {
+      background: rgba(200,169,110,0.07);
+      border: 1px solid var(--border-strong);
+      border-radius: 2px;
+      padding: 18px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .indicator-value { font-family: 'DM Mono', monospace; font-size: 34px; font-weight: 500; color: var(--accent-gold); }
+    .indicator-label { font-family: 'Lora', serif; font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    .cartera-kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .cartera-kpi {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 12px;
+    }
+    .cartera-kpi.danger { border-color: rgba(192,57,43,0.35); }
+    .cartera-kpi-value { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; color: var(--accent-gold); }
+    .cartera-kpi.danger .cartera-kpi-value { color: var(--danger); }
+    .cartera-kpi-label { font-family: 'Lora', serif; font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+    .error-box {
+      background: rgba(192,57,43,0.10);
+      border: 1px solid rgba(192,57,43,0.30);
+      border-radius: 2px;
+      padding: 10px 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--danger);
+      margin-bottom: 10px;
+    }
+    .hint-text { font-family: 'Lora', serif; font-size: 11px; color: var(--text-muted); line-height: 1.55; margin-bottom: 12px; }
+    code {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      background: rgba(200,169,110,0.08);
+      padding: 2px 5px;
+      border-radius: 2px;
+      color: var(--accent-gold);
+    }
+
+    /* ── Scroll reveal ──────────────────────────────────── */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Pulse animations ───────────────────────────────── */
     @keyframes pulse-ring {
       0%   { transform: scale(1);   opacity: 0.9; }
       70%  { transform: scale(2.4); opacity: 0;   }
       100% { transform: scale(2.4); opacity: 0;   }
     }
-    .alert-pulse {
-      animation: pulse-ring 1.8s ease-out infinite;
-      border-radius: 50%;
-      border: 2px solid #e03131;
-      position: absolute;
-      pointer-events: none;
-    }
-    .sequia-pulse {
-      animation: pulse-ring 1.8s ease-out infinite;
-      animation-delay: -0.9s;
-      border-radius: 50%;
-      border: 2.5px solid #7a4419;
-      position: absolute;
-      pointer-events: none;
-    }
-    .sequia-alert-pulse {
-      animation: pulse-ring 1.8s ease-out infinite;
-      animation-delay: -0.45s;
-      border-radius: 50%;
-      border: 2.5px solid #f0b429;
-      position: absolute;
-      pointer-events: none;
-    }
+    .alert-pulse { animation: pulse-ring 1.8s ease-out infinite; border-radius: 50%; border: 2px solid #e03131; position: absolute; pointer-events: none; }
+    .sequia-pulse { animation: pulse-ring 1.8s ease-out infinite; animation-delay: -0.9s; border-radius: 50%; border: 2.5px solid #7a4419; position: absolute; pointer-events: none; }
+    .sequia-alert-pulse { animation: pulse-ring 1.8s ease-out infinite; animation-delay: -0.45s; border-radius: 50%; border: 2.5px solid #f0b429; position: absolute; pointer-events: none; }
 
-    .table-scroll { max-height: 260px; overflow-y: auto; }
+    /* ── Loading / Error ────────────────────────────────── */
+    .loading-screen { min-height: 100vh; background: var(--bg-primary); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
+    .loading-spinner { width: 44px; height: 44px; border: 2px solid var(--border); border-top-color: var(--accent-gold); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); }
+    .error-screen { min-height: 100vh; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; }
+    .error-card { background: var(--bg-card); border: 1px solid rgba(192,57,43,0.35); border-radius: 2px; padding: 40px 48px; max-width: 480px; text-align: center; }
+    .error-icon { font-size: 36px; margin-bottom: 16px; }
+    .error-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--danger); margin-bottom: 10px; }
+    .error-message { font-family: 'Lora', serif; font-size: 13px; color: var(--text-muted); }
+
+    /* ── Footer ─────────────────────────────────────────── */
+    .site-footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-top: 48px;
+    }
+    .footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 600; color: var(--accent-gold); }
+    .footer-sub { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-top: 5px; }
+    .footer-sources { font-family: 'Lora', serif; font-size: 11px; color: var(--text-muted); text-align: right; }
+    .footer-sources strong { color: var(--text-primary); font-weight: 500; }
+    .footer-sources div { margin-top: 5px; }
+
+    /* ── Leaflet popup dark theme ────────────────────────── */
+    .leaflet-popup-content-wrapper {
+      background: var(--bg-card) !important;
+      color: var(--text-primary) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 2px !important;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.65) !important;
+    }
+    .leaflet-popup-tip { background: var(--bg-card) !important; }
     .leaflet-popup-content p { margin: 3px 0; }
   </style>
 </head>
-<body class="bg-[#eaf0fb] min-h-screen">
+<body>
   <div id="root"></div>
 
-  <!-- CDN scripts — order matters, all synchronous -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -298,22 +627,23 @@
       'MUY_ALTA': '#d91919',
       '':         '#adb5bd',
     };
+
     const DESLIZ_LEGEND_ENTRIES = [
-      { label: 'Muy baja',                      color: '#218a21' },
-      { label: 'Baja',                          color: '#90ee90' },
-      { label: 'Media',                         color: '#ffd900' },
-      { label: 'Alta',                          color: '#ff800d' },
-      { label: 'Muy alta',                      color: '#d91919' },
+      { label: 'Muy baja', color: '#218a21' },
+      { label: 'Baja',     color: '#90ee90' },
+      { label: 'Media',    color: '#ffd900' },
+      { label: 'Alta',     color: '#ff800d' },
+      { label: 'Muy alta', color: '#d91919' },
     ];
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
     function precipCategoria(mm) {
-      if (mm <= 0)   return 'Sin lluvia (0 mm)';
-      if (mm <  5)   return 'Muy ligera (< 5 mm)';
-      if (mm < 15)   return 'Ligera (5\u201315 mm)';
-      if (mm < 30)   return 'Moderada (15\u201330 mm)';
-      if (mm < 60)   return 'Fuerte (30\u201360 mm)';
+      if (mm <= 0)  return 'Sin lluvia (0 mm)';
+      if (mm <  5)  return 'Muy ligera (< 5 mm)';
+      if (mm < 15)  return 'Ligera (5\u201315 mm)';
+      if (mm < 30)  return 'Moderada (15\u201330 mm)';
+      if (mm < 60)  return 'Fuerte (30\u201360 mm)';
       return 'Extrema (\u2265 100 mm)';
     }
 
@@ -321,38 +651,37 @@
       return Math.max(5, Math.min(Math.sqrt(mm + 1) * 2.8 + 4, 22));
     }
 
-    const ALERTA_NIVEL = { 'BAJA': 0, 'MODERADA': 1, 'ALTA': 2, 'CRÍTICA': 3 };
+    const ALERTA_NIVEL = { 'BAJA': 0, 'MODERADA': 1, 'ALTA': 2, 'CR\u00cdTICA': 3 };
 
     function parseRows(raw) {
       return raw.map(r => {
-        const cod                   = r['COD_MPIO'] ?? r['\uFEFFCOD_MPIO'] ?? '';
-        const mm                    = parseFloat(r.precip_acum_mm) || 0;
-        const alerta_compuesta_raw  = (r.alerta_compuesta ?? 'BAJA').trim();
-        const afectado              = parseInt(r.municipio_afectado) || 0;
-        // Alerta efectiva: solo válida si el municipio tiene antecedente histórico de inundación
-        const alerta_compuesta      = afectado === 1 ? alerta_compuesta_raw : 'BAJA';
-        const alert                 = ALERTA_NIVEL[alerta_compuesta] ?? 0;
+        const cod                  = r['COD_MPIO'] ?? r['\uFEFFCOD_MPIO'] ?? '';
+        const mm                   = parseFloat(r.precip_acum_mm) || 0;
+        const alerta_compuesta_raw = (r.alerta_compuesta ?? 'BAJA').trim();
+        const afectado             = parseInt(r.municipio_afectado) || 0;
+        const alerta_compuesta     = afectado === 1 ? alerta_compuesta_raw : 'BAJA';
+        const alert                = ALERTA_NIVEL[alerta_compuesta] ?? 0;
         return {
-          COD_MPIO:             String(cod),
-          NOM_MPIO:             (r.NOM_MPIO         ?? '').trim(),
-          NOM_DPTO:             (r.NOM_DPTO         ?? '').trim(),
-          LATITUD:              parseFloat(r.LATITUD),
-          LONGITUD:             parseFloat(r.LONGITUD),
-          precip_acum_mm:       mm,
-          precip_max_10min:     parseFloat(r.precip_max_10min)    || 0,
-          n_estaciones:         parseInt(r.n_estaciones, 10)      || 0,
-          alerta:               alert,
+          COD_MPIO:            String(cod),
+          NOM_MPIO:            (r.NOM_MPIO         ?? '').trim(),
+          NOM_DPTO:            (r.NOM_DPTO         ?? '').trim(),
+          LATITUD:             parseFloat(r.LATITUD),
+          LONGITUD:            parseFloat(r.LONGITUD),
+          precip_acum_mm:      mm,
+          precip_max_10min:    parseFloat(r.precip_max_10min)    || 0,
+          n_estaciones:        parseInt(r.n_estaciones, 10)      || 0,
+          alerta:              alert,
           alerta_compuesta,
-          alerta_compuesta_raw,   // nivel histórico original (antes de filtro inundación)
-          frecuencia_extremos:  parseFloat(r.frecuencia_extremos) || 0,
-          frecuencia_reciente:  parseFloat(r.frecuencia_reciente) || 0,
-          ratio_reciente:       parseFloat(r.ratio_reciente)      || 0,
-          tendencia:            (r.tendencia         ?? 'sin_datos').trim(),
-          fecha:                (r.fecha             ?? '').trim(),
-          sequia_categoria:     (r.sequia_categoria   ?? 'NORMAL').trim(),
-          categoria:            r.categoria ? r.categoria.trim() : precipCategoria(mm),
-          tamano:               parseFloat(r.tama\u00f1o) || precipTamano(mm),
-          municipio_afectado:   afectado,
+          alerta_compuesta_raw,
+          frecuencia_extremos: parseFloat(r.frecuencia_extremos) || 0,
+          frecuencia_reciente: parseFloat(r.frecuencia_reciente) || 0,
+          ratio_reciente:      parseFloat(r.ratio_reciente)      || 0,
+          tendencia:           (r.tendencia         ?? 'sin_datos').trim(),
+          fecha:               (r.fecha             ?? '').trim(),
+          sequia_categoria:    (r.sequia_categoria   ?? 'NORMAL').trim(),
+          categoria:           r.categoria ? r.categoria.trim() : precipCategoria(mm),
+          tamano:              parseFloat(r['tama\u00f1o']) || precipTamano(mm),
+          municipio_afectado:  afectado,
         };
       }).filter(r => !isNaN(r.LATITUD) && !isNaN(r.LONGITUD));
     }
@@ -381,7 +710,7 @@
           return typeof v === 'string' && v.includes(',') ? `"${v}"` : v;
         }).join(',')
       );
-      const csv = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+      const csv  = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
@@ -394,18 +723,18 @@
     function exportReportePDF(result, mergedRows, dataFecha) {
       const fmtCOP = v => v.toLocaleString('es-CO', { style:'currency', currency:'COP', maximumFractionDigits:0 });
       const alertaColor = a =>
-        a === 'CRÍTICA' ? '#7b0000' : a === 'ALTA' ? '#e03131' :
+        a === 'CR\u00cdTICA' ? '#7b0000' : a === 'ALTA' ? '#e03131' :
         a === 'MODERADA' ? '#b7770d' : a === 'BAJA' ? '#27ae60' : '#999';
 
       const tableRows = mergedRows.map(r => `
-        <tr style="${r.alerta_lluvias === 'ALTA' ? 'background:#fff0f0' : r.alerta_lluvias === 'CRÍTICA' ? 'background:#fdf0f0' : ''}">
+        <tr style="${r.alerta_lluvias === 'ALTA' ? 'background:#fff0f0' : r.alerta_lluvias === 'CR\u00cdTICA' ? 'background:#fdf0f0' : ''}">
           <td>${r.cod}</td><td>${r.nombre}</td>
           <td style="text-align:right">${fmtCOP(r.cartera_total)}</td>
           <td style="text-align:center;color:${alertaColor(r.alerta_lluvias)};font-weight:600">${r.alerta_lluvias}</td>
         </tr>`).join('');
 
       const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
-<title>Reporte Cartera – Alerta Lluvias ALTA</title>
+<title>Reporte Cartera \u2013 Alerta Lluvias ALTA</title>
 <style>
   body{font-family:Arial,sans-serif;padding:24px;color:#333;font-size:13px}
   h1{color:#1a5276;margin-bottom:4px}
@@ -425,7 +754,7 @@
   @media print{body{padding:10px}.no-print{display:none}}
 </style></head><body>
 <h1>Reporte: Cartera en Municipios con Alerta de Lluvias ALTA</h1>
-<div class="meta">Fuente datos climáticos: IDEAM – datos.gov.co &nbsp;|&nbsp;
+<div class="meta">Fuente datos clim\u00e1ticos: IDEAM \u2013 datos.gov.co &nbsp;|&nbsp;
   Fecha datos: <b>${dataFecha ?? 'N/A'}</b> &nbsp;|&nbsp;
   Generado: <b>${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'})}</b></div>
 <div class="indicator-box">
@@ -433,22 +762,13 @@
   <div class="indicator-lbl">Cartera en alerta ALTA / Cartera total</div>
 </div>
 <div class="kpi-row">
-  <div class="kpi red">
-    <div class="kpi-val">${fmtCOP(result.cartaAlta)}</div>
-    <div class="kpi-lbl">Cartera en municipios con alerta ALTA</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-val">${fmtCOP(result.totalCartera)}</div>
-    <div class="kpi-lbl">Cartera total</div>
-  </div>
-  <div class="kpi">
-    <div class="kpi-val">${result.nAlta} / ${result.nTotal}</div>
-    <div class="kpi-lbl">Municipios en alerta ALTA / Total en cartera</div>
-  </div>
+  <div class="kpi red"><div class="kpi-val">${fmtCOP(result.cartaAlta)}</div><div class="kpi-lbl">Cartera en municipios con alerta ALTA</div></div>
+  <div class="kpi"><div class="kpi-val">${fmtCOP(result.totalCartera)}</div><div class="kpi-lbl">Cartera total</div></div>
+  <div class="kpi"><div class="kpi-val">${result.nAlta} / ${result.nTotal}</div><div class="kpi-lbl">Municipios en alerta ALTA / Total en cartera</div></div>
 </div>
 <h2 style="color:#1a5276;margin-bottom:8px">Detalle por municipio</h2>
 <table><thead><tr>
-  <th>Código</th><th>Municipio</th><th style="text-align:right">Cartera total</th><th style="text-align:center">Alerta lluvias</th>
+  <th>C\u00f3digo</th><th>Municipio</th><th style="text-align:right">Cartera total</th><th style="text-align:center">Alerta lluvias</th>
 </tr></thead><tbody>${tableRows}</tbody></table>
 </body></html>`;
 
@@ -459,10 +779,10 @@
     }
 
     const ALERTA_BADGE = {
-      'CRÍTICA': '<span style="color:#7b0000;font-weight:700;">\u26a0 CRÍTICA</span>',
-      'ALTA':    '<span style="color:#e03131;font-weight:600;">\u26a0 ALTA</span>',
-      'MODERADA':'<span style="color:#f0b429;font-weight:600;">\u26a0 MODERADA</span>',
-      'BAJA':    '<span style="color:#27ae60;">\u2713 BAJA</span>',
+      'CR\u00cdTICA': '<span style="color:#c0392b;font-weight:700;">\u26a0 CR\u00cdTICA</span>',
+      'ALTA':         '<span style="color:#e03131;font-weight:600;">\u26a0 ALTA</span>',
+      'MODERADA':     '<span style="color:#e67e22;font-weight:600;">\u26a0 MODERADA</span>',
+      'BAJA':         '<span style="color:#4fa89b;">\u2713 BAJA</span>',
     };
 
     const TENDENCIA_LABEL = {
@@ -477,93 +797,66 @@
       const badge     = ALERTA_BADGE[m.alerta_compuesta] ?? ALERTA_BADGE['BAJA'];
       const tendLabel = TENDENCIA_LABEL[m.tendencia]     ?? m.tendencia;
       const fechaLabel = m.fecha
-        ? `<p style="margin-top:6px;color:#888;font-size:11px;">Datos al: <b>${m.fecha}</b></p>`
+        ? `<p style="margin-top:6px;color:#8a9ab0;font-size:11px;">Datos al: <b>${m.fecha}</b></p>`
         : '';
 
-      // Señal sobre el día actual
       const extremeToday = m.precip_acum_mm >= 30
         ? `<p style="color:#e03131;font-weight:600;margin-top:3px;">\u26a0 Probable evento extremo reciente</p>`
         : (m.precip_acum_mm === 0 && m.sequia_categoria !== 'NORMAL')
-        ? `<p style="color:#b7770d;font-weight:600;margin-top:3px;">\u2600\ufe0f Sin lluvia \u2014 posible sequ\u00eda activa</p>`
+        ? `<p style="color:#e67e22;font-weight:600;margin-top:3px;">\u2600\ufe0f Sin lluvia \u2014 posible sequ\u00eda activa</p>`
         : '';
 
-      // Sección sequía solo si hay alerta real
       const sequiaSection = m.sequia_categoria && m.sequia_categoria !== 'NORMAL' ? `
-          <hr style="margin:6px 0;border-color:#eee;">
-          <p style="font-size:12px;font-weight:600;color:#b7770d;margin-bottom:2px;">\uD83C\uDF35 Sequ\u00eda recurrente</p>
-          <p><b>Categor\u00eda:</b> <span style="color:#b7770d;font-weight:600;">${m.sequia_categoria}</span></p>` : '';
+          <hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
+          <p style="font-size:12px;font-weight:600;color:#e67e22;margin-bottom:2px;">\uD83C\uDF35 Sequ\u00eda recurrente</p>
+          <p><b>Categor\u00eda:</b> <span style="color:#e67e22;font-weight:600;">${m.sequia_categoria}</span></p>` : '';
 
-      // Sección inundaciones históricas — aparece para TODOS los municipios afectados
-      const tieneAlertaEfectiva = m.alerta_compuesta === 'ALTA' || m.alerta_compuesta === 'CRÍTICA';
+      const tieneAlertaEfectiva = m.alerta_compuesta === 'ALTA' || m.alerta_compuesta === 'CR\u00cdTICA';
       const floodSection = m.municipio_afectado === 1
         ? tieneAlertaEfectiva
-          ? `<hr style="margin:6px 0;border-color:#eee;">
-             <p style="font-size:12px;font-weight:700;color:#1a5276;margin-bottom:2px;">\uD83C\uDF0A Municipio hist\u00f3ricamente afectado por inundaciones</p>
+          ? `<hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
+             <p style="font-size:12px;font-weight:700;color:#4fa89b;margin-bottom:2px;">\uD83C\uDF0A Municipio hist\u00f3ricamente afectado por inundaciones</p>
              <p style="font-size:11px;color:#e03131;font-weight:600;">\u26a0 Alto riesgo: alerta activa + antecedente de inundaci\u00f3n</p>`
-          : `<hr style="margin:6px 0;border-color:#eee;">
-             <p style="font-size:12px;font-weight:600;color:#1a5276;margin-bottom:2px;">\uD83C\uDF0A Municipio hist\u00f3ricamente afectado por inundaciones</p>`
+          : `<hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
+             <p style="font-size:12px;font-weight:600;color:#4fa89b;margin-bottom:2px;">\uD83C\uDF0A Municipio hist\u00f3ricamente afectado por inundaciones</p>`
         : '';
 
       return `
-        <div style="font-family:Arial,sans-serif;font-size:13px;min-width:220px;">
-          <div style="color:#1a5276;font-size:14px;font-weight:700;margin-bottom:2px;">${m.NOM_MPIO}</div>
-          <div style="color:#666;font-size:12px;margin-bottom:6px;">${m.NOM_DPTO}</div>
-          <hr style="margin:4px 0;border-color:#eee;">
-          <p style="font-size:12px;font-weight:600;color:#1a5276;margin-bottom:2px;">\uD83C\uDF27\uFE0F Precipitaci\u00f3n hoy</p>
+        <div style="font-family:'Lora',Georgia,serif;font-size:13px;min-width:220px;color:#f5f0e8;">
+          <div style="color:#c8a96e;font-size:14px;font-weight:700;margin-bottom:2px;">${m.NOM_MPIO}</div>
+          <div style="color:#8a9ab0;font-size:12px;margin-bottom:6px;">${m.NOM_DPTO}</div>
+          <hr style="margin:4px 0;border-color:rgba(200,169,110,0.15);">
+          <p style="font-size:12px;font-weight:600;color:#4fa89b;margin-bottom:2px;">\uD83C\uDF27\uFE0F Precipitaci\u00f3n hoy</p>
           <p><b>Acumulada:</b> ${m.precip_acum_mm.toFixed(1)} mm</p>
           <p><b>M\u00e1x. 10 min:</b> ${m.precip_max_10min.toFixed(1)} mm</p>
           ${extremeToday}
-          <hr style="margin:6px 0;border-color:#eee;">
-          <p style="font-size:12px;font-weight:600;color:#444;margin-bottom:2px;">\uD83D\uDCCA Alerta hist\u00f3rica \u2014 lluvias</p>
+          <hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
+          <p style="font-size:12px;font-weight:600;color:#8a9ab0;margin-bottom:2px;">\uD83D\uDCCA Alerta hist\u00f3rica \u2014 lluvias</p>
           <p><b>Nivel:</b> ${badge}</p>
           <p><b>Frec. extremos hist.:</b> ${(m.frecuencia_extremos * 100).toFixed(1)}%</p>
           <p><b>Frec. extremos 2 a\u00f1os:</b> ${(m.frecuencia_reciente * 100).toFixed(1)}%</p>
           <p><b>Tendencia:</b> ${tendLabel}</p>
           ${sequiaSection}
           ${floodSection}
-          <p style="color:#888;font-size:11px;margin-top:4px;">Estaciones: ${m.n_estaciones}</p>
+          <p style="color:#8a9ab0;font-size:11px;margin-top:4px;">Estaciones: ${m.n_estaciones}</p>
           ${fechaLabel}
         </div>`;
     }
 
     // ─── Landing Hero ─────────────────────────────────────────────────────────
 
-    const DOTS = [
-      { top:'14%', left:'9%',  size:3, delay:'0s'   },
-      { top:'71%', left:'16%', size:4, delay:'0.7s'  },
-      { top:'38%', left:'88%', size:5, delay:'1.3s'  },
-      { top:'65%', left:'80%', size:3, delay:'0.4s'  },
-      { top:'22%', left:'58%', size:3, delay:'2.1s'  },
-      { top:'82%', left:'63%', size:4, delay:'1.0s'  },
-      { top:'50%', left:'95%', size:3, delay:'1.7s'  },
-      { top:'8%',  left:'42%', size:3, delay:'0.5s'  },
-      { top:'90%', left:'35%', size:3, delay:'1.4s'  },
-      { top:'30%', left:'5%',  size:4, delay:'0.9s'  },
-    ];
-
     function LandingHero() {
       return (
         <section className="hero-section">
-          <div className="hero-grid" />
-          <div className="hero-scan" />
-          <div className="hero-glow" />
-
-          {/* Corner markers */}
+          <video className="hero-video" autoPlay muted loop playsInline>
+            <source src="data/watermarked_preview.mp4" type="video/mp4" />
+          </video>
+          <div className="hero-overlay" />
           <div className="hero-corner tl" />
           <div className="hero-corner tr" />
           <div className="hero-corner bl" />
           <div className="hero-corner br" />
 
-          {/* Data dots */}
-          {DOTS.map((d, i) => (
-            <div key={i} className="hero-dot" style={{
-              top: d.top, left: d.left,
-              width: d.size + 'px', height: d.size + 'px',
-              animationDelay: d.delay,
-            }} />
-          ))}
-
-          {/* Main content */}
           <div className="hero-content">
             <div className="hero-badge">SFC Colombia &nbsp;&middot;&nbsp; Circular 0015 &nbsp;&middot;&nbsp; 2025</div>
             <h1 className="hero-title">
@@ -575,7 +868,6 @@
             <p className="hero-sub">By GGGI &mdash; Sustainable Finance</p>
           </div>
 
-          {/* Scroll indicator */}
           <a href="#dashboard" className="hero-scroll">
             <span className="hero-scroll-label">Explorar</span>
             <div className="hero-scroll-line" />
@@ -588,45 +880,50 @@
 
     function LoadingScreen() {
       return (
-        <div className="min-h-screen bg-[#eaf0fb] flex flex-col items-center justify-center gap-4">
-          <div className="w-12 h-12 border-4 border-[#1a5276] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#1a5276] font-medium">Cargando datos municipales&hellip;</p>
+        <div className="loading-screen">
+          <div className="loading-spinner" />
+          <p className="loading-label">Cargando datos municipales&hellip;</p>
         </div>
       );
     }
 
     function ErrorScreen({ message }) {
       return (
-        <div className="min-h-screen bg-[#eaf0fb] flex items-center justify-center">
-          <div className="bg-white rounded-xl shadow p-8 max-w-md text-center">
-            <div className="text-4xl mb-4">&#x26A0;&#xFE0F;</div>
-            <h2 className="text-[#1a5276] font-bold text-lg mb-2">Error al cargar datos</h2>
-            <p className="text-gray-500 text-sm">{message}</p>
+        <div className="error-screen">
+          <div className="error-card">
+            <div className="error-icon">&#x26A0;&#xFE0F;</div>
+            <h2 className="error-title">Error al cargar datos</h2>
+            <p className="error-message">{message}</p>
           </div>
         </div>
       );
     }
 
-    // ─── Header ───────────────────────────────────────────────────────────────
+    // ─── Header / Navbar ──────────────────────────────────────────────────────
 
     function Header({ dataFecha }) {
+      const [scrolled, setScrolled] = React.useState(false);
+      useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 10);
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+      }, []);
+
       return (
-        <header className="bg-[#1a5276] text-white px-5 py-3 flex items-center justify-between shadow-md">
-          <div className="flex items-center gap-4">
-            <img src="assets/logo.png" alt="Logo" style={{height:'50px'}} className="object-contain" />
+        <header className={`navbar${scrolled ? ' scrolled' : ''}`}>
+          <div className="navbar-logo">
+            <img src="assets/logo.png" alt="Logo" />
             <div>
-              <h1 className="text-base font-bold leading-tight">Circular 0015 indicadores</h1>
-              <p className="text-xs text-blue-200">
+              <div className="navbar-title">Circular 0015 indicadores</div>
+              <div className="navbar-subtitle">
                 Precipitaci&oacute;n diaria y alerta hist&oacute;rica &mdash; Colombia
                 {dataFecha && (
-                  <span className="ml-2 bg-white/15 rounded px-1.5 py-0.5 text-white font-semibold">
-                    Datos al: {dataFecha}
-                  </span>
+                  <span className="navbar-date-badge">Datos al: {dataFecha}</span>
                 )}
-              </p>
+              </div>
             </div>
           </div>
-          <span className="text-xs text-blue-300 hidden sm:block">Fuente: IDEAM &ndash; datos.gov.co</span>
+          <div className="navbar-source">Fuente: IDEAM &ndash; datos.gov.co</div>
         </header>
       );
     }
@@ -634,34 +931,33 @@
     // ─── KPI Cards ────────────────────────────────────────────────────────────
 
     function KpiCard({ label, value, sub, icon, accent }) {
-      const border = accent === 'red'   ? 'border-[#e03131]'
-                   : accent === 'gold'  ? 'border-[#f0b429]'
-                   : accent === 'green' ? 'border-[#27ae60]'
-                   :                     'border-[#1a5276]';
+      const cls = accent ? `kpi-card accent-${accent}` : 'kpi-card';
       return (
-        <div className={`bg-white rounded-xl shadow p-4 border-l-4 ${border}`}>
-          <div className="text-2xl mb-1">{icon}</div>
-          <div className="text-xl font-bold text-[#1a5276]">{value}</div>
-          <div className="text-xs text-gray-500 mt-0.5">{label}</div>
-          {sub && <div className="text-[11px] text-gray-400 mt-0.5 truncate" title={sub}>{sub}</div>}
+        <div className={cls}>
+          <div className="kpi-icon">{icon}</div>
+          <div className="kpi-value">{value}</div>
+          <div className="kpi-label">{label}</div>
+          {sub && <div className="kpi-sub" title={sub}>{sub}</div>}
         </div>
       );
     }
 
     function KpiCards({ kpis, activeMap, amenazasData }) {
-      const alertaValue = activeMap === 'sequias'       ? kpis.enAlertaSequia
-                        : activeMap === 'deslizamientos' ? Object.values(amenazasData).filter(d => d.alerta_deslizamiento === 'ALTA').length
-                        : kpis.enAlerta;
+      const alertaValue = activeMap === 'sequias'
+        ? kpis.enAlertaSequia
+        : activeMap === 'deslizamientos'
+        ? Object.values(amenazasData).filter(d => d.alerta_deslizamiento === 'ALTA').length
+        : kpis.enAlerta;
       const alertaLabel = activeMap === 'sequias'       ? 'Sequ\u00eda SEVERA'
                         : activeMap === 'deslizamientos' ? 'Alerta deslizamiento'
                         : 'En alerta hist\u00f3rica';
       const alertaAccent = activeMap === 'sequias' ? 'gold' : 'red';
       return (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+        <div className="kpi-grid reveal">
           <KpiCard label="Total municipios"               value={kpis.total}            icon="&#x1F3D9;" />
           <KpiCard label={alertaLabel}                    value={alertaValue}           icon="&#x26A0;&#xFE0F;" accent={alertaAccent} />
           <KpiCard label="Promedio precipitaci&oacute;n"  value={`${kpis.promedio} mm`} icon="&#x1F4A7;" accent="green" />
-          <KpiCard label="M&aacute;x. precipitaci&oacute;n" value={`${kpis.maximo} mm`}   icon="&#x1F4CD;" accent="gold" sub={kpis.maxMpio} />
+          <KpiCard label="M&aacute;x. precipitaci&oacute;n" value={`${kpis.maximo} mm`} icon="&#x1F4CD;" accent="gold" sub={kpis.maxMpio} />
         </div>
       );
     }
@@ -670,45 +966,45 @@
 
     function Legend({ mode = 'lluvias' }) {
       return (
-        <div
-          className="absolute bottom-8 left-2 z-[1000] bg-white/90 rounded-lg p-3 shadow text-xs space-y-1 pointer-events-none"
-          style={{backdropFilter:'blur(4px)'}}
-        >
+        <div className="map-legend">
           {mode === 'lluvias' ? (<>
-            <div className="font-semibold text-[#1a5276] mb-1">Precipitaci&oacute;n</div>
+            <div className="legend-title">Precipitaci&oacute;n</div>
             {LEGEND_ENTRIES.map(e => (
-              <div key={e.label} className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{background: e.color}} />
-                <span className="text-gray-700">{e.label}</span>
+              <div key={e.label} className="legend-item">
+                <div className="legend-dot" style={{background: e.color}} />
+                <span className="legend-label">{e.label}</span>
               </div>
             ))}
-            <div className="border-t border-gray-200 pt-1 mt-1 flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full border-2 border-[#e03131] flex-shrink-0" />
-              <span className="text-gray-700">En alerta</span>
+            <hr className="legend-divider" />
+            <div className="legend-item">
+              <div className="legend-dot" style={{border:'2px solid #e03131', background:'transparent'}} />
+              <span className="legend-label">En alerta</span>
             </div>
           </>) : mode === 'deslizamientos' ? (<>
-            <div className="font-semibold text-[#7b3f00] mb-1">Amenaza MM · SGC</div>
+            <div className="legend-title">Amenaza MM &middot; SGC</div>
             {DESLIZ_LEGEND_ENTRIES.map(e => (
-              <div key={e.label} className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{background: e.color}} />
-                <span className="text-gray-700">{e.label}</span>
+              <div key={e.label} className="legend-item">
+                <div className="legend-dot" style={{background: e.color}} />
+                <span className="legend-label">{e.label}</span>
               </div>
             ))}
-            <div className="border-t border-gray-200 pt-1 mt-1 flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full border-2 border-[#d91919] flex-shrink-0" />
-              <span className="text-gray-700">Alerta IDEAM activa</span>
+            <hr className="legend-divider" />
+            <div className="legend-item">
+              <div className="legend-dot" style={{border:'2px solid #d91919', background:'transparent'}} />
+              <span className="legend-label">Alerta IDEAM activa</span>
             </div>
           </>) : (<>
-            <div className="font-semibold text-[#b7770d] mb-1">Sequ&iacute;a recurrente</div>
+            <div className="legend-title">Sequ&iacute;a recurrente</div>
             {SEQUIA_LEGEND_ENTRIES.map(e => (
-              <div key={e.label} className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{background: e.color}} />
-                <span className="text-gray-700">{e.label}</span>
+              <div key={e.label} className="legend-item">
+                <div className="legend-dot" style={{background: e.color}} />
+                <span className="legend-label">{e.label}</span>
               </div>
             ))}
-            <div className="border-t border-gray-200 pt-1 mt-1 flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full border-2 border-[#f0b429] flex-shrink-0" />
-              <span className="text-gray-700">Alerta SEVERA</span>
+            <hr className="legend-divider" />
+            <div className="legend-item">
+              <div className="legend-dot" style={{border:'2px solid #f0b429', background:'transparent'}} />
+              <span className="legend-label">Alerta SEVERA</span>
             </div>
           </>)}
         </div>
@@ -727,7 +1023,7 @@
         if (initialized.current) return;
         initialized.current = true;
         const map = L.map(mapDiv.current, { center: [4.5, -74.0], zoom: 5 });
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
           attribution: '&copy; OpenStreetMap contributors &copy; CARTO', maxZoom: 19,
         }).addTo(map);
         map.fitBounds([[1, -79], [13, -67]]);
@@ -750,18 +1046,17 @@
         const entries = Object.values(amenazasData).filter(d => !isNaN(d.lat) && !isNaN(d.lon));
 
         entries.forEach(d => {
-          const color      = AMENAZA_MM_COLORS[d.amenaza_mm] ?? '#adb5bd';
-          const hasAlerta  = d.alerta_deslizamiento === 'ALTA';
-          const radius     = hasAlerta ? 9 : 6;
-          const weight     = hasAlerta ? 2.5 : 0.8;
-          const fillOpac   = hasAlerta ? 0.92 : 0.65;
-          const borderCol  = hasAlerta ? '#7b0000' : '#fff';
+          const color     = AMENAZA_MM_COLORS[d.amenaza_mm] ?? '#adb5bd';
+          const hasAlerta = d.alerta_deslizamiento === 'ALTA';
+          const radius    = hasAlerta ? 9 : 6;
+          const weight    = hasAlerta ? 2.5 : 0.8;
+          const fillOpac  = hasAlerta ? 0.92 : 0.65;
+          const borderCol = hasAlerta ? '#7b0000' : 'rgba(255,255,255,0.3)';
 
           const marker = L.circleMarker([d.lat, d.lon], {
             radius, color: borderCol, weight, fillColor: color, fillOpacity: fillOpac,
           });
 
-          // Pulse ring for active IDEAM alert
           if (hasAlerta) {
             const iconHtml = `<div class="alert-pulse" style="width:22px;height:22px;margin-top:-11px;margin-left:-11px;border-color:#d91919;"></div>`;
             L.marker([d.lat, d.lon], { icon: L.divIcon({ html: iconHtml, className: '', iconSize: [0,0] }) }).addTo(layerGroup.current);
@@ -773,27 +1068,25 @@
           const amenazaLabel = { 'MUY_BAJA':'Muy baja','BAJA':'Baja','MEDIA':'Media','ALTA':'Alta','MUY_ALTA':'Muy alta' }[d.amenaza_mm] ?? d.amenaza_mm;
           const alertaBadge  = hasAlerta
             ? `<span style="color:#d91919;font-weight:700;">\u26a0 ALTA \u2014 Alerta IDEAM</span>`
-            : `<span style="color:#27ae60;">\u2713 Sin alerta activa</span>`;
-
+            : `<span style="color:#4fa89b;">\u2713 Sin alerta activa</span>`;
           const fechaLine = d.fecha_ideam
-            ? `<p style="color:#888;font-size:11px;margin-top:4px;">Alerta al: <b>${d.fecha_ideam}</b></p>` : '';
-
+            ? `<p style="color:#8a9ab0;font-size:11px;margin-top:4px;">Alerta al: <b>${d.fecha_ideam}</b></p>` : '';
           const acumSection = hasAlerta ? `
-            <hr style="margin:6px 0;border-color:#eee;">
-            <p style="font-size:12px;font-weight:600;color:#7b3f00;margin-bottom:2px;">\uD83C\uDF27 Precipitaci\u00f3n acumulada</p>
+            <hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
+            <p style="font-size:12px;font-weight:600;color:#e67e22;margin-bottom:2px;">\uD83C\uDF27 Precipitaci\u00f3n acumulada</p>
             <p><b>\u00daltimos 3 d\u00edas:</b> ${acum3}</p>
             <p><b>\u00daltimos 10 d\u00edas:</b> ${acum10}</p>
             <p><b>D\u00edas con lluvia:</b> ${dias}</p>` : '';
 
           const popup = `
-            <div style="font-family:Arial,sans-serif;font-size:13px;min-width:210px;">
-              <div style="color:#1a5276;font-size:14px;font-weight:700;margin-bottom:2px;">${d.nom_mpio}</div>
-              <div style="color:#666;font-size:12px;margin-bottom:6px;">${d.nom_dpto}</div>
-              <hr style="margin:4px 0;border-color:#eee;">
-              <p style="font-size:12px;font-weight:600;color:#7b3f00;margin-bottom:2px;">\u26f0 Amenaza MM \u2014 SGC 1:500k</p>
+            <div style="font-family:'Lora',Georgia,serif;font-size:13px;min-width:210px;color:#f5f0e8;">
+              <div style="color:#c8a96e;font-size:14px;font-weight:700;margin-bottom:2px;">${d.nom_mpio}</div>
+              <div style="color:#8a9ab0;font-size:12px;margin-bottom:6px;">${d.nom_dpto}</div>
+              <hr style="margin:4px 0;border-color:rgba(200,169,110,0.15);">
+              <p style="font-size:12px;font-weight:600;color:#e67e22;margin-bottom:2px;">\u26f0 Amenaza MM \u2014 SGC 1:500k</p>
               <p><b>Nivel est\u00e1tico:</b> <span style="color:${color};font-weight:600;">${amenazaLabel}</span></p>
-              <hr style="margin:6px 0;border-color:#eee;">
-              <p style="font-size:12px;font-weight:600;color:#444;margin-bottom:2px;">\uD83D\uDCE1 Alerta diaria IDEAM</p>
+              <hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
+              <p style="font-size:12px;font-weight:600;color:#8a9ab0;margin-bottom:2px;">\uD83D\uDCE1 Alerta diaria IDEAM</p>
               <p>${alertaBadge}</p>
               ${acumSection}
               ${fechaLine}
@@ -805,7 +1098,7 @@
       }, [amenazasData]);
 
       return (
-        <div className="relative rounded-xl overflow-hidden shadow">
+        <div className="map-panel-wrap">
           <div ref={mapDiv} className="map-div" />
           <Legend mode="deslizamientos" />
         </div>
@@ -820,13 +1113,11 @@
       const layerGroup  = useRef(null);
       const initialized = useRef(false);
 
-      // Initialize map once
       useEffect(() => {
         if (initialized.current) return;
         initialized.current = true;
-
         const map = L.map(mapDiv.current, { center: [4.5, -74.0], zoom: 5 });
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
           maxZoom: 19,
         }).addTo(map);
@@ -835,7 +1126,6 @@
         leafletMap.current = map;
       }, []);
 
-      // Re-center on Colombia when tab becomes visible
       useEffect(() => {
         if (visible && leafletMap.current) {
           setTimeout(() => {
@@ -845,7 +1135,6 @@
         }
       }, [visible]);
 
-      // Rebuild markers on filtered data change or mode change
       useEffect(() => {
         if (!layerGroup.current) return;
         layerGroup.current.clearLayers();
@@ -856,15 +1145,13 @@
             const color  = SEQUIA_COLORS[cat] ?? '#adb5bd';
             const radius = 6;
 
-            // Pulsing ring amarillo solo para SEVERA
             if (cat === 'SEVERA') {
               const r2   = radius + 5;
               const size = r2 * 2;
               const pulseIcon = L.divIcon({
                 className: '',
                 html: `<div class="sequia-alert-pulse" style="width:${size}px;height:${size}px;margin-left:-${r2}px;margin-top:-${r2}px;"></div>`,
-                iconSize: [0, 0],
-                iconAnchor: [0, 0],
+                iconSize: [0, 0], iconAnchor: [0, 0],
               });
               L.marker([m.LATITUD, m.LONGITUD], { icon: pulseIcon, interactive: false, zIndexOffset: -100 })
                 .addTo(layerGroup.current);
@@ -873,7 +1160,7 @@
             L.circleMarker([m.LATITUD, m.LONGITUD], {
               radius,
               fillColor:   color,
-              color:       cat === 'SEVERA' ? '#f0b429' : '#ffffff',
+              color:       cat === 'SEVERA' ? '#f0b429' : 'rgba(255,255,255,0.25)',
               weight:      cat === 'SEVERA' ? 2.0 : 0.8,
               opacity:     1,
               fillOpacity: 0.85,
@@ -889,22 +1176,18 @@
           const color  = CATEGORIA_COLORS[m.categoria] ?? '#adb5bd';
           const radius = Math.max(5, Math.min(m.tamano, 22));
 
-          // Pulsing ring rojo para ALTA (2) y CRÍTICA (3)
           if (m.alerta >= 2) {
             const size = radius * 2;
             const pulseIcon = L.divIcon({
               className: '',
               html: `<div class="alert-pulse" style="width:${size}px;height:${size}px;margin-left:-${radius}px;margin-top:-${radius}px;"></div>`,
-              iconSize: [0, 0],
-              iconAnchor: [0, 0],
+              iconSize: [0, 0], iconAnchor: [0, 0],
             });
             L.marker([m.LATITUD, m.LONGITUD], { icon: pulseIcon, interactive: false, zIndexOffset: -100 })
               .addTo(layerGroup.current);
           }
 
-          const borderColor = m.alerta >= 2 ? '#e03131'
-                            : m.alerta === 1 ? '#f0b429'
-                            : '#ffffff';
+          const borderColor  = m.alerta >= 2 ? '#e03131' : m.alerta === 1 ? '#f0b429' : 'rgba(255,255,255,0.25)';
           const borderWeight = m.alerta >= 1 ? 2.0 : 0.8;
 
           L.circleMarker([m.LATITUD, m.LONGITUD], {
@@ -921,7 +1204,7 @@
       }, [data, mode]);
 
       return (
-        <div className="bg-white rounded-xl shadow-md overflow-hidden relative">
+        <div className="map-panel-wrap">
           <div ref={mapDiv} className="map-div" />
           <Legend mode={mode} />
         </div>
@@ -932,36 +1215,36 @@
 
     function FilterBox({ departments, deptFilter, alertOnly, onDeptChange, onAlertToggle, allData, dataFecha }) {
       return (
-        <div className="bg-white rounded-xl shadow-md p-4">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[#1a5276] font-semibold text-sm">Filtros</h2>
+        <div className="panel-card">
+          <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'14px'}}>
+            <div className="panel-card-title" style={{marginBottom:0}}>Filtros</div>
             <button
               onClick={() => downloadCSV(allData, `datos_municipios_${dataFecha ?? 'export'}.csv`)}
               title="Descargar datos actuales como CSV"
-              className="flex items-center gap-1.5 text-xs bg-[#27ae60] hover:bg-[#1e8449] text-white font-medium px-2.5 py-1 rounded-lg transition-colors"
+              className="btn btn-success"
             >
-              &#x2B07;&#xFE0F; Descargar datos
+              &#x2B07; Descargar datos
             </button>
           </div>
-          <label className="block text-xs font-medium text-gray-600 mb-1">Departamento</label>
+          <label className="form-label">Departamento</label>
           <select
             value={deptFilter}
             onChange={e => onDeptChange(e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a5276]"
+            className="form-select"
           >
             <option value="ALL">Todos los departamentos</option>
             {departments.filter(d => d !== 'ALL').map(d => (
               <option key={d} value={d}>{d}</option>
             ))}
           </select>
-          <label className="flex items-center gap-2 mt-3 cursor-pointer select-none">
+          <label className="form-checkbox-row">
             <input
               type="checkbox"
               checked={alertOnly}
               onChange={onAlertToggle}
-              className="w-4 h-4 accent-[#e03131]"
+              className="form-checkbox"
             />
-            <span className="text-sm text-gray-700">Solo municipios en alerta</span>
+            <span className="form-checkbox-label">Solo municipios en alerta</span>
           </label>
         </div>
       );
@@ -969,9 +1252,9 @@
 
     function StatsBox({ filteredCount, total }) {
       return (
-        <div className="bg-white rounded-xl shadow-md px-4 py-3 text-sm flex items-center gap-2">
-          <span className="font-bold text-[#1a5276] text-base">{filteredCount}</span>
-          <span className="text-gray-500">/ {total} municipios mostrados</span>
+        <div className="stats-box">
+          <span className="stats-count">{filteredCount}</span>
+          <span className="stats-label">/ {total} municipios mostrados</span>
         </div>
       );
     }
@@ -998,8 +1281,8 @@
         const values = sorted.map(d => parseFloat(d.avg.toFixed(2)));
 
         if (chartRef.current) {
-          chartRef.current.data.labels             = labels;
-          chartRef.current.data.datasets[0].data   = values;
+          chartRef.current.data.labels           = labels;
+          chartRef.current.data.datasets[0].data = values;
           chartRef.current.update();
         } else {
           chartRef.current = new Chart(canvasRef.current, {
@@ -1009,20 +1292,29 @@
               datasets: [{
                 label: 'Precip. promedio (mm)',
                 data: values,
-                backgroundColor: '#339af0',
-                borderColor: '#1a5276',
+                backgroundColor: 'rgba(79,168,155,0.55)',
+                borderColor: 'rgba(200,169,110,0.5)',
                 borderWidth: 1,
-                borderRadius: 3,
+                borderRadius: 2,
               }]
             },
             options: {
               indexAxis: 'y',
               responsive: true,
               maintainAspectRatio: false,
-              plugins: { legend: { display: false } },
+              plugins: {
+                legend: { display: false },
+              },
               scales: {
-                x: { title: { display: true, text: 'mm', font: { size: 10 } }, ticks: { font: { size: 10 } } },
-                y: { ticks: { font: { size: 10 } } },
+                x: {
+                  title: { display: true, text: 'mm', font: { size: 10, family: "'DM Mono', monospace" }, color: '#8a9ab0' },
+                  ticks: { font: { size: 10, family: "'DM Mono', monospace" }, color: '#8a9ab0' },
+                  grid: { color: 'rgba(200,169,110,0.08)' },
+                },
+                y: {
+                  ticks: { font: { size: 10, family: "'DM Mono', monospace" }, color: '#8a9ab0' },
+                  grid: { color: 'rgba(200,169,110,0.06)' },
+                },
               }
             }
           });
@@ -1036,9 +1328,9 @@
       }, []);
 
       return (
-        <div className="bg-white rounded-xl shadow-md p-4">
-          <h2 className="text-[#1a5276] font-semibold mb-2 text-sm">Top 10 departamentos por precipitaci&oacute;n</h2>
-          <div style={{height:'230px', position:'relative'}}>
+        <div className="panel-card">
+          <div className="panel-card-title">Top 10 departamentos por precipitaci&oacute;n</div>
+          <div style={{height:'230px', position:'relative', background:'transparent'}}>
             <canvas ref={canvasRef} />
           </div>
         </div>
@@ -1051,25 +1343,25 @@
         [data]
       );
       return (
-        <div className="bg-white rounded-xl shadow-md p-4">
-          <h2 className="text-[#1a5276] font-semibold mb-2 text-sm">Municipios</h2>
+        <div className="panel-card">
+          <div className="panel-card-title">Municipios</div>
           <div className="table-scroll">
-            <table className="w-full text-xs">
-              <thead className="sticky top-0 bg-[#eaf0fb]">
+            <table className="data-table">
+              <thead>
                 <tr>
-                  <th className="text-left py-1.5 px-2 text-[#1a5276] font-semibold">Municipio</th>
-                  <th className="text-left py-1.5 px-2 text-[#1a5276] font-semibold hidden sm:table-cell">Dpto.</th>
-                  <th className="text-right py-1.5 px-2 text-[#1a5276] font-semibold">mm</th>
-                  <th className="text-center py-1.5 px-2 text-[#1a5276] font-semibold">Alerta</th>
+                  <th>Municipio</th>
+                  <th className="hide-sm">Dpto.</th>
+                  <th className="right">mm</th>
+                  <th className="center">Alerta</th>
                 </tr>
               </thead>
               <tbody>
                 {sorted.map((d, i) => (
-                  <tr key={d.COD_MPIO || i} className="border-t border-gray-100 hover:bg-[#eaf0fb] transition-colors">
-                    <td className="py-1 px-2">{d.NOM_MPIO}</td>
-                    <td className="py-1 px-2 text-gray-400 text-[11px] hidden sm:table-cell">{d.NOM_DPTO}</td>
-                    <td className="py-1 px-2 text-right font-mono text-[#1a5276]">{d.precip_acum_mm}</td>
-                    <td className="py-1 px-2 text-center" title={d.alerta_compuesta}>
+                  <tr key={d.COD_MPIO || i}>
+                    <td>{d.NOM_MPIO}</td>
+                    <td className="td-muted hide-sm">{d.NOM_DPTO}</td>
+                    <td className="td-right">{d.precip_acum_mm}</td>
+                    <td className="td-center" title={d.alerta_compuesta}>
                       {d.alerta > 0 ? '\uD83D\uDD34' : '\uD83D\uDFE2'}
                     </td>
                   </tr>
@@ -1090,9 +1382,10 @@
       const fileRef = useRef(null);
 
       function downloadSample() {
-        const url = 'data/cartera_municipios_codigos.csv';
-        const a   = document.createElement('a');
-        a.href = url; a.download = 'cartera_municipios_codigos.csv'; a.click();
+        const a = document.createElement('a');
+        a.href = 'data/cartera_municipios_codigos.csv';
+        a.download = 'cartera_municipios_codigos.csv';
+        a.click();
       }
 
       function handleFile(e) {
@@ -1105,21 +1398,16 @@
           skipEmptyLines: true,
           complete: ({ data, errors }) => {
             if (errors.length) console.warn('Cartera CSV warnings:', errors);
-            if (!data.length) { setCarteraError('El archivo está vacío.'); return; }
+            if (!data.length) { setCarteraError('El archivo est\u00e1 vac\u00edo.'); return; }
 
             const firstRow = data[0];
             const keys     = Object.keys(firstRow);
-
-            // Detect columns flexibly
-            const codCol    = keys.find(k => /cod/i.test(k) && /mpio|muni/i.test(k))
-                           ?? keys.find(k => /cod/i.test(k))
-                           ?? keys[0];
+            const codCol    = keys.find(k => /cod/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /cod/i.test(k)) ?? keys[0];
             const carteraCol = keys.find(k => /cartera/i.test(k));
-            const nameCol    = keys.find(k => /nom/i.test(k) && /mpio|muni/i.test(k))
-                            ?? keys.find(k => /nombre|name/i.test(k));
+            const nameCol    = keys.find(k => /nom/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /nombre|name/i.test(k));
 
             if (!carteraCol) {
-              setCarteraError('No se encontró columna "cartera_total" en el archivo. Verifique el formato.');
+              setCarteraError('No se encontr\u00f3 columna "cartera_total" en el archivo. Verifique el formato.');
               return;
             }
 
@@ -1130,19 +1418,13 @@
               const cod    = (r[codCol] ?? '').toString().trim();
               const val    = parseFloat((r[carteraCol] ?? '').toString().replace(/[^0-9.-]/g,'')) || 0;
               const nombre = nameCol ? (r[nameCol] ?? cod) : cod;
-              // Look up alerta from loaded historical data, fallback to allData
-              const alerta = alertaHistData[cod]
-                          ?? alertaHistData[cod.padStart(5,'0')]
-                          ?? 'Sin datos';
+              const alerta = alertaHistData[cod] ?? alertaHistData[cod.padStart(5,'0')] ?? 'Sin datos';
               totalCartera += val; nTotal++;
               if (alerta === 'ALTA') { cartaAlta += val; nAlta++; }
               merged.push({ cod, nombre, cartera_total: val, alerta_lluvias: alerta, _col: carteraCol });
             });
 
-            const indicator = totalCartera > 0
-              ? (cartaAlta / totalCartera * 100).toFixed(2)
-              : '0.00';
-
+            const indicator = totalCartera > 0 ? (cartaAlta / totalCartera * 100).toFixed(2) : '0.00';
             setCarteraData(merged);
             setCarteraResult({ totalCartera, cartaAlta, indicator, nTotal, nAlta, carteraCol });
           },
@@ -1168,88 +1450,64 @@
       const fmtM = v => (v / 1e6).toFixed(1) + ' M';
 
       return (
-        <div className="bg-white rounded-xl shadow-md p-4">
-          <h2 className="text-[#1a5276] font-semibold mb-3 text-sm">Análisis de Cartera</h2>
+        <div className="panel-card">
+          <div className="panel-card-title">An&aacute;lisis de Cartera</div>
 
-          {/* Action buttons */}
-          <div className="flex gap-2 flex-wrap mb-3">
-            <button
-              onClick={downloadSample}
-              className="flex items-center gap-1.5 text-xs bg-[#eaf0fb] hover:bg-[#d0e4f7] text-[#1a5276] font-medium px-3 py-1.5 rounded-lg border border-[#b6d0e8] transition-colors"
-            >
+          <div className="btn-row">
+            <button onClick={downloadSample} className="btn btn-dark">
               &#x1F4CB; Archivo de ejemplo
             </button>
-            <button
-              onClick={() => fileRef.current?.click()}
-              className="flex items-center gap-1.5 text-xs bg-[#1a5276] hover:bg-[#154360] text-white font-medium px-3 py-1.5 rounded-lg transition-colors"
-            >
+            <button onClick={() => fileRef.current?.click()} className="btn btn-primary">
               &#x1F4C2; Cargar cartera
             </button>
-            <input
-              ref={fileRef}
-              type="file"
-              accept=".csv,.xlsx,.xls"
-              onChange={handleFile}
-              className="hidden"
-            />
+            <input ref={fileRef} type="file" accept=".csv,.xlsx,.xls" onChange={handleFile} style={{display:'none'}} />
           </div>
 
-          <p className="text-[11px] text-gray-400 mb-3 leading-tight">
+          <p className="hint-text">
             Cargue un CSV con columnas <code>COD_MPIO</code> y <code>cartera_total</code>.
-            Se cruza con la alerta histórica de lluvias.
+            Se cruza con la alerta hist&oacute;rica de lluvias.
           </p>
 
-          {/* Error */}
           {carteraError && (
-            <div className="text-xs text-[#e03131] bg-red-50 rounded-lg px-3 py-2 mb-2">
-              &#x26A0; {carteraError}
-            </div>
+            <div className="error-box">&#x26A0; {carteraError}</div>
           )}
 
-          {/* Results */}
           {carteraResult && (
             <div>
-              {/* Indicator */}
-              <div className="bg-[#1a5276] text-white rounded-lg px-4 py-3 mb-3 text-center">
-                <div className="text-2xl font-bold">{carteraResult.indicator}%</div>
-                <div className="text-[11px] text-blue-200 mt-0.5">
-                  Cartera en alerta ALTA / Cartera total
-                </div>
+              <div className="indicator-box">
+                <div className="indicator-value">{carteraResult.indicator}%</div>
+                <div className="indicator-label">Cartera en alerta ALTA / Cartera total</div>
               </div>
 
-              {/* KPIs */}
-              <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
-                <div className="bg-red-50 border border-red-200 rounded-lg p-2">
-                  <div className="font-bold text-[#e03131] text-sm">
-                    {fmtM(carteraResult.cartaAlta)} COP
-                  </div>
-                  <div className="text-gray-500 mt-0.5">
+              <div className="cartera-kpi-grid">
+                <div className="cartera-kpi danger">
+                  <div className="cartera-kpi-value">{fmtM(carteraResult.cartaAlta)} COP</div>
+                  <div className="cartera-kpi-label">
                     Cartera en alerta ALTA
-                    <span className="ml-1 text-[#e03131]">({carteraResult.nAlta} mpios)</span>
+                    <span style={{marginLeft:'4px', color:'var(--danger)'}}>({carteraResult.nAlta} mpios)</span>
                   </div>
                 </div>
-                <div className="bg-[#eaf0fb] border border-[#b6d0e8] rounded-lg p-2">
-                  <div className="font-bold text-[#1a5276] text-sm">
-                    {fmtM(carteraResult.totalCartera)} COP
-                  </div>
-                  <div className="text-gray-500 mt-0.5">
+                <div className="cartera-kpi">
+                  <div className="cartera-kpi-value">{fmtM(carteraResult.totalCartera)} COP</div>
+                  <div className="cartera-kpi-label">
                     Cartera total
-                    <span className="ml-1 text-[#1a5276]">({carteraResult.nTotal} mpios)</span>
+                    <span style={{marginLeft:'4px', color:'var(--accent-gold)'}}>({carteraResult.nTotal} mpios)</span>
                   </div>
                 </div>
               </div>
 
-              {/* Export buttons */}
-              <div className="flex gap-2">
+              <div style={{display:'flex', gap:'8px'}}>
                 <button
                   onClick={() => exportReportePDF(carteraResult, carteraData, dataFecha)}
-                  className="flex-1 text-xs bg-[#e03131] hover:bg-[#c0392b] text-white font-medium px-3 py-1.5 rounded-lg transition-colors"
+                  className="btn btn-danger"
+                  style={{flex:1, justifyContent:'center'}}
                 >
                   &#x1F4C4; Exportar PDF
                 </button>
                 <button
                   onClick={handleExportCSV}
-                  className="flex-1 text-xs bg-[#27ae60] hover:bg-[#1e8449] text-white font-medium px-3 py-1.5 rounded-lg transition-colors"
+                  className="btn btn-success"
+                  style={{flex:1, justifyContent:'center'}}
                 >
                   &#x1F4BE; Exportar CSV
                 </button>
@@ -1263,7 +1521,7 @@
     function SidePanel({ data, allData, departments, deptFilter, alertOnly, onDeptChange, onAlertToggle,
                          alertaHistData, dataFecha }) {
       return (
-        <div className="flex flex-col gap-3 lg:w-[35%]">
+        <div className="map-side side-panel">
           <FilterBox
             departments={departments}
             deptFilter={deptFilter}
@@ -1284,22 +1542,29 @@
     // ─── App ──────────────────────────────────────────────────────────────────
 
     function App() {
-      const [allData,         setAllData]         = useState([]);
-      const [alertaHistData,  setAlertaHistData]   = useState({});
-      const [amenazasData,    setAmenazasData]     = useState({});
-      const [deptFilter,      setDeptFilter]       = useState('ALL');
-      const [alertOnly,       setAlertOnly]        = useState(false);
-      const [loading,         setLoading]          = useState(true);
-      const [error,           setError]            = useState(null);
-      const [activeMap,       setActiveMap]        = useState('lluvias');
+      const [allData,        setAllData]       = useState([]);
+      const [alertaHistData, setAlertaHistData] = useState({});
+      const [amenazasData,   setAmenazasData]   = useState({});
+      const [deptFilter,     setDeptFilter]     = useState('ALL');
+      const [alertOnly,      setAlertOnly]      = useState(false);
+      const [loading,        setLoading]        = useState(true);
+      const [error,          setError]          = useState(null);
+      const [activeMap,      setActiveMap]      = useState('lluvias');
+
+      // Scroll reveal
+      useEffect(() => {
+        const observer = new IntersectionObserver(
+          entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+          { threshold: 0.08 }
+        );
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        return () => observer.disconnect();
+      }, [loading]);
 
       // Load daily precipitation data
       useEffect(() => {
         Papa.parse('data/datos_municipios.csv', {
-          download:       true,
-          header:         true,
-          skipEmptyLines: true,
-          encoding:       'UTF-8',
+          download: true, header: true, skipEmptyLines: true, encoding: 'UTF-8',
           complete: ({ data, errors }) => {
             if (errors.length) console.warn('CSV warnings:', errors);
             setAllData(parseRows(data));
@@ -1318,13 +1583,10 @@
         });
       }, []);
 
-      // Load historical alert data (alerta_lluvias per municipality)
+      // Load historical alert data
       useEffect(() => {
         Papa.parse('data/alerta_historica_municipal.csv', {
-          download:       true,
-          header:         true,
-          skipEmptyLines: true,
-          encoding:       'UTF-8',
+          download: true, header: true, skipEmptyLines: true, encoding: 'UTF-8',
           complete: ({ data }) => {
             const map = {};
             data.forEach(r => {
@@ -1337,13 +1599,10 @@
         });
       }, []);
 
-      // Load amenazas municipales (SGC raster + IDEAM daily landslide alerts)
+      // Load amenazas municipales
       useEffect(() => {
         Papa.parse('data/amenazas_municipal.csv', {
-          download:       true,
-          header:         true,
-          skipEmptyLines: true,
-          encoding:       'UTF-8',
+          download: true, header: true, skipEmptyLines: true, encoding: 'UTF-8',
           complete: ({ data }) => {
             const map = {};
             data.forEach(r => {
@@ -1381,7 +1640,6 @@
         return ['ALL', ...Array.from(set).sort()];
       }, [allData]);
 
-      // Fecha de los datos: toma el primer valor no vacío del campo fecha
       const dataFecha = useMemo(() => {
         const row = allData.find(d => d.fecha && d.fecha !== '');
         return row ? row.fecha : null;
@@ -1391,73 +1649,74 @@
       if (error)   return <ErrorScreen message={error} />;
 
       return (
-        <div className="min-h-screen bg-[#eaf0fb]">
+        <div style={{background:'var(--bg-primary)', minHeight:'100vh'}}>
           <LandingHero />
           <div id="dashboard">
-          <Header dataFecha={dataFecha} />
-          <main className="p-4">
-            <KpiCards kpis={kpis} activeMap={activeMap} amenazasData={amenazasData} />
-            <div className="flex flex-col lg:flex-row gap-4">
-              <div className="lg:w-[65%]">
-                {/* Tabs selector */}
-                <div className="flex gap-2 mb-2">
-                  <button
-                    onClick={() => setActiveMap('lluvias')}
-                    className={`flex items-center gap-1.5 text-sm font-semibold px-4 py-1.5 rounded-lg border transition-colors ${
-                      activeMap === 'lluvias'
-                        ? 'bg-[#1a5276] text-white border-[#1a5276]'
-                        : 'bg-white text-[#1a5276] border-[#b6d0e8] hover:bg-[#eaf0fb]'
-                    }`}
-                  >
-                    &#x1F327;&#xFE0F; Alertas Lluvias
-                  </button>
-                  <button
-                    onClick={() => setActiveMap('sequias')}
-                    className={`flex items-center gap-1.5 text-sm font-semibold px-4 py-1.5 rounded-lg border transition-colors ${
-                      activeMap === 'sequias'
-                        ? 'bg-[#b7770d] text-white border-[#b7770d]'
-                        : 'bg-white text-[#b7770d] border-[#f0d9a0] hover:bg-[#fef9ec]'
-                    }`}
-                  >
-                    &#x2600;&#xFE0F; Alertas Sequ&iacute;as
-                  </button>
-                  <button
-                    onClick={() => setActiveMap('deslizamientos')}
-                    className={`flex items-center gap-1.5 text-sm font-semibold px-4 py-1.5 rounded-lg border transition-colors ${
-                      activeMap === 'deslizamientos'
-                        ? 'bg-[#7b3f00] text-white border-[#7b3f00]'
-                        : 'bg-white text-[#7b3f00] border-[#d4a875] hover:bg-[#fdf5ec]'
-                    }`}
-                  >
-                    &#x26F0;&#xFE0F; Alertas Deslizamientos
-                  </button>
+            <Header dataFecha={dataFecha} />
+            <main className="dashboard-main">
+              <KpiCards kpis={kpis} activeMap={activeMap} amenazasData={amenazasData} />
+              <div className="map-layout reveal">
+                <div className="map-main">
+                  {/* Tab selector */}
+                  <div className="tab-bar">
+                    <button
+                      onClick={() => setActiveMap('lluvias')}
+                      className={`tab-btn${activeMap === 'lluvias' ? ' active-lluvias' : ''}`}
+                    >
+                      &#x1F327;&#xFE0F; Alertas Lluvias
+                    </button>
+                    <button
+                      onClick={() => setActiveMap('sequias')}
+                      className={`tab-btn${activeMap === 'sequias' ? ' active-sequias' : ''}`}
+                    >
+                      &#x2600;&#xFE0F; Alertas Sequ&iacute;as
+                    </button>
+                    <button
+                      onClick={() => setActiveMap('deslizamientos')}
+                      className={`tab-btn${activeMap === 'deslizamientos' ? ' active-desliz' : ''}`}
+                    >
+                      &#x26F0;&#xFE0F; Alertas Deslizamientos
+                    </button>
+                  </div>
+                  {/* Mapa Lluvias */}
+                  <div style={{display: activeMap === 'lluvias' ? 'block' : 'none'}}>
+                    <MapPanel data={filteredData} mode="lluvias" visible={activeMap === 'lluvias'} />
+                  </div>
+                  {/* Mapa Sequías */}
+                  <div style={{display: activeMap === 'sequias' ? 'block' : 'none'}}>
+                    <MapPanel data={filteredData} mode="sequias" visible={activeMap === 'sequias'} />
+                  </div>
+                  {/* Mapa Deslizamientos */}
+                  <div style={{display: activeMap === 'deslizamientos' ? 'block' : 'none'}}>
+                    <DeslizMapPanel amenazasData={amenazasData} visible={activeMap === 'deslizamientos'} />
+                  </div>
                 </div>
-                {/* Mapa Lluvias */}
-                <div style={{display: activeMap === 'lluvias' ? 'block' : 'none'}}>
-                  <MapPanel data={filteredData} mode="lluvias" visible={activeMap === 'lluvias'} />
-                </div>
-                {/* Mapa Sequías */}
-                <div style={{display: activeMap === 'sequias' ? 'block' : 'none'}}>
-                  <MapPanel data={filteredData} mode="sequias" visible={activeMap === 'sequias'} />
-                </div>
-                {/* Mapa Deslizamientos */}
-                <div style={{display: activeMap === 'deslizamientos' ? 'block' : 'none'}}>
-                  <DeslizMapPanel amenazasData={amenazasData} visible={activeMap === 'deslizamientos'} />
-                </div>
+                <SidePanel
+                  data={filteredData}
+                  allData={allData}
+                  departments={departments}
+                  deptFilter={deptFilter}
+                  alertOnly={alertOnly}
+                  onDeptChange={setDeptFilter}
+                  onAlertToggle={() => setAlertOnly(v => !v)}
+                  alertaHistData={alertaHistData}
+                  dataFecha={dataFecha}
+                />
               </div>
-              <SidePanel
-                data={filteredData}
-                allData={allData}
-                departments={departments}
-                deptFilter={deptFilter}
-                alertOnly={alertOnly}
-                onDeptChange={setDeptFilter}
-                onAlertToggle={() => setAlertOnly(v => !v)}
-                alertaHistData={alertaHistData}
-                dataFecha={dataFecha}
-              />
-            </div>
-          </main>
+            </main>
+            <footer className="site-footer">
+              <div>
+                <div className="footer-brand">GGGI &mdash; Sustainable Finance</div>
+                <div className="footer-sub">Herramienta Circular 0015 &middot; Colombia &middot; 2025</div>
+              </div>
+              <div className="footer-sources">
+                <strong>Fuentes de datos</strong>
+                <div>Precipitaci&oacute;n diaria: IDEAM &mdash; datos.gov.co</div>
+                <div>Amenaza movimientos en masa: SGC 1:500k (2011)</div>
+                <div>Alertas deslizamiento: IDEAM OSPA (diario)</div>
+                <div>Inundaciones hist&oacute;ricas: UNGRD &mdash; Ola invernal 2010&ndash;2011</div>
+              </div>
+            </footer>
           </div>
         </div>
       );
