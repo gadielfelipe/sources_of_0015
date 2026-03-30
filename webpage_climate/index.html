@@ -736,7 +736,12 @@
       }, []);
 
       useEffect(() => {
-        if (visible && leafletMap.current) setTimeout(() => leafletMap.current.invalidateSize(), 50);
+        if (visible && leafletMap.current) {
+          setTimeout(() => {
+            leafletMap.current.invalidateSize();
+            leafletMap.current.fitBounds([[1, -79], [13, -67]]);
+          }, 60);
+        }
       }, [visible]);
 
       useEffect(() => {
@@ -830,10 +835,13 @@
         leafletMap.current = map;
       }, []);
 
-      // Invalidate size when tab becomes visible
+      // Re-center on Colombia when tab becomes visible
       useEffect(() => {
         if (visible && leafletMap.current) {
-          setTimeout(() => leafletMap.current.invalidateSize(), 50);
+          setTimeout(() => {
+            leafletMap.current.invalidateSize();
+            leafletMap.current.fitBounds([[1, -79], [13, -67]]);
+          }, 60);
         }
       }, [visible]);
 
