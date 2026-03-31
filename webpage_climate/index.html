@@ -2093,41 +2093,84 @@
             </div>
           </div>
           <OvSubTabs tabs={TABS} active={activeTab} accentColor="#1a6faa" onSelect={setActiveTab} />
-          <div style={{background:'var(--bg-primary)'}}>
-            <div className="dashboard-main">
-              <div className="kpi-grid reveal">
-                <KpiCard label="Municipios filtrados"         value={filtered.length}       icon="&#x1F3D9;" />
-                <KpiCard label="En alerta hist\u00f3rica"     value={kpis.enAlerta}         icon="&#x26A0;&#xFE0F;" accent="red" />
-                <KpiCard label="Promedio precipitaci\u00f3n"  value={`${kpis.promedio} mm`} icon="&#x1F4A7;" accent="green" />
-                <KpiCard label="M\u00e1x. precipitaci\u00f3n" value={`${kpis.maximo} mm`}   icon="&#x1F4CD;" accent="gold" sub={kpis.maxMpio} />
-              </div>
-              <div className="map-layout">
-                <div className="map-main">
-                  <MapPanel data={filtered} mode="lluvias" visible={visible} />
+
+          {/* ── Mapa / Datos históricos ── */}
+          {activeTab !== 'Metodolog\u00eda' && (
+            <div style={{background:'var(--bg-primary)'}}>
+              <div className="dashboard-main">
+                <div className="kpi-grid reveal">
+                  <KpiCard label="Municipios filtrados"         value={filtered.length}       icon="&#x1F3D9;" />
+                  <KpiCard label="En alerta hist\u00f3rica"     value={kpis.enAlerta}         icon="&#x26A0;&#xFE0F;" accent="red" />
+                  <KpiCard label="Promedio precipitaci\u00f3n"  value={`${kpis.promedio} mm`} icon="&#x1F4A7;" accent="green" />
+                  <KpiCard label="M\u00e1x. precipitaci\u00f3n" value={`${kpis.maximo} mm`}   icon="&#x1F4CD;" accent="gold" sub={kpis.maxMpio} />
                 </div>
-                <div className="map-side side-panel">
-                  <FilterBox
-                    departments={departments}
-                    deptFilter={deptFilter}
-                    alertOnly={alertOnly}
-                    onDeptChange={setDeptFilter}
-                    onAlertToggle={() => setAlertOnly(v => !v)}
-                    onDownload={() => downloadCSV(filtered, `lluvias_${dataFecha ?? 'export'}.csv`)}
-                    alertLabel="Solo municipios en alerta lluvias"
-                  />
-                  <StatsBox filteredCount={filtered.length} total={data.length} />
-                  <TableBox data={filtered} />
-                  <CarteraBoxSection
-                    indicador="lluvias"
-                    alertaLookup={alertaHistData}
-                    alertTargets={['ALTA', 'CR\u00cdTICA']}
-                    alertLabel="Alerta hist\u00f3rica lluvias \u2265 ALTA"
-                    dataFecha={dataFecha}
-                  />
+                <div className="map-layout">
+                  <div className="map-main">
+                    <MapPanel data={filtered} mode="lluvias" visible={visible && activeTab !== 'Metodolog\u00eda'} />
+                  </div>
+                  <div className="map-side side-panel">
+                    <FilterBox
+                      departments={departments}
+                      deptFilter={deptFilter}
+                      alertOnly={alertOnly}
+                      onDeptChange={setDeptFilter}
+                      onAlertToggle={() => setAlertOnly(v => !v)}
+                      onDownload={() => downloadCSV(filtered, `lluvias_${dataFecha ?? 'export'}.csv`)}
+                      alertLabel="Solo municipios en alerta lluvias"
+                    />
+                    <StatsBox filteredCount={filtered.length} total={data.length} />
+                    <TableBox data={filtered} />
+                    <CarteraBoxSection
+                      indicador="lluvias"
+                      alertaLookup={alertaHistData}
+                      alertTargets={['ALTA', 'CR\u00cdTICA']}
+                      alertLabel="Alerta hist\u00f3rica lluvias \u2265 ALTA"
+                      dataFecha={dataFecha}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {/* ── Metodología ── */}
+          {activeTab === 'Metodolog\u00eda' && (
+            <div style={{background:'var(--bg-primary)', padding:'32px 24px'}}>
+              <div style={{maxWidth:'960px', margin:'0 auto'}}>
+                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'18px', flexWrap:'wrap', gap:'12px'}}>
+                  <div>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif", fontSize:'22px', fontWeight:600, color:'var(--accent-gold)', marginBottom:'4px'}}>
+                      Metodolog&iacute;a &middot; Lluvias
+                    </div>
+                    <div style={{fontFamily:"'DM Mono',monospace", fontSize:'10px', color:'var(--text-muted)', letterSpacing:'0.1em'}}>
+                      Documento t&eacute;cnico de precipitaciones &mdash; IDEAM / SFC Circular 0015
+                    </div>
+                  </div>
+                  <a
+                    href="data/metodologia precipitaciones.pdf"
+                    download="metodologia_precipitaciones.pdf"
+                    style={{
+                      display:'inline-flex', alignItems:'center', gap:'6px',
+                      fontFamily:"'DM Mono',monospace", fontSize:'10px', letterSpacing:'0.10em',
+                      textTransform:'uppercase', padding:'9px 16px', borderRadius:'2px',
+                      background:'rgba(200,169,110,0.10)', border:'1px solid rgba(200,169,110,0.35)',
+                      color:'var(--accent-gold)', textDecoration:'none', transition:'background 0.2s'
+                    }}
+                  >
+                    &#x2B07; Descargar PDF
+                  </a>
+                </div>
+                <iframe
+                  src="data/metodologia precipitaciones.pdf"
+                  title="Metodolog&iacute;a Precipitaciones"
+                  style={{
+                    width:'100%', height:'780px', border:'1px solid rgba(200,169,110,0.18)',
+                    borderRadius:'2px', background:'#fff'
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </div>
       );
     }
