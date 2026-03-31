@@ -1811,9 +1811,10 @@
 
     // ─── Lluvias Section ──────────────────────────────────────────────────────
 
-    function LluviasSection({ visible, onBack }) {
+    function LluviasSection({ visible, onBack, data }) {
       const [activeTab, setActiveTab] = React.useState('Mapa');
       const TABS = ['Mapa', 'Datos hist\u00f3ricos', 'Metodolog\u00eda'];
+      const kpis = useMemo(() => computeKpis(data), [data]);
       return (
         <div className={`ov-content-section${visible ? ' ov-visible' : ''}`}>
           <div className="ov-section-header">
@@ -1823,32 +1824,30 @@
             </div>
             <div className="ov-section-title-row">
               <div className="ov-section-title">Alertas &middot; Lluvias</div>
-              <span className="ov-alert-badge" style={{background:'#1a6faa'}}>87 municipios</span>
+              <span className="ov-alert-badge" style={{background:'#1a6faa'}}>{kpis.enAlerta} municipios</span>
             </div>
           </div>
           <OvSubTabs tabs={TABS} active={activeTab} accentColor="#1a6faa" onSelect={setActiveTab} />
           <div className="ov-section-body">
             <div className="ov-inner-kpi-row">
               <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value" style={{color:'#1a6faa'}}>87</div>
+                <div className="ov-inner-kpi-value" style={{color:'#1a6faa'}}>{kpis.enAlerta}</div>
                 <div className="ov-inner-kpi-label">Municipios en alerta</div>
               </div>
               <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value">7.00 mm</div>
+                <div className="ov-inner-kpi-value">{kpis.promedio} mm</div>
                 <div className="ov-inner-kpi-label">Promedio precipitaci&oacute;n</div>
               </div>
               <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value">574.3 mm</div>
-                <div className="ov-inner-kpi-label">M&aacute;x. precipitaci&oacute;n &middot; Baranoa</div>
+                <div className="ov-inner-kpi-value">{kpis.maximo} mm</div>
+                <div className="ov-inner-kpi-label">M&aacute;x. precipitaci&oacute;n &middot; {kpis.maxMpio}</div>
               </div>
               <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value">634</div>
-                <div className="ov-inner-kpi-label">Estaciones activas</div>
+                <div className="ov-inner-kpi-value">{kpis.total}</div>
+                <div className="ov-inner-kpi-label">Municipios monitoreados</div>
               </div>
             </div>
-            <div id="map-lluvias" className="ov-map-placeholder">
-              MAPA &middot; LLUVIAS &mdash; integraci&oacute;n Leaflet pendiente
-            </div>
+            <MapPanel data={data} mode="lluvias" visible={visible} />
             <div className="ov-table-wrap">
               <table className="ov-table">
                 <thead>
@@ -1876,9 +1875,10 @@
 
     // ─── Sequías Section ──────────────────────────────────────────────────────
 
-    function SequiasSection({ visible, onBack }) {
+    function SequiasSection({ visible, onBack, data }) {
       const [activeTab, setActiveTab] = React.useState('Mapa');
       const TABS = ['Mapa', 'Datos hist\u00f3ricos', 'Metodolog\u00eda'];
+      const enAlertaSequia = useMemo(() => data.filter(d => d.sequia_categoria === 'SEVERA').length, [data]);
       return (
         <div className={`ov-content-section${visible ? ' ov-visible' : ''}`}>
           <div className="ov-section-header">
@@ -1888,15 +1888,15 @@
             </div>
             <div className="ov-section-title-row">
               <div className="ov-section-title">Alertas &middot; Sequ&iacute;as</div>
-              <span className="ov-alert-badge" style={{background:'#b85c1a'}}>54 municipios</span>
+              <span className="ov-alert-badge" style={{background:'#b85c1a'}}>{enAlertaSequia} municipios</span>
             </div>
           </div>
           <OvSubTabs tabs={TABS} active={activeTab} accentColor="#b85c1a" onSelect={setActiveTab} />
           <div className="ov-section-body">
             <div className="ov-inner-kpi-row">
               <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value" style={{color:'#b85c1a'}}>54</div>
-                <div className="ov-inner-kpi-label">Municipios en alerta</div>
+                <div className="ov-inner-kpi-value" style={{color:'#b85c1a'}}>{enAlertaSequia}</div>
+                <div className="ov-inner-kpi-label">Municipios sequ&iacute;a SEVERA</div>
               </div>
               <div className="ov-inner-kpi">
                 <div className="ov-inner-kpi-value">&minus;2.4</div>
@@ -1907,9 +1907,7 @@
                 <div className="ov-inner-kpi-label">Duraci&oacute;n media</div>
               </div>
             </div>
-            <div id="map-sequias" className="ov-map-placeholder">
-              MAPA &middot; SEQU&Iacute;AS &mdash; integraci&oacute;n Leaflet pendiente
-            </div>
+            <MapPanel data={data} mode="sequias" visible={visible} />
             <div className="ov-table-wrap">
               <table className="ov-table">
                 <thead>
@@ -1937,9 +1935,13 @@
 
     // ─── Deslizamientos Section ───────────────────────────────────────────────
 
-    function DeslizSection({ visible, onBack }) {
+    function DeslizSection({ visible, onBack, amenazasData }) {
       const [activeTab, setActiveTab] = React.useState('Mapa');
       const TABS = ['Mapa', 'Datos hist\u00f3ricos', 'Metodolog\u00eda'];
+      const enAlertaDesliz = useMemo(
+        () => Object.values(amenazasData).filter(d => d.alerta_deslizamiento === 'ALTA').length,
+        [amenazasData]
+      );
       return (
         <div className={`ov-content-section${visible ? ' ov-visible' : ''}`}>
           <div className="ov-section-header">
@@ -1949,14 +1951,14 @@
             </div>
             <div className="ov-section-title-row">
               <div className="ov-section-title">Alertas &middot; Deslizamientos</div>
-              <span className="ov-alert-badge" style={{background:'#2d6b3c'}}>77 municipios</span>
+              <span className="ov-alert-badge" style={{background:'#2d6b3c'}}>{enAlertaDesliz} municipios</span>
             </div>
           </div>
           <OvSubTabs tabs={TABS} active={activeTab} accentColor="#2d6b3c" onSelect={setActiveTab} />
           <div className="ov-section-body">
             <div className="ov-inner-kpi-row">
               <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value" style={{color:'#2d6b3c'}}>77</div>
+                <div className="ov-inner-kpi-value" style={{color:'#2d6b3c'}}>{enAlertaDesliz}</div>
                 <div className="ov-inner-kpi-label">Municipios en alerta</div>
               </div>
               <div className="ov-inner-kpi">
@@ -1968,9 +1970,7 @@
                 <div className="ov-inner-kpi-label">Umbral detonante</div>
               </div>
             </div>
-            <div id="map-deslizamientos" className="ov-map-placeholder">
-              MAPA &middot; DESLIZAMIENTOS &mdash; integraci&oacute;n Leaflet pendiente
-            </div>
+            <DeslizMapPanel amenazasData={amenazasData} visible={visible} />
             <div className="ov-table-wrap">
               <table className="ov-table">
                 <thead>
@@ -1998,7 +1998,7 @@
 
     // ─── Overview Dashboard (orchestrator) ───────────────────────────────────
 
-    function OverviewDashboard() {
+    function OverviewDashboard({ allData, amenazasData }) {
       const [activeSection, setActiveSection] = React.useState(null);
 
       function showSection(name) {
@@ -2017,9 +2017,9 @@
             <OverviewSectionCards onSelect={showSection} />
           </div>
           <div className="ov-sections-container">
-            <LluviasSection     visible={activeSection === 'lluvias'}        onBack={goBack} />
-            <SequiasSection     visible={activeSection === 'sequias'}        onBack={goBack} />
-            <DeslizSection      visible={activeSection === 'deslizamientos'} onBack={goBack} />
+            <LluviasSection     visible={activeSection === 'lluvias'}        onBack={goBack} data={allData} />
+            <SequiasSection     visible={activeSection === 'sequias'}        onBack={goBack} data={allData} />
+            <DeslizSection      visible={activeSection === 'deslizamientos'} onBack={goBack} amenazasData={amenazasData} />
           </div>
         </div>
       );
@@ -2139,7 +2139,7 @@
           <LandingHero />
           <div id="dashboard">
             <Header dataFecha={dataFecha} />
-            <OverviewDashboard />
+            <OverviewDashboard allData={allData} amenazasData={amenazasData} />
             <main className="dashboard-main">
               <KpiCards kpis={kpis} activeMap={activeMap} amenazasData={amenazasData} />
               <div className="map-layout reveal">
