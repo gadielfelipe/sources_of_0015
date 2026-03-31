@@ -628,22 +628,18 @@
     }
 
     /* ── Content Sections ───────────────────────────────────────────────── */
+    @keyframes ovSectionIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
     .ov-content-section {
-      background: #f7f5f1;
-      min-height: 100vh;
-      opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 0.35s ease, transform 0.35s ease;
-      pointer-events: none;
-      position: absolute;
-      width: 100%;
-      top: 0; left: 0;
+      display: none;
     }
     .ov-content-section.ov-visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-      position: relative;
+      display: block;
+      background: #f7f5f1;
+      min-height: 100vh;
+      animation: ovSectionIn 0.35s ease forwards;
     }
     .ov-section-header { background: #fff; border-bottom: 1px solid #e0ded8; padding: 16px 24px; }
     .ov-breadcrumb { font-family: 'DM Mono', monospace; font-size: 11px; color: #888; margin-bottom: 8px; }
@@ -729,7 +725,7 @@
     .ov-table td { padding: 9px 12px; border-bottom: 1px solid #f0ede8; color: #333; }
     .ov-table tr:last-child td { border-bottom: none; }
     .ov-table tr:hover td { background: #faf8f4; }
-    .ov-sections-container { position: relative; }
+    .ov-sections-container {}
 
     /* ── Leaflet popup dark theme ────────────────────────── */
     .leaflet-popup-content-wrapper {
