@@ -558,6 +558,179 @@
     .footer-sources strong { color: var(--text-primary); font-weight: 500; }
     .footer-sources div { margin-top: 5px; }
 
+    /* ── Overview Dashboard ─────────────────────────────────────────────── */
+    .overview-kpi-strip {
+      background: #fff;
+      border-bottom: 1px solid #e0ded8;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    @media (max-width: 900px) { .overview-kpi-strip { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .overview-kpi-strip { grid-template-columns: 1fr; } }
+    .ov-kpi { padding: 22px 20px; border-right: 1px solid #e0ded8; }
+    .ov-kpi:last-child { border-right: none; }
+    .ov-kpi-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 38px;
+      font-weight: 500;
+      color: #1a1a1a;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .ov-kpi-label {
+      font-family: 'Lora', serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 3px;
+    }
+    .ov-kpi-sub { font-family: 'DM Mono', monospace; font-size: 10px; color: #888; }
+
+    /* ── Section Cards ──────────────────────────────────────────────────── */
+    .ov-cards-grid {
+      background: #f7f5f1;
+      padding: 32px 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    @media (max-width: 768px) { .ov-cards-grid { grid-template-columns: 1fr; } }
+    .ov-section-card {
+      background: #fff;
+      border: 1px solid #e0ded8;
+      border-radius: 3px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+    .ov-section-card:hover { transform: translateY(-4px); box-shadow: 0 10px 36px rgba(0,0,0,0.10); }
+    .ov-card-accent { height: 3px; }
+    .ov-card-img { width: 100%; height: 180px; object-fit: cover; filter: saturate(0.65); display: block; }
+    .ov-card-body { padding: 20px; }
+    .ov-card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+    .ov-card-desc { font-family: 'Lora', serif; font-size: 12px; color: #666; line-height: 1.55; margin-bottom: 14px; }
+    .ov-card-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    /* ── Content Sections ───────────────────────────────────────────────── */
+    .ov-content-section {
+      background: #f7f5f1;
+      min-height: 100vh;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      pointer-events: none;
+      position: absolute;
+      width: 100%;
+      top: 0; left: 0;
+    }
+    .ov-content-section.ov-visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      position: relative;
+    }
+    .ov-section-header { background: #fff; border-bottom: 1px solid #e0ded8; padding: 16px 24px; }
+    .ov-breadcrumb { font-family: 'DM Mono', monospace; font-size: 11px; color: #888; margin-bottom: 8px; }
+    .ov-breadcrumb button {
+      background: none; border: none; font-family: 'DM Mono', monospace;
+      font-size: 11px; color: #1a6faa; cursor: pointer; padding: 0;
+    }
+    .ov-breadcrumb button:hover { text-decoration: underline; }
+    .ov-section-title-row { display: flex; align-items: center; gap: 12px; }
+    .ov-section-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; color: #1a1a1a; }
+    .ov-alert-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 2px;
+      color: #fff;
+    }
+    .ov-sub-tabs {
+      display: flex;
+      border-bottom: 1px solid #e0ded8;
+      background: #fff;
+      padding: 0 24px;
+    }
+    .ov-sub-tab {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      padding: 12px 18px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: #888;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.18s, border-color 0.18s;
+    }
+    .ov-sub-tab:hover { color: #333; }
+    .ov-sub-tab.ov-tab-active { color: #1a1a1a; font-weight: 500; }
+    .ov-section-body { padding: 24px; }
+    .ov-inner-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .ov-inner-kpi { background: #fff; border: 1px solid #e0ded8; border-radius: 3px; padding: 16px 18px; }
+    .ov-inner-kpi-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 22px;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+    .ov-inner-kpi-label { font-family: 'Lora', serif; font-size: 11px; color: #666; }
+    .ov-map-placeholder {
+      background: #e8e6e1;
+      border: 1px dashed #c0bdb7;
+      border-radius: 3px;
+      height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      color: #999;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+    }
+    .ov-table-wrap { background: #fff; border: 1px solid #e0ded8; border-radius: 3px; overflow: hidden; }
+    .ov-table { width: 100%; border-collapse: collapse; font-family: 'Lora', serif; font-size: 13px; }
+    .ov-table th {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #666;
+      padding: 10px 12px;
+      text-align: left;
+      background: #f7f5f1;
+      border-bottom: 1px solid #e0ded8;
+    }
+    .ov-table td { padding: 9px 12px; border-bottom: 1px solid #f0ede8; color: #333; }
+    .ov-table tr:last-child td { border-bottom: none; }
+    .ov-table tr:hover td { background: #faf8f4; }
+    .ov-sections-container { position: relative; }
+
     /* ── Leaflet popup dark theme ────────────────────────── */
     .leaflet-popup-content-wrapper {
       background: var(--bg-card) !important;
@@ -1539,6 +1712,319 @@
       );
     }
 
+    // ─── Overview KPI Strip ───────────────────────────────────────────────────
+
+    function OverviewKpiStrip() {
+      return (
+        <div className="overview-kpi-strip">
+          <div className="ov-kpi">
+            <div className="ov-kpi-value">1,121</div>
+            <div className="ov-kpi-label">Municipios monitoreados</div>
+            <div className="ov-kpi-sub">red nacional IDEAM</div>
+          </div>
+          <div className="ov-kpi">
+            <div className="ov-kpi-value" style={{color:'#1a6faa'}}>87</div>
+            <div className="ov-kpi-label">Alertas activas &middot; Lluvias</div>
+            <div className="ov-kpi-sub">municipios en alerta hist&oacute;rica</div>
+          </div>
+          <div className="ov-kpi">
+            <div className="ov-kpi-value" style={{color:'#b85c1a'}}>54</div>
+            <div className="ov-kpi-label">Alertas activas &middot; Sequ&iacute;as</div>
+            <div className="ov-kpi-sub">municipios con d&eacute;ficit cr&iacute;tico</div>
+          </div>
+          <div className="ov-kpi">
+            <div className="ov-kpi-value" style={{color:'#2d6b3c'}}>77</div>
+            <div className="ov-kpi-label">Alertas activas &middot; Deslizamientos</div>
+            <div className="ov-kpi-sub">municipios susceptibilidad alta</div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── Overview Section Cards ───────────────────────────────────────────────
+
+    function OverviewSectionCards({ onSelect }) {
+      const cards = [
+        {
+          id: 'lluvias',
+          accent: '#1a6faa',
+          img: 'data/lluvia.jpeg',
+          title: 'Lluvias',
+          desc: 'Monitoreo de precipitaci\u00f3n diaria y alertas hist\u00f3ricas por municipio. An\u00e1lisis de eventos extremos y tendencias acumuladas.',
+        },
+        {
+          id: 'sequias',
+          accent: '#b85c1a',
+          img: 'data/sequia.jpeg',
+          title: 'Sequ\u00edas',
+          desc: 'Indicadores de d\u00e9ficit h\u00eddrico recurrente, categor\u00eda SPI y municipios con condiciones cr\u00edticas de sequ\u00eda.',
+        },
+        {
+          id: 'deslizamientos',
+          accent: '#2d6b3c',
+          img: 'data/deslizamiento.jpeg',
+          title: 'Deslizamientos',
+          desc: 'Amenaza de movimientos en masa (SGC 1:500k) cruzada con alertas diarias IDEAM y precipitaci\u00f3n acumulada.',
+        },
+      ];
+      return (
+        <div className="ov-cards-grid">
+          {cards.map(c => (
+            <div key={c.id} className="ov-section-card" onClick={() => onSelect(c.id)}>
+              <div className="ov-card-accent" style={{background: c.accent}} />
+              <img className="ov-card-img" src={c.img} alt={c.title} />
+              <div className="ov-card-body">
+                <div className="ov-card-title">{c.title}</div>
+                <div className="ov-card-desc">{c.desc}</div>
+                <button
+                  className="ov-card-link"
+                  style={{color: c.accent}}
+                  onClick={e => { e.stopPropagation(); onSelect(c.id); }}
+                >
+                  Ver secci&oacute;n &rarr;
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    // ─── Sub-tabs helper ──────────────────────────────────────────────────────
+
+    function OvSubTabs({ tabs, active, accentColor, onSelect }) {
+      return (
+        <div className="ov-sub-tabs">
+          {tabs.map(t => (
+            <button
+              key={t}
+              className={`ov-sub-tab${active === t ? ' ov-tab-active' : ''}`}
+              style={active === t ? {color: accentColor, borderBottomColor: accentColor} : {}}
+              onClick={() => onSelect(t)}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+      );
+    }
+
+    // ─── Lluvias Section ──────────────────────────────────────────────────────
+
+    function LluviasSection({ visible, onBack }) {
+      const [activeTab, setActiveTab] = React.useState('Mapa');
+      const TABS = ['Mapa', 'Datos hist\u00f3ricos', 'Metodolog\u00eda'];
+      return (
+        <div className={`ov-content-section${visible ? ' ov-visible' : ''}`}>
+          <div className="ov-section-header">
+            <div className="ov-breadcrumb">
+              <button onClick={onBack}>Resumen general</button>
+              {'\u00a0/\u00a0Lluvias'}
+            </div>
+            <div className="ov-section-title-row">
+              <div className="ov-section-title">Alertas &middot; Lluvias</div>
+              <span className="ov-alert-badge" style={{background:'#1a6faa'}}>87 municipios</span>
+            </div>
+          </div>
+          <OvSubTabs tabs={TABS} active={activeTab} accentColor="#1a6faa" onSelect={setActiveTab} />
+          <div className="ov-section-body">
+            <div className="ov-inner-kpi-row">
+              <div className="ov-inner-kpi">
+                <div className="ov-inner-kpi-value" style={{color:'#1a6faa'}}>87</div>
+                <div className="ov-inner-kpi-label">Municipios en alerta</div>
+              </div>
+              <div className="ov-inner-kpi">
+                <div className="ov-inner-kpi-value">7.00 mm</div>
+                <div className="ov-inner-kpi-label">Promedio precipitaci&oacute;n</div>
+              </div>
+              <div className="ov-inner-kpi">
+                <div className="ov-inner-kpi-value">574.3 mm</div>
+                <div className="ov-inner-kpi-label">M&aacute;x. precipitaci&oacute;n &middot; Baranoa</div>
+              </div>
+              <div className="ov-inner-kpi">
+                <div className="ov-inner-kpi-value">634</div>
+                <div className="ov-inner-kpi-label">Estaciones activas</div>
+              </div>
+            </div>
+            <div id="map-lluvias" className="ov-map-placeholder">
+              MAPA &middot; LLUVIAS &mdash; integraci&oacute;n Leaflet pendiente
+            </div>
+            <div className="ov-table-wrap">
+              <table className="ov-table">
+                <thead>
+                  <tr>
+                    <th>Municipio</th>
+                    <th>Departamento</th>
+                    <th>Precip. (mm)</th>
+                    <th>Nivel alerta</th>
+                    <th>Tendencia</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colSpan="5" style={{textAlign:'center', color:'#aaa', padding:'24px'}}>
+                      Datos cargados din&aacute;micamente
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── Sequías Section ──────────────────────────────────────────────────────
+
+    function SequiasSection({ visible, onBack }) {
+      const [activeTab, setActiveTab] = React.useState('Mapa');
+      const TABS = ['Mapa', 'Datos hist\u00f3ricos', 'Metodolog\u00eda'];
+      return (
+        <div className={`ov-content-section${visible ? ' ov-visible' : ''}`}>
+          <div className="ov-section-header">
+            <div className="ov-breadcrumb">
+              <button onClick={onBack}>Resumen general</button>
+              {'\u00a0/\u00a0Sequ\u00edas'}
+            </div>
+            <div className="ov-section-title-row">
+              <div className="ov-section-title">Alertas &middot; Sequ&iacute;as</div>
+              <span className="ov-alert-badge" style={{background:'#b85c1a'}}>54 municipios</span>
+            </div>
+          </div>
+          <OvSubTabs tabs={TABS} active={activeTab} accentColor="#b85c1a" onSelect={setActiveTab} />
+          <div className="ov-section-body">
+            <div className="ov-inner-kpi-row">
+              <div className="ov-inner-kpi">
+                <div className="ov-inner-kpi-value" style={{color:'#b85c1a'}}>54</div>
+                <div className="ov-inner-kpi-label">Municipios en alerta</div>
+              </div>
+              <div className="ov-inner-kpi">
+                <div className="ov-inner-kpi-value">&minus;2.4</div>
+                <div className="ov-inner-kpi-label">&Iacute;ndice SPI m&iacute;n. &middot; La Guajira</div>
+              </div>
+              <div className="ov-inner-kpi">
+                <div className="ov-inner-kpi-value">38 d&iacute;as</div>
+                <div className="ov-inner-kpi-label">Duraci&oacute;n media</div>
+              </div>
+            </div>
+            <div id="map-sequias" className="ov-map-placeholder">
+              MAPA &middot; SEQU&Iacute;AS &mdash; integraci&oacute;n Leaflet pendiente
+            </div>
+            <div className="ov-table-wrap">
+              <table className="ov-table">
+                <thead>
+                  <tr>
+                    <th>Municipio</th>
+                    <th>Departamento</th>
+                    <th>Categor&iacute;a SPI</th>
+                    <th>&Iacute;ndice SPI</th>
+                    <th>Duraci&oacute;n (d&iacute;as)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colSpan="5" style={{textAlign:'center', color:'#aaa', padding:'24px'}}>
+                      Datos cargados din&aacute;micamente
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── Deslizamientos Section ───────────────────────────────────────────────
+
+    function DeslizSection({ visible, onBack }) {
+      const [activeTab, setActiveTab] = React.useState('Mapa');
+      const TABS = ['Mapa', 'Datos hist\u00f3ricos', 'Metodolog\u00eda'];
+      return (
+        <div className={`ov-content-section${visible ? ' ov-visible' : ''}`}>
+          <div className="ov-section-header">
+            <div className="ov-breadcrumb">
+              <button onClick={onBack}>Resumen general</button>
+              {'\u00a0/\u00a0Deslizamientos'}
+            </div>
+            <div className="ov-section-title-row">
+              <div className="ov-section-title">Alertas &middot; Deslizamientos</div>
+              <span className="ov-alert-badge" style={{background:'#2d6b3c'}}>77 municipios</span>
+            </div>
+          </div>
+          <OvSubTabs tabs={TABS} active={activeTab} accentColor="#2d6b3c" onSelect={setActiveTab} />
+          <div className="ov-section-body">
+            <div className="ov-inner-kpi-row">
+              <div className="ov-inner-kpi">
+                <div className="ov-inner-kpi-value" style={{color:'#2d6b3c'}}>77</div>
+                <div className="ov-inner-kpi-label">Municipios en alerta</div>
+              </div>
+              <div className="ov-inner-kpi">
+                <div className="ov-inner-kpi-value">12</div>
+                <div className="ov-inner-kpi-label">Zonas cr&iacute;ticas</div>
+              </div>
+              <div className="ov-inner-kpi">
+                <div className="ov-inner-kpi-value">&gt;80 mm/d&iacute;a</div>
+                <div className="ov-inner-kpi-label">Umbral detonante</div>
+              </div>
+            </div>
+            <div id="map-deslizamientos" className="ov-map-placeholder">
+              MAPA &middot; DESLIZAMIENTOS &mdash; integraci&oacute;n Leaflet pendiente
+            </div>
+            <div className="ov-table-wrap">
+              <table className="ov-table">
+                <thead>
+                  <tr>
+                    <th>Municipio</th>
+                    <th>Departamento</th>
+                    <th>Amenaza MM</th>
+                    <th>Acum. 3 d&iacute;as (mm)</th>
+                    <th>Alerta IDEAM</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colSpan="5" style={{textAlign:'center', color:'#aaa', padding:'24px'}}>
+                      Datos cargados din&aacute;micamente
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── Overview Dashboard (orchestrator) ───────────────────────────────────
+
+    function OverviewDashboard() {
+      const [activeSection, setActiveSection] = React.useState(null);
+
+      function showSection(name) {
+        setActiveSection(name);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function goBack() {
+        setActiveSection(null);
+      }
+
+      return (
+        <div>
+          <OverviewKpiStrip />
+          <div style={{display: activeSection ? 'none' : 'block'}}>
+            <OverviewSectionCards onSelect={showSection} />
+          </div>
+          <div className="ov-sections-container">
+            <LluviasSection     visible={activeSection === 'lluvias'}        onBack={goBack} />
+            <SequiasSection     visible={activeSection === 'sequias'}        onBack={goBack} />
+            <DeslizSection      visible={activeSection === 'deslizamientos'} onBack={goBack} />
+          </div>
+        </div>
+      );
+    }
+
     // ─── App ──────────────────────────────────────────────────────────────────
 
     function App() {
@@ -1653,6 +2139,7 @@
           <LandingHero />
           <div id="dashboard">
             <Header dataFecha={dataFecha} />
+            <OverviewDashboard />
             <main className="dashboard-main">
               <KpiCards kpis={kpis} activeMap={activeMap} amenazasData={amenazasData} />
               <div className="map-layout reveal">
