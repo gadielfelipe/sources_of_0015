@@ -2480,57 +2480,6 @@
           <div id="dashboard">
             <Header dataFecha={dataFecha} />
             <OverviewDashboard allData={allData} amenazasData={amenazasData} alertaHistData={alertaHistData} dataFecha={dataFecha} />
-            <main className="dashboard-main">
-              <KpiCards kpis={kpis} activeMap={activeMap} amenazasData={amenazasData} />
-              <div className="map-layout reveal">
-                <div className="map-main">
-                  {/* Tab selector */}
-                  <div className="tab-bar">
-                    <button
-                      onClick={() => setActiveMap('lluvias')}
-                      className={`tab-btn${activeMap === 'lluvias' ? ' active-lluvias' : ''}`}
-                    >
-                      &#x1F327;&#xFE0F; Alertas Lluvias
-                    </button>
-                    <button
-                      onClick={() => setActiveMap('sequias')}
-                      className={`tab-btn${activeMap === 'sequias' ? ' active-sequias' : ''}`}
-                    >
-                      &#x2600;&#xFE0F; Alertas Sequ&iacute;as
-                    </button>
-                    <button
-                      onClick={() => setActiveMap('deslizamientos')}
-                      className={`tab-btn${activeMap === 'deslizamientos' ? ' active-desliz' : ''}`}
-                    >
-                      &#x26F0;&#xFE0F; Alertas Deslizamientos
-                    </button>
-                  </div>
-                  {/* Mapa Lluvias */}
-                  <div style={{display: activeMap === 'lluvias' ? 'block' : 'none'}}>
-                    <MapPanel data={filteredData} mode="lluvias" visible={activeMap === 'lluvias'} />
-                  </div>
-                  {/* Mapa Sequías */}
-                  <div style={{display: activeMap === 'sequias' ? 'block' : 'none'}}>
-                    <MapPanel data={filteredData} mode="sequias" visible={activeMap === 'sequias'} />
-                  </div>
-                  {/* Mapa Deslizamientos */}
-                  <div style={{display: activeMap === 'deslizamientos' ? 'block' : 'none'}}>
-                    <DeslizMapPanel amenazasData={amenazasData} visible={activeMap === 'deslizamientos'} />
-                  </div>
-                </div>
-                <SidePanel
-                  data={filteredData}
-                  allData={allData}
-                  departments={departments}
-                  deptFilter={deptFilter}
-                  alertOnly={alertOnly}
-                  onDeptChange={setDeptFilter}
-                  onAlertToggle={() => setAlertOnly(v => !v)}
-                  alertaHistData={alertaHistData}
-                  dataFecha={dataFecha}
-                />
-              </div>
-            </main>
             <footer className="site-footer">
               <div>
                 <div className="footer-brand">GGGI &mdash; Sustainable Finance</div>
