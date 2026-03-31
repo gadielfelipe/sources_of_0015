@@ -951,6 +951,65 @@
       setTimeout(() => w.print(), 400);
     }
 
+    // ─── Generic PDF export (per indicator) ──────────────────────────────────
+
+    function exportReportePDFSection(result, mergedRows, dataFecha, config) {
+      const fmtCOP = v => v.toLocaleString('es-CO', { style:'currency', currency:'COP', maximumFractionDigits:0 });
+      const { title, indicadorLabel, alertLabel, alertColor } = config;
+
+      const tableRows = mergedRows.map(r => `
+        <tr style="${r.enRiesgo ? 'background:#fff0f0' : ''}">
+          <td>${r.cod}</td><td>${r.nombre}</td>
+          <td style="text-align:right">${fmtCOP(r.cartera_total)}</td>
+          <td style="text-align:center;color:${r.enRiesgo ? alertColor : '#27ae60'};font-weight:600">${r.alerta_indicador}</td>
+        </tr>`).join('');
+
+      const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<title>${title}</title>
+<style>
+  body{font-family:Arial,sans-serif;padding:24px;color:#333;font-size:13px}
+  h1{color:#1a5276;margin-bottom:4px}
+  .meta{color:#888;font-size:12px;margin-bottom:18px}
+  .kpi-row{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+  .kpi{background:#eaf0fb;padding:14px 20px;border-radius:8px;border-left:4px solid #1a5276;min-width:200px}
+  .kpi.red{border-color:${alertColor}}
+  .kpi-val{font-size:1.6em;font-weight:700;color:#1a5276}
+  .kpi.red .kpi-val{color:${alertColor}}
+  .kpi-lbl{font-size:11px;color:#555;margin-top:2px}
+  .indicator-box{background:#1a5276;color:white;border-radius:10px;padding:20px 28px;margin-bottom:20px;display:inline-block}
+  .indicator-val{font-size:2.4em;font-weight:700}
+  .indicator-lbl{font-size:12px;opacity:0.85;margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{background:#1a5276;color:white;padding:8px 10px;text-align:left}
+  td{padding:6px 10px;border-bottom:1px solid #eee}
+  @media print{body{padding:10px}.no-print{display:none}}
+</style></head><body>
+<h1>${title}</h1>
+<div class="meta">Indicador: <b>${indicadorLabel}</b> &nbsp;|&nbsp; Alerta: <b>${alertLabel}</b> &nbsp;|&nbsp;
+  Fecha datos: <b>${dataFecha ?? 'N/A'}</b> &nbsp;|&nbsp;
+  Generado: <b>${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'})}</b></div>
+<div class="indicator-box">
+  <div class="indicator-val">${result.indicator}%</div>
+  <div class="indicator-lbl">Cartera en riesgo / Cartera total</div>
+</div>
+<div class="kpi-row">
+  <div class="kpi red"><div class="kpi-val">${fmtCOP(result.cartaRiesgo)}</div><div class="kpi-lbl">Cartera municipios en riesgo (${result.nRiesgo})</div></div>
+  <div class="kpi"><div class="kpi-val">${fmtCOP(result.totalCartera)}</div><div class="kpi-lbl">Cartera total (${result.nTotal} mpios)</div></div>
+</div>
+<h2 style="color:#1a5276;margin-bottom:8px">Detalle por municipio</h2>
+<table><thead><tr>
+  <th>C\u00f3digo</th><th>Municipio</th>
+  <th style="text-align:right">Cartera total</th>
+  <th style="text-align:center">${alertLabel}</th>
+</tr></thead><tbody>${tableRows}</tbody></table>
+</body></html>`;
+
+      const w = window.open('', '_blank');
+      w.document.write(html);
+      w.document.close();
+      setTimeout(() => w.print(), 400);
+    }
+
     const ALERTA_BADGE = {
       'CR\u00cdTICA': '<span style="color:#c0392b;font-weight:700;">\u26a0 CR\u00cdTICA</span>',
       'ALTA':         '<span style="color:#e03131;font-weight:600;">\u26a0 ALTA</span>',
@@ -1384,15 +1443,208 @@
       );
     }
 
+    // ─── Cartera Box Section (per-indicator) ─────────────────────────────────
+
+    function CarteraBoxSection({ indicador, alertaLookup, alertTargets, alertLabel, dataFecha }) {
+      const [carteraData,   setCarteraData]   = useState(null);
+      const [carteraResult, setCarteraResult] = useState(null);
+      const [carteraError,  setCarteraError]  = useState(null);
+      const fileRef = useRef(null);
+
+      const CONFIGS = {
+        lluvias:        { title: 'Reporte Cartera \u2013 Alerta Lluvias',        indicadorLabel: 'Precipitaci\u00f3n / Lluvias',    alertColor: '#e03131', csv: 'cartera_lluvias.csv'        },
+        sequias:        { title: 'Reporte Cartera \u2013 Sequ\u00eda Severa',    indicadorLabel: 'Sequ\u00eda recurrente (SPI)',    alertColor: '#e8590c', csv: 'cartera_sequias.csv'        },
+        deslizamientos: { title: 'Reporte Cartera \u2013 Deslizamientos ALTA',   indicadorLabel: 'Movimientos en masa (SGC)',       alertColor: '#2d6b3c', csv: 'cartera_deslizamientos.csv' },
+      };
+      const cfg = CONFIGS[indicador] ?? CONFIGS.lluvias;
+
+      function handleFile(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        setCarteraError(null); setCarteraData(null); setCarteraResult(null);
+        Papa.parse(file, {
+          header: true, skipEmptyLines: true,
+          complete: ({ data, errors }) => {
+            if (errors.length) console.warn('Cartera warnings:', errors);
+            if (!data.length) { setCarteraError('El archivo est\u00e1 vac\u00edo.'); return; }
+            const keys      = Object.keys(data[0]);
+            const codCol    = keys.find(k => /cod/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /cod/i.test(k)) ?? keys[0];
+            const carteraCol = keys.find(k => /cartera/i.test(k));
+            const nameCol    = keys.find(k => /nom/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /nombre|name/i.test(k));
+            if (!carteraCol) { setCarteraError('No se encontr\u00f3 columna "cartera_total". Verifique el formato.'); return; }
+            let totalCartera = 0, cartaRiesgo = 0, nTotal = 0, nRiesgo = 0;
+            const merged = [];
+            data.forEach(r => {
+              const cod    = (r[codCol] ?? '').toString().trim();
+              const val    = parseFloat((r[carteraCol] ?? '').toString().replace(/[^0-9.-]/g,'')) || 0;
+              const nombre = nameCol ? (r[nameCol] ?? cod) : cod;
+              const alerta = alertaLookup[cod] ?? alertaLookup[cod.padStart(5,'0')] ?? 'Sin datos';
+              const enRiesgo = alertTargets.includes(alerta);
+              totalCartera += val; nTotal++;
+              if (enRiesgo) { cartaRiesgo += val; nRiesgo++; }
+              merged.push({ cod, nombre, cartera_total: val, alerta_indicador: alerta, enRiesgo });
+            });
+            const indicator = totalCartera > 0 ? (cartaRiesgo / totalCartera * 100).toFixed(2) : '0.00';
+            setCarteraData(merged);
+            setCarteraResult({ totalCartera, cartaRiesgo, indicator, nTotal, nRiesgo });
+          },
+          error: err => setCarteraError('Error al leer el archivo: ' + err.message),
+        });
+        e.target.value = '';
+      }
+
+      function handleExportCSV() {
+        if (!carteraData) return;
+        const headers = ['cod','nombre','cartera_total','alerta_indicador'];
+        const rows = carteraData.map(r => [r.cod, `"${r.nombre}"`, r.cartera_total, r.alerta_indicador].join(','));
+        const csv  = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = cfg.csv; a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      const fmtM = v => (v / 1e6).toFixed(1) + ' M';
+      const capFirst = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+      return (
+        <div className="panel-card">
+          <div className="panel-card-title">An&aacute;lisis de Cartera &middot; {capFirst(indicador)}</div>
+          <div className="btn-row">
+            <button onClick={() => { const a=document.createElement('a'); a.href='data/cartera_municipios_codigos.csv'; a.download='cartera_municipios_codigos.csv'; a.click(); }} className="btn btn-dark">
+              &#x1F4CB; Ejemplo
+            </button>
+            <button onClick={() => fileRef.current?.click()} className="btn btn-primary">
+              &#x1F4C2; Cargar cartera
+            </button>
+            <input ref={fileRef} type="file" accept=".csv,.xlsx,.xls" onChange={handleFile} style={{display:'none'}} />
+          </div>
+          <p className="hint-text">
+            CSV con <code>COD_MPIO</code> y <code>cartera_total</code>. Cruzado con <b>{alertLabel}</b>.
+          </p>
+          {carteraError && <div className="error-box">&#x26A0; {carteraError}</div>}
+          {carteraResult && (
+            <div>
+              <div className="indicator-box">
+                <div className="indicator-value">{carteraResult.indicator}%</div>
+                <div className="indicator-label">Cartera en riesgo / Cartera total</div>
+              </div>
+              <div className="cartera-kpi-grid">
+                <div className="cartera-kpi danger">
+                  <div className="cartera-kpi-value">{fmtM(carteraResult.cartaRiesgo)} COP</div>
+                  <div className="cartera-kpi-label">Cartera en riesgo <span style={{marginLeft:'4px',color:'var(--danger)'}}>({carteraResult.nRiesgo} mpios)</span></div>
+                </div>
+                <div className="cartera-kpi">
+                  <div className="cartera-kpi-value">{fmtM(carteraResult.totalCartera)} COP</div>
+                  <div className="cartera-kpi-label">Cartera total <span style={{marginLeft:'4px',color:'var(--accent-gold)'}}>({carteraResult.nTotal} mpios)</span></div>
+                </div>
+              </div>
+              <div style={{display:'flex', gap:'8px'}}>
+                <button onClick={() => exportReportePDFSection(carteraResult, carteraData, dataFecha, {...cfg, alertLabel})} className="btn btn-danger" style={{flex:1,justifyContent:'center'}}>
+                  &#x1F4C4; Exportar PDF
+                </button>
+                <button onClick={handleExportCSV} className="btn btn-success" style={{flex:1,justifyContent:'center'}}>
+                  &#x1F4BE; Exportar CSV
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ─── Section Table Boxes ──────────────────────────────────────────────────
+
+    function SequiasTableBox({ data }) {
+      const catOrder = { EXTREMA:4, SEVERA:3, MODERADA:2, LEVE:1, NORMAL:0 };
+      const catColor  = { EXTREMA:'#7b0000', SEVERA:'#e8590c', MODERADA:'#f0b429', LEVE:'#ffe066', NORMAL:'#adb5bd' };
+      const sorted = useMemo(
+        () => [...data].sort((a, b) => (catOrder[b.sequia_categoria]??0) - (catOrder[a.sequia_categoria]??0)),
+        [data]
+      );
+      return (
+        <div className="panel-card">
+          <div className="panel-card-title">Municipios &middot; Sequ&iacute;a</div>
+          <div className="table-scroll">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Municipio</th>
+                  <th className="hide-sm">Dpto.</th>
+                  <th className="center">Categor&iacute;a</th>
+                  <th className="right">mm</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sorted.map((d, i) => (
+                  <tr key={d.COD_MPIO || i}>
+                    <td>{d.NOM_MPIO}</td>
+                    <td className="td-muted hide-sm">{d.NOM_DPTO}</td>
+                    <td className="td-center" style={{color: catColor[d.sequia_categoria]??'#adb5bd', fontWeight: d.sequia_categoria!=='NORMAL'?600:400}}>
+                      {d.sequia_categoria}
+                    </td>
+                    <td className="td-right">{d.precip_acum_mm}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    function DeslizTableBox({ entries }) {
+      const amenazaColor = { MUY_ALTA:'#d91919', ALTA:'#ff800d', MEDIA:'#ffd900', BAJA:'#90ee90', MUY_BAJA:'#218a21' };
+      const amenazaLbl   = { MUY_ALTA:'Muy alta', ALTA:'Alta', MEDIA:'Media', BAJA:'Baja', MUY_BAJA:'Muy baja' };
+      const sorted = useMemo(
+        () => [...entries].sort((a, b) => (b.alerta_deslizamiento==='ALTA'?1:0) - (a.alerta_deslizamiento==='ALTA'?1:0)),
+        [entries]
+      );
+      return (
+        <div className="panel-card">
+          <div className="panel-card-title">Municipios &middot; Deslizamientos</div>
+          <div className="table-scroll">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Municipio</th>
+                  <th className="hide-sm">Dpto.</th>
+                  <th className="center">Amenaza</th>
+                  <th className="right">3d mm</th>
+                  <th className="center">Alerta</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sorted.map((d, i) => (
+                  <tr key={(d.nom_mpio||'') + i}>
+                    <td>{d.nom_mpio}</td>
+                    <td className="td-muted hide-sm">{d.nom_dpto}</td>
+                    <td className="td-center" style={{color: amenazaColor[d.amenaza_mm]??'#adb5bd', fontWeight:600}}>
+                      {amenazaLbl[d.amenaza_mm] ?? d.amenaza_mm}
+                    </td>
+                    <td className="td-right">{d.acum_3dias_mm != null ? d.acum_3dias_mm.toFixed(1) : 'N/D'}</td>
+                    <td className="td-center">{d.alerta_deslizamiento==='ALTA' ? '\uD83D\uDD34' : '\uD83D\uDFE2'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
     // ─── Side Panel ───────────────────────────────────────────────────────────
 
-    function FilterBox({ departments, deptFilter, alertOnly, onDeptChange, onAlertToggle, allData, dataFecha }) {
+    function FilterBox({ departments, deptFilter, alertOnly, onDeptChange, onAlertToggle, allData, dataFecha, onDownload, alertLabel }) {
+      const handleDownload = onDownload ?? (() => downloadCSV(allData, `datos_municipios_${dataFecha ?? 'export'}.csv`));
+      const chkLabel = alertLabel ?? 'Solo municipios en alerta';
       return (
         <div className="panel-card">
           <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'14px'}}>
             <div className="panel-card-title" style={{marginBottom:0}}>Filtros</div>
             <button
-              onClick={() => downloadCSV(allData, `datos_municipios_${dataFecha ?? 'export'}.csv`)}
+              onClick={handleDownload}
               title="Descargar datos actuales como CSV"
               className="btn btn-success"
             >
@@ -1417,7 +1669,7 @@
               onChange={onAlertToggle}
               className="form-checkbox"
             />
-            <span className="form-checkbox-label">Solo municipios en alerta</span>
+            <span className="form-checkbox-label">{chkLabel}</span>
           </label>
         </div>
       );
@@ -1811,10 +2063,26 @@
 
     // ─── Lluvias Section ──────────────────────────────────────────────────────
 
-    function LluviasSection({ visible, onBack, data }) {
-      const [activeTab, setActiveTab] = React.useState('Mapa');
+    function LluviasSection({ visible, onBack, data, alertaHistData, dataFecha }) {
+      const [activeTab,  setActiveTab]  = React.useState('Mapa');
+      const [deptFilter, setDeptFilter] = React.useState('ALL');
+      const [alertOnly,  setAlertOnly]  = React.useState(false);
       const TABS = ['Mapa', 'Datos hist\u00f3ricos', 'Metodolog\u00eda'];
-      const kpis = useMemo(() => computeKpis(data), [data]);
+
+      const departments = useMemo(() => {
+        const set = new Set(data.map(d => d.NOM_DPTO));
+        return ['ALL', ...Array.from(set).sort()];
+      }, [data]);
+
+      const filtered = useMemo(() =>
+        data
+          .filter(d => deptFilter === 'ALL' || d.NOM_DPTO === deptFilter)
+          .filter(d => !alertOnly || d.alerta > 0),
+        [data, deptFilter, alertOnly]
+      );
+
+      const kpis = useMemo(() => computeKpis(filtered), [filtered]);
+
       return (
         <div className={`ov-content-section${visible ? ' ov-visible' : ''}`}>
           <div className="ov-section-header">
@@ -1828,45 +2096,39 @@
             </div>
           </div>
           <OvSubTabs tabs={TABS} active={activeTab} accentColor="#1a6faa" onSelect={setActiveTab} />
-          <div className="ov-section-body">
-            <div className="ov-inner-kpi-row">
-              <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value" style={{color:'#1a6faa'}}>{kpis.enAlerta}</div>
-                <div className="ov-inner-kpi-label">Municipios en alerta</div>
+          <div style={{background:'var(--bg-primary)'}}>
+            <div className="dashboard-main">
+              <div className="kpi-grid reveal">
+                <KpiCard label="Municipios filtrados"         value={filtered.length}       icon="&#x1F3D9;" />
+                <KpiCard label="En alerta hist\u00f3rica"     value={kpis.enAlerta}         icon="&#x26A0;&#xFE0F;" accent="red" />
+                <KpiCard label="Promedio precipitaci\u00f3n"  value={`${kpis.promedio} mm`} icon="&#x1F4A7;" accent="green" />
+                <KpiCard label="M\u00e1x. precipitaci\u00f3n" value={`${kpis.maximo} mm`}   icon="&#x1F4CD;" accent="gold" sub={kpis.maxMpio} />
               </div>
-              <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value">{kpis.promedio} mm</div>
-                <div className="ov-inner-kpi-label">Promedio precipitaci&oacute;n</div>
+              <div className="map-layout">
+                <div className="map-main">
+                  <MapPanel data={filtered} mode="lluvias" visible={visible} />
+                </div>
+                <div className="map-side side-panel">
+                  <FilterBox
+                    departments={departments}
+                    deptFilter={deptFilter}
+                    alertOnly={alertOnly}
+                    onDeptChange={setDeptFilter}
+                    onAlertToggle={() => setAlertOnly(v => !v)}
+                    onDownload={() => downloadCSV(filtered, `lluvias_${dataFecha ?? 'export'}.csv`)}
+                    alertLabel="Solo municipios en alerta lluvias"
+                  />
+                  <StatsBox filteredCount={filtered.length} total={data.length} />
+                  <TableBox data={filtered} />
+                  <CarteraBoxSection
+                    indicador="lluvias"
+                    alertaLookup={alertaHistData}
+                    alertTargets={['ALTA', 'CR\u00cdTICA']}
+                    alertLabel="Alerta hist\u00f3rica lluvias \u2265 ALTA"
+                    dataFecha={dataFecha}
+                  />
+                </div>
               </div>
-              <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value">{kpis.maximo} mm</div>
-                <div className="ov-inner-kpi-label">M&aacute;x. precipitaci&oacute;n &middot; {kpis.maxMpio}</div>
-              </div>
-              <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value">{kpis.total}</div>
-                <div className="ov-inner-kpi-label">Municipios monitoreados</div>
-              </div>
-            </div>
-            <MapPanel data={data} mode="lluvias" visible={visible} />
-            <div className="ov-table-wrap">
-              <table className="ov-table">
-                <thead>
-                  <tr>
-                    <th>Municipio</th>
-                    <th>Departamento</th>
-                    <th>Precip. (mm)</th>
-                    <th>Nivel alerta</th>
-                    <th>Tendencia</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td colSpan="5" style={{textAlign:'center', color:'#aaa', padding:'24px'}}>
-                      Datos cargados din&aacute;micamente
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
@@ -1875,10 +2137,49 @@
 
     // ─── Sequías Section ──────────────────────────────────────────────────────
 
-    function SequiasSection({ visible, onBack, data }) {
-      const [activeTab, setActiveTab] = React.useState('Mapa');
+    function SequiasSection({ visible, onBack, data, dataFecha }) {
+      const [activeTab,  setActiveTab]  = React.useState('Mapa');
+      const [deptFilter, setDeptFilter] = React.useState('ALL');
+      const [severeOnly, setSevereOnly] = React.useState(false);
       const TABS = ['Mapa', 'Datos hist\u00f3ricos', 'Metodolog\u00eda'];
-      const enAlertaSequia = useMemo(() => data.filter(d => d.sequia_categoria === 'SEVERA').length, [data]);
+
+      const departments = useMemo(() => {
+        const set = new Set(data.map(d => d.NOM_DPTO));
+        return ['ALL', ...Array.from(set).sort()];
+      }, [data]);
+
+      const filtered = useMemo(() =>
+        data
+          .filter(d => deptFilter === 'ALL' || d.NOM_DPTO === deptFilter)
+          .filter(d => !severeOnly || ['SEVERA','EXTREMA'].includes(d.sequia_categoria)),
+        [data, deptFilter, severeOnly]
+      );
+
+      const enAlertaSequia = useMemo(
+        () => filtered.filter(d => ['SEVERA','EXTREMA'].includes(d.sequia_categoria)).length,
+        [filtered]
+      );
+      const kpisSeq = useMemo(() => computeKpis(filtered), [filtered]);
+
+      const sequiaAlertaLookup = useMemo(() => {
+        const m = {};
+        data.forEach(d => { m[d.COD_MPIO] = d.sequia_categoria; });
+        return m;
+      }, [data]);
+
+      function downloadSequiasCSV(rows, fecha) {
+        const headers = ['COD_MPIO','NOM_MPIO','NOM_DPTO','sequia_categoria','precip_acum_mm'];
+        const lines = rows.map(r =>
+          [r.COD_MPIO, `"${r.NOM_MPIO}"`, `"${r.NOM_DPTO}"`, r.sequia_categoria, r.precip_acum_mm].join(',')
+        );
+        const csv  = '\uFEFF' + [headers.join(','), ...lines].join('\r\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = `sequias_${fecha ?? 'export'}.csv`; a.click();
+        URL.revokeObjectURL(url);
+      }
+
       return (
         <div className={`ov-content-section${visible ? ' ov-visible' : ''}`}>
           <div className="ov-section-header">
@@ -1892,41 +2193,39 @@
             </div>
           </div>
           <OvSubTabs tabs={TABS} active={activeTab} accentColor="#b85c1a" onSelect={setActiveTab} />
-          <div className="ov-section-body">
-            <div className="ov-inner-kpi-row">
-              <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value" style={{color:'#b85c1a'}}>{enAlertaSequia}</div>
-                <div className="ov-inner-kpi-label">Municipios sequ&iacute;a SEVERA</div>
+          <div style={{background:'var(--bg-primary)'}}>
+            <div className="dashboard-main">
+              <div className="kpi-grid reveal">
+                <KpiCard label="Municipios filtrados"         value={filtered.length}         icon="&#x1F3D9;" />
+                <KpiCard label="Sequ\u00eda severa/extrema"   value={enAlertaSequia}           icon="&#x2600;&#xFE0F;" accent="red" />
+                <KpiCard label="Promedio precipitaci\u00f3n"  value={`${kpisSeq.promedio} mm`} icon="&#x1F4A7;" accent="green" />
+                <KpiCard label="M\u00e1x. precipitaci\u00f3n" value={`${kpisSeq.maximo} mm`}   icon="&#x1F4CD;" accent="gold" sub={kpisSeq.maxMpio} />
               </div>
-              <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value">&minus;2.4</div>
-                <div className="ov-inner-kpi-label">&Iacute;ndice SPI m&iacute;n. &middot; La Guajira</div>
+              <div className="map-layout">
+                <div className="map-main">
+                  <MapPanel data={filtered} mode="sequias" visible={visible} />
+                </div>
+                <div className="map-side side-panel">
+                  <FilterBox
+                    departments={departments}
+                    deptFilter={deptFilter}
+                    alertOnly={severeOnly}
+                    onDeptChange={setDeptFilter}
+                    onAlertToggle={() => setSevereOnly(v => !v)}
+                    onDownload={() => downloadSequiasCSV(filtered, dataFecha)}
+                    alertLabel="Solo sequ\u00eda severa / extrema"
+                  />
+                  <StatsBox filteredCount={filtered.length} total={data.length} />
+                  <SequiasTableBox data={filtered} />
+                  <CarteraBoxSection
+                    indicador="sequias"
+                    alertaLookup={sequiaAlertaLookup}
+                    alertTargets={['SEVERA','EXTREMA']}
+                    alertLabel="Sequ\u00eda SEVERA o EXTREMA"
+                    dataFecha={dataFecha}
+                  />
+                </div>
               </div>
-              <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value">38 d&iacute;as</div>
-                <div className="ov-inner-kpi-label">Duraci&oacute;n media</div>
-              </div>
-            </div>
-            <MapPanel data={data} mode="sequias" visible={visible} />
-            <div className="ov-table-wrap">
-              <table className="ov-table">
-                <thead>
-                  <tr>
-                    <th>Municipio</th>
-                    <th>Departamento</th>
-                    <th>Categor&iacute;a SPI</th>
-                    <th>&Iacute;ndice SPI</th>
-                    <th>Duraci&oacute;n (d&iacute;as)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td colSpan="5" style={{textAlign:'center', color:'#aaa', padding:'24px'}}>
-                      Datos cargados din&aacute;micamente
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
@@ -1935,13 +2234,60 @@
 
     // ─── Deslizamientos Section ───────────────────────────────────────────────
 
-    function DeslizSection({ visible, onBack, amenazasData }) {
-      const [activeTab, setActiveTab] = React.useState('Mapa');
+    function DeslizSection({ visible, onBack, amenazasData, dataFecha }) {
+      const [activeTab,  setActiveTab]  = React.useState('Mapa');
+      const [deptFilter, setDeptFilter] = React.useState('ALL');
+      const [alertOnly,  setAlertOnly]  = React.useState(false);
       const TABS = ['Mapa', 'Datos hist\u00f3ricos', 'Metodolog\u00eda'];
-      const enAlertaDesliz = useMemo(
-        () => Object.values(amenazasData).filter(d => d.alerta_deslizamiento === 'ALTA').length,
+
+      const entries = useMemo(
+        () => Object.entries(amenazasData).map(([cod, d]) => ({ cod, ...d })),
         [amenazasData]
       );
+
+      const departments = useMemo(() => {
+        const set = new Set(entries.map(d => d.nom_dpto).filter(Boolean));
+        return ['ALL', ...Array.from(set).sort()];
+      }, [entries]);
+
+      const filteredEntries = useMemo(() =>
+        entries
+          .filter(d => deptFilter === 'ALL' || d.nom_dpto === deptFilter)
+          .filter(d => !alertOnly || d.alerta_deslizamiento === 'ALTA'),
+        [entries, deptFilter, alertOnly]
+      );
+
+      const filteredAmenazasData = useMemo(() => {
+        const m = {};
+        filteredEntries.forEach(d => { m[d.cod] = d; });
+        return m;
+      }, [filteredEntries]);
+
+      const enAlertaDesliz = useMemo(
+        () => filteredEntries.filter(d => d.alerta_deslizamiento === 'ALTA').length,
+        [filteredEntries]
+      );
+
+      const deslizAlertaLookup = useMemo(() => {
+        const m = {};
+        entries.forEach(d => { m[d.cod] = d.alerta_deslizamiento; });
+        return m;
+      }, [entries]);
+
+      function downloadDeslizCSV(rows, fecha) {
+        const headers = ['cod','nom_mpio','nom_dpto','amenaza_mm','alerta_deslizamiento','acum_3dias_mm','acum_10dias_mm'];
+        const lines = rows.map(r =>
+          [r.cod, `"${r.nom_mpio}"`, `"${r.nom_dpto}"`, r.amenaza_mm, r.alerta_deslizamiento,
+           r.acum_3dias_mm ?? '', r.acum_10dias_mm ?? ''].join(',')
+        );
+        const csv  = '\uFEFF' + [headers.join(','), ...lines].join('\r\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = `deslizamientos_${fecha ?? 'export'}.csv`; a.click();
+        URL.revokeObjectURL(url);
+      }
+
       return (
         <div className={`ov-content-section${visible ? ' ov-visible' : ''}`}>
           <div className="ov-section-header">
@@ -1955,41 +2301,39 @@
             </div>
           </div>
           <OvSubTabs tabs={TABS} active={activeTab} accentColor="#2d6b3c" onSelect={setActiveTab} />
-          <div className="ov-section-body">
-            <div className="ov-inner-kpi-row">
-              <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value" style={{color:'#2d6b3c'}}>{enAlertaDesliz}</div>
-                <div className="ov-inner-kpi-label">Municipios en alerta</div>
+          <div style={{background:'var(--bg-primary)'}}>
+            <div className="dashboard-main">
+              <div className="kpi-grid reveal">
+                <KpiCard label="Municipios filtrados"      value={filteredEntries.length} icon="&#x1F3D9;" />
+                <KpiCard label="Alerta deslizamiento ALTA" value={enAlertaDesliz}         icon="&#x26F0;&#xFE0F;" accent="red" />
+                <KpiCard label="Zonas cr\u00edticas"       value="12"                     icon="&#x26A0;&#xFE0F;" accent="gold" />
+                <KpiCard label="Umbral detonante"          value=">80 mm/d\u00eda"        icon="&#x1F327;&#xFE0F;" accent="green" />
               </div>
-              <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value">12</div>
-                <div className="ov-inner-kpi-label">Zonas cr&iacute;ticas</div>
+              <div className="map-layout">
+                <div className="map-main">
+                  <DeslizMapPanel amenazasData={filteredAmenazasData} visible={visible} />
+                </div>
+                <div className="map-side side-panel">
+                  <FilterBox
+                    departments={departments}
+                    deptFilter={deptFilter}
+                    alertOnly={alertOnly}
+                    onDeptChange={setDeptFilter}
+                    onAlertToggle={() => setAlertOnly(v => !v)}
+                    onDownload={() => downloadDeslizCSV(filteredEntries, dataFecha)}
+                    alertLabel="Solo municipios con alerta deslizamiento"
+                  />
+                  <StatsBox filteredCount={filteredEntries.length} total={entries.length} />
+                  <DeslizTableBox entries={filteredEntries} />
+                  <CarteraBoxSection
+                    indicador="deslizamientos"
+                    alertaLookup={deslizAlertaLookup}
+                    alertTargets={['ALTA']}
+                    alertLabel="Alerta deslizamiento ALTA"
+                    dataFecha={dataFecha}
+                  />
+                </div>
               </div>
-              <div className="ov-inner-kpi">
-                <div className="ov-inner-kpi-value">&gt;80 mm/d&iacute;a</div>
-                <div className="ov-inner-kpi-label">Umbral detonante</div>
-              </div>
-            </div>
-            <DeslizMapPanel amenazasData={amenazasData} visible={visible} />
-            <div className="ov-table-wrap">
-              <table className="ov-table">
-                <thead>
-                  <tr>
-                    <th>Municipio</th>
-                    <th>Departamento</th>
-                    <th>Amenaza MM</th>
-                    <th>Acum. 3 d&iacute;as (mm)</th>
-                    <th>Alerta IDEAM</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td colSpan="5" style={{textAlign:'center', color:'#aaa', padding:'24px'}}>
-                      Datos cargados din&aacute;micamente
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
@@ -1998,7 +2342,7 @@
 
     // ─── Overview Dashboard (orchestrator) ───────────────────────────────────
 
-    function OverviewDashboard({ allData, amenazasData }) {
+    function OverviewDashboard({ allData, amenazasData, alertaHistData, dataFecha }) {
       const [activeSection, setActiveSection] = React.useState(null);
 
       function showSection(name) {
@@ -2017,9 +2361,9 @@
             <OverviewSectionCards onSelect={showSection} />
           </div>
           <div className="ov-sections-container">
-            <LluviasSection     visible={activeSection === 'lluvias'}        onBack={goBack} data={allData} />
-            <SequiasSection     visible={activeSection === 'sequias'}        onBack={goBack} data={allData} />
-            <DeslizSection      visible={activeSection === 'deslizamientos'} onBack={goBack} amenazasData={amenazasData} />
+            <LluviasSection     visible={activeSection === 'lluvias'}        onBack={goBack} data={allData}       alertaHistData={alertaHistData} dataFecha={dataFecha} />
+            <SequiasSection     visible={activeSection === 'sequias'}        onBack={goBack} data={allData}       dataFecha={dataFecha} />
+            <DeslizSection      visible={activeSection === 'deslizamientos'} onBack={goBack} amenazasData={amenazasData} dataFecha={dataFecha} />
           </div>
         </div>
       );
@@ -2139,7 +2483,7 @@
           <LandingHero />
           <div id="dashboard">
             <Header dataFecha={dataFecha} />
-            <OverviewDashboard allData={allData} amenazasData={amenazasData} />
+            <OverviewDashboard allData={allData} amenazasData={amenazasData} alertaHistData={alertaHistData} dataFecha={dataFecha} />
             <main className="dashboard-main">
               <KpiCards kpis={kpis} activeMap={activeMap} amenazasData={amenazasData} />
               <div className="map-layout reveal">
