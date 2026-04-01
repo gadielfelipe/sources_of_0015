@@ -2472,7 +2472,7 @@
       const slice = rows.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
       return (
         <div className="side-card" style={{marginTop:'12px'}}>
-          <div className="side-card-title">Municipios con \u00c1rea Protegida <span style={{float:'right',color:'var(--text-muted)',fontWeight:400}}>{total}</span></div>
+          <div className="side-card-title">Municipios con &Aacute;rea Protegida <span style={{float:'right',color:'var(--text-muted)',fontWeight:400}}>{total}</span></div>
           <div style={{overflowX:'auto'}}>
             <table style={{width:'100%',fontSize:'12px',borderCollapse:'collapse'}}>
               <thead>
@@ -2596,7 +2596,7 @@
               {'\u00a0/\u00a0\u00c1reas Protegidas'}
             </div>
             <div className="ov-section-title-row">
-              <div className="ov-section-title">\u00c1reas Protegidas &middot; SINAP&ndash;RUNAP</div>
+              <div className="ov-section-title">&Aacute;reas Protegidas &middot; SINAP&ndash;RUNAP</div>
               <span className="ov-alert-badge" style={{background:'#1b5e20'}}>{totalProtegidos} municipios</span>
             </div>
           </div>
@@ -2628,7 +2628,7 @@
                       </div>
                       <label style={{display:'flex',alignItems:'center',gap:'8px',cursor:'pointer',fontSize:'13px'}}>
                         <input type="checkbox" checked={protegidoOnly} onChange={() => setProtegidoOnly(v => !v)} />
-                        Solo municipios con \u00e1rea protegida
+                        Solo municipios con &aacute;rea protegida
                       </label>
                       <button onClick={downloadApCSV}
                         style={{marginTop:'12px',width:'100%',padding:'7px',background:'rgba(200,169,110,0.08)',border:'1px solid var(--border)',borderRadius:'4px',color:'var(--accent-gold)',fontSize:'12px',cursor:'pointer',fontFamily:"'DM Mono',monospace",letterSpacing:'0.06em'}}>
@@ -2637,7 +2637,7 @@
                     </div>
                     <div className="side-card" style={{marginTop:'12px',fontSize:'12px',color:'var(--text-muted)'}}>
                       <div className="side-card-title">Fuente</div>
-                      <p>Sistema Nacional de \u00c1reas Protegidas (SINAP) &mdash; RUNAP</p>
+                      <p>Sistema Nacional de &Aacute;reas Protegidas (SINAP) &mdash; RUNAP</p>
                       <p style={{marginTop:'4px'}}>Ministerio de Ambiente y Desarrollo Sostenible (MADS)</p>
                       <p style={{marginTop:'4px'}}>Servicio ArcGIS REST &mdash; OTL_Area_Protegida &middot; 1,773 pol&iacute;gonos</p>
                     </div>
@@ -2656,9 +2656,9 @@
                   Verificar coordenadas de proyecto
                 </div>
                 <div style={{fontSize:'13px',color:'var(--text-muted)',marginBottom:'24px',lineHeight:'1.6'}}>
-                  Ingrese las coordenadas geogr\u00e1ficas del proyecto para determinar si se encuentra dentro de
-                  un \u00e1rea protegida del SINAP\u2013RUNAP de Colombia.
-                  {!geojsonData && !geojsonError && <span style={{color:'#e67e22',marginLeft:'8px'}}>&#x23F3; Cargando datos geogr\u00e1ficos…</span>}
+                  Ingrese las coordenadas geogr&aacute;ficas del proyecto para determinar si se encuentra dentro de
+                  un &aacute;rea protegida del SINAP&ndash;RUNAP de Colombia.
+                  {!geojsonData && !geojsonError && <span style={{color:'#e67e22',marginLeft:'8px'}}>&#x23F3; Cargando datos geogr&aacute;ficos&hellip;</span>}
                   {geojsonError && <span style={{color:'var(--danger)',marginLeft:'8px'}}>&#x26A0; {geojsonError}</span>}
                 </div>
 
@@ -2697,8 +2697,8 @@
                       <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
                         <span style={{fontSize:'32px'}}>&#x2705;</span>
                         <div>
-                          <div style={{fontSize:'18px',fontWeight:600,color:'#81c784',fontFamily:"'Cormorant Garamond',serif"}}>Fuera de \u00e1rea protegida</div>
-                          <div style={{fontSize:'13px',color:'var(--text-muted)',marginTop:'4px'}}>Las coordenadas no se encuentran dentro de ninguna \u00e1rea del SINAP\u2013RUNAP.</div>
+                          <div style={{fontSize:'18px',fontWeight:600,color:'#81c784',fontFamily:"'Cormorant Garamond',serif"}}>Fuera de &aacute;rea protegida</div>
+                          <div style={{fontSize:'13px',color:'var(--text-muted)',marginTop:'4px'}}>Las coordenadas no se encuentran dentro de ninguna &aacute;rea del SINAP&ndash;RUNAP.</div>
                         </div>
                       </div>
                     ) : (
@@ -2706,9 +2706,9 @@
                         <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'16px'}}>
                           <span style={{fontSize:'32px'}}>&#x26A0;&#xFE0F;</span>
                           <div>
-                            <div style={{fontSize:'18px',fontWeight:600,color:'#e57373',fontFamily:"'Cormorant Garamond',serif"}}>Dentro de \u00e1rea protegida</div>
+                            <div style={{fontSize:'18px',fontWeight:600,color:'#e57373',fontFamily:"'Cormorant Garamond',serif"}}>Dentro de &aacute;rea protegida</div>
                             <div style={{fontSize:'13px',color:'var(--text-muted)',marginTop:'4px'}}>
-                              Las coordenadas se encuentran en {checkResult.matches.length} \u00e1rea{checkResult.matches.length > 1 ? 's' : ''} protegida{checkResult.matches.length > 1 ? 's' : ''} del SINAP\u2013RUNAP.
+                              Las coordenadas se encuentran en {checkResult.matches.length} &aacute;rea{checkResult.matches.length > 1 ? 's' : ''} protegida{checkResult.matches.length > 1 ? 's' : ''} del SINAP&ndash;RUNAP.
                             </div>
                           </div>
                         </div>
@@ -2716,9 +2716,9 @@
                           <div key={i} style={{padding:'12px 16px',background:'rgba(229,115,115,0.08)',border:'1px solid rgba(229,115,115,0.25)',borderRadius:'4px',marginBottom:'8px'}}>
                             <div style={{fontWeight:600,color:'#ef9a9a',fontSize:'14px',marginBottom:'4px'}}>{m.uab_nombre_area_protegida ?? 'N/D'}</div>
                             <div style={{fontSize:'12px',color:'var(--text-muted)',display:'flex',gap:'18px',flexWrap:'wrap'}}>
-                              <span><b>Categor\u00eda:</b> {m.categoria_nombre ?? 'N/D'}</span>
-                              <span><b>\u00c1mbito:</b> {m.ambito_nombre ?? 'N/D'}</span>
-                              {m.area_total_ha && <span><b>\u00c1rea:</b> {parseFloat(m.area_total_ha).toLocaleString('es-CO',{maximumFractionDigits:0})} ha</span>}
+                              <span><b>Categor&iacute;a:</b> {m.categoria_nombre ?? 'N/D'}</span>
+                              <span><b>&Aacute;mbito:</b> {m.ambito_nombre ?? 'N/D'}</span>
+                              {m.area_total_ha && <span><b>&Aacute;rea:</b> {parseFloat(m.area_total_ha).toLocaleString('es-CO',{maximumFractionDigits:0})} ha</span>}
                             </div>
                           </div>
                         ))}
