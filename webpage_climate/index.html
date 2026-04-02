@@ -742,6 +742,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
@@ -2392,94 +2393,152 @@
       );
     }
 
+    // ─── Ecosistemas config ───────────────────────────────────────────────────
+    const ECOS_LAYERS = [
+      { key:'sinap',      label:'SINAP – RUNAP',         color:'#1b5e20', dotColor:'#2e7d32', csvKey:'tiene_area_protegida', csvName:'areas_nombres',
+        url:'https://services6.arcgis.com/hxAwRYAu9QHliJ8T/arcgis/rest/services/OTL_Area_Protegida/FeatureServer/0',
+        style:{ color:'#1b5e20', weight:1.2, fillColor:'#2e7d32', fillOpacity:0.25 } },
+      { key:'paramo',     label:'P\u00e1ramos',           color:'#4a148c', dotColor:'#9c27b0', csvKey:'tiene_paramo',         csvName:'nombre_paramo',
+        url:'https://services6.arcgis.com/hxAwRYAu9QHliJ8T/arcgis/rest/services/Ecosistema_Estrategico/FeatureServer/1',
+        style:{ color:'#4a148c', weight:1.2, fillColor:'#9c27b0', fillOpacity:0.30 } },
+      { key:'bosque_seco',label:'Bosque Seco Tropical',  color:'#e65100', dotColor:'#ff6d00', csvKey:'tiene_bosque_seco',    csvName:'nombre_bosque_seco',
+        url:'https://services6.arcgis.com/hxAwRYAu9QHliJ8T/arcgis/rest/services/Ecosistema_Estrategico/FeatureServer/2',
+        style:{ color:'#e65100', weight:1.2, fillColor:'#ff6d00', fillOpacity:0.30 } },
+      { key:'humedal',    label:'Humedales',              color:'#01579b', dotColor:'#039be5', csvKey:'tiene_humedal',        csvName:'nombre_humedal',
+        url:'https://services6.arcgis.com/hxAwRYAu9QHliJ8T/arcgis/rest/services/Ecosistema_Estrategico/FeatureServer/3',
+        style:{ color:'#01579b', weight:0.8, fillColor:'#039be5', fillOpacity:0.25 } },
+      { key:'reaa',       label:'REAA 2024',              color:'#006064', dotColor:'#00bcd4', csvKey:'tiene_reaa',           csvName:'nombre_reaa',
+        url:'https://services6.arcgis.com/hxAwRYAu9QHliJ8T/arcgis/rest/services/Ecosistema_Area_Ambiental/FeatureServer/1',
+        style:{ color:'#006064', weight:1, fillColor:'#00bcd4', fillOpacity:0.22 } },
+      { key:'ley2',       label:'Reserva Ley 2\u00aa',    color:'#bf360c', dotColor:'#ff7043', csvKey:'tiene_ley2',           csvName:'nombre_ley2',
+        url:'https://services6.arcgis.com/hxAwRYAu9QHliJ8T/arcgis/rest/services/OTL_Reserva_Forestal_Ley_2da/FeatureServer/2',
+        style:{ color:'#bf360c', weight:1.5, fillColor:'#ff7043', fillOpacity:0.28 } },
+    ];
+
     // ─── Áreas Protegidas Map Panel ───────────────────────────────────────────
 
-    function AreasProtegidasMapPanel({ apData, visible = true }) {
-      const mapDiv      = useRef(null);
-      const leafletMap  = useRef(null);
-      const layerGroup  = useRef(null);
-      const initialized = useRef(false);
+    function AreasProtegidasMapPanel({ apData, ecoData, activeLayers, visible = true }) {
+      const mapDiv       = useRef(null);
+      const leafletMap   = useRef(null);
+      const muniGroup    = useRef(null);
+      const ecoGroups    = useRef({});
+      const initialized  = useRef(false);
 
+      // Init map once
       useEffect(() => {
         if (initialized.current) return;
         initialized.current = true;
-        const map = L.map(mapDiv.current, { center: [4.5, -74.0], zoom: 5 });
+        const map = L.map(mapDiv.current, { center: [4.5, -74.0], zoom: 5, preferCanvas: true });
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-          attribution: '&copy; OpenStreetMap contributors &copy; CARTO', maxZoom: 19,
+          attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19,
         }).addTo(map);
         map.fitBounds([[1, -79], [13, -67]]);
-        layerGroup.current = L.layerGroup().addTo(map);
+        muniGroup.current = L.layerGroup().addTo(map);
+        // Create one LayerGroup per ecosystem layer (all initially hidden)
+        ECOS_LAYERS.forEach(ec => {
+          ecoGroups.current[ec.key] = L.layerGroup();
+        });
         leafletMap.current = map;
       }, []);
 
+      // Resize on visibility
       useEffect(() => {
         if (visible && leafletMap.current) {
-          setTimeout(() => {
-            leafletMap.current.invalidateSize();
-            leafletMap.current.fitBounds([[1, -79], [13, -67]]);
-          }, 60);
+          setTimeout(() => { leafletMap.current.invalidateSize(); leafletMap.current.fitBounds([[1,-79],[13,-67]]); }, 80);
         }
       }, [visible]);
 
+      // Toggle esri-leaflet feature layers based on activeLayers
       useEffect(() => {
-        if (!layerGroup.current) return;
-        layerGroup.current.clearLayers();
+        if (!leafletMap.current) return;
+        ECOS_LAYERS.forEach(ec => {
+          const grp = ecoGroups.current[ec.key];
+          if (!grp) return;
+          const isOn = activeLayers[ec.key];
+          if (isOn) {
+            if (!leafletMap.current.hasLayer(grp)) {
+              // Load from ArcGIS FeatureServer if not yet populated
+              if (grp.getLayers().length === 0) {
+                const fl = L.esri.featureLayer({
+                  url: ec.url,
+                  style: () => ec.style,
+                  onEachFeature: (feature, layer) => {
+                    const p = feature.properties || {};
+                    const name = p.uab_nombre_area_protegida || p.nombre || p.uab_nombre_reserva || p.nombre_cap || p.nomah || p.region || '';
+                    const area = p.area_ha ? `${parseFloat(p.area_ha).toLocaleString('es-CO',{maximumFractionDigits:0})} ha` : '';
+                    layer.bindPopup(`<div style="font-family:'Lora',serif;font-size:13px;color:#1a1a1a;min-width:180px;">
+                      <div style="font-weight:700;color:${ec.dotColor};margin-bottom:3px;">${ec.label}</div>
+                      ${name ? `<div style="font-size:12px;">${name}</div>` : ''}
+                      ${area  ? `<div style="font-size:11px;color:#555;">&#x1F4CF; ${area}</div>` : ''}
+                    </div>`, { maxWidth: 240 });
+                  }
+                });
+                fl.addTo(grp);
+              }
+              grp.addTo(leafletMap.current);
+            }
+          } else {
+            if (leafletMap.current.hasLayer(grp)) leafletMap.current.removeLayer(grp);
+          }
+        });
+      }, [activeLayers]);
+
+      // Redraw municipal dots
+      useEffect(() => {
+        if (!muniGroup.current) return;
+        muniGroup.current.clearLayers();
         apData.filter(d => !isNaN(parseFloat(d.LATITUD)) && !isNaN(parseFloat(d.LONGITUD))).forEach(d => {
-          const protegido = parseInt(d.tiene_area_protegida) === 1;
-          const color     = protegido ? '#2e7d32' : '#546e7a';
-          const radius    = protegido ? 8 : 5;
-          const fillOpac  = protegido ? 0.88 : 0.45;
-          const marker    = L.circleMarker([parseFloat(d.LATITUD), parseFloat(d.LONGITUD)], {
-            radius, color: protegido ? '#81c784' : 'rgba(255,255,255,0.2)', weight: protegido ? 2 : 0.6,
-            fillColor: color, fillOpacity: fillOpac,
+          // Determine active ecosystems for this municipality
+          const hits = ECOS_LAYERS.filter(ec => parseInt(d[ec.csvKey]) === 1);
+          const hasAny = hits.length > 0;
+          const mainColor = hits.length > 0 ? hits[0].dotColor : '#546e7a';
+          const radius = hasAny ? 8 : 5;
+
+          const ecosHTML = hits.length > 0
+            ? hits.map(ec => `<span style="display:inline-block;background:${ec.color};color:#fff;font-size:10px;padding:1px 5px;border-radius:2px;margin:1px;">${ec.label}</span>`).join('')
+            : '<span style="color:#78909c;font-size:11px;">Sin ecosistemas registrados</span>';
+
+          const m = L.circleMarker([parseFloat(d.LATITUD), parseFloat(d.LONGITUD)], {
+            radius,
+            color: hasAny ? mainColor : 'rgba(255,255,255,0.15)',
+            weight: hasAny ? 1.5 : 0.5,
+            fillColor: mainColor,
+            fillOpacity: hasAny ? 0.85 : 0.35,
           });
-          const areasHTML = protegido
-            ? `<hr style="margin:5px 0;border-color:rgba(200,169,110,0.15);">
-               <p style="font-size:11px;color:#81c784;font-weight:600;">&#x1F33F; &Aacute;reas protegidas</p>
-               <p style="font-size:11px;">${String(d.areas_nombres ?? '').split(' | ').slice(0,3).join('<br>')}</p>
-               <p style="font-size:11px;color:#a5d6a7;">Categor\u00eda: ${d.area_categoria ?? ''}</p>
-               <p style="font-size:11px;color:#a5d6a7;">\u00c1mbito: ${d.area_ambito ?? ''}</p>`
-            : `<p style="color:#78909c;font-size:11px;margin-top:4px;">Sin \u00e1rea protegida registrada</p>`;
-          marker.bindPopup(`
-            <div style="font-family:'Lora',Georgia,serif;font-size:13px;min-width:200px;color:#f5f0e8;">
+          m.bindPopup(`
+            <div style="font-family:'Lora',serif;font-size:13px;min-width:200px;color:#f5f0e8;">
               <div style="color:#c8a96e;font-size:14px;font-weight:700;margin-bottom:2px;">${d.NOM_MPIO}</div>
-              <div style="color:#8a9ab0;font-size:12px;margin-bottom:6px;">${d.NOM_DPTO}</div>
-              ${areasHTML}
-            </div>`, { maxWidth: 260 });
-          marker.addTo(layerGroup.current);
+              <div style="color:#8a9ab0;font-size:12px;margin-bottom:8px;">${d.NOM_DPTO}</div>
+              <div>${ecosHTML}</div>
+            </div>`, { maxWidth: 280 });
+          m.addTo(muniGroup.current);
         });
       }, [apData]);
 
-      return (
-        <div className="map-panel-wrap">
-          <div ref={mapDiv} className="map-div" />
-          <div className="map-legend" style={{bottom:'10px',right:'10px',position:'absolute',zIndex:900,background:'rgba(13,27,42,0.88)',borderRadius:'4px',padding:'8px 12px',fontSize:'11px',color:'#f5f0e8',lineHeight:'1.8'}}>
-            <div style={{fontFamily:"'DM Mono',monospace",fontSize:'9px',letterSpacing:'0.15em',color:'var(--accent-gold)',marginBottom:'4px',textTransform:'uppercase'}}>Leyenda</div>
-            <div><span style={{display:'inline-block',width:'10px',height:'10px',borderRadius:'50%',background:'#2e7d32',marginRight:'6px',verticalAlign:'middle'}}></span>Con &aacute;rea protegida</div>
-            <div><span style={{display:'inline-block',width:'10px',height:'10px',borderRadius:'50%',background:'#546e7a',marginRight:'6px',verticalAlign:'middle'}}></span>Sin &aacute;rea protegida</div>
-          </div>
-        </div>
-      );
+      return <div className="map-panel-wrap"><div ref={mapDiv} className="map-div" /></div>;
     }
 
     // ─── Áreas Protegidas Table ───────────────────────────────────────────────
 
     function AreasProtegidasTable({ data }) {
       const [page, setPage] = React.useState(0);
+      React.useEffect(() => setPage(0), [data]);
       const PER_PAGE = 10;
-      const rows = data.filter(d => parseInt(d.tiene_area_protegida) === 1);
-      const total = rows.length;
-      const slice = rows.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+      const total = data.length;
+      const slice = data.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+      const dot = (ec, d) => parseInt(d[ec.csvKey]) === 1
+        ? <span key={ec.key} title={ec.label} style={{display:'inline-block',width:'8px',height:'8px',borderRadius:'50%',background:ec.dotColor,marginRight:'2px'}}></span>
+        : null;
       return (
         <div className="side-card" style={{marginTop:'12px'}}>
-          <div className="side-card-title">Municipios con &Aacute;rea Protegida <span style={{float:'right',color:'var(--text-muted)',fontWeight:400}}>{total}</span></div>
+          <div className="side-card-title">Municipios <span style={{float:'right',color:'var(--text-muted)',fontWeight:400}}>{total}</span></div>
           <div style={{overflowX:'auto'}}>
             <table style={{width:'100%',fontSize:'12px',borderCollapse:'collapse'}}>
               <thead>
                 <tr style={{color:'var(--text-muted)',borderBottom:'1px solid var(--border)'}}>
                   <th style={{padding:'4px 6px',textAlign:'left',fontWeight:500}}>Municipio</th>
                   <th style={{padding:'4px 6px',textAlign:'left',fontWeight:500}}>Dpto</th>
-                  <th style={{padding:'4px 6px',textAlign:'left',fontWeight:500}}>Categor&iacute;a</th>
+                  <th style={{padding:'4px 6px',textAlign:'left',fontWeight:500}}>Ecosistemas</th>
                 </tr>
               </thead>
               <tbody>
@@ -2487,16 +2546,24 @@
                   <tr key={i} style={{borderBottom:'1px solid rgba(200,169,110,0.07)'}}>
                     <td style={{padding:'4px 6px',color:'var(--accent-gold)'}}>{d.NOM_MPIO}</td>
                     <td style={{padding:'4px 6px',color:'var(--text-muted)',fontSize:'11px'}}>{d.NOM_DPTO}</td>
-                    <td style={{padding:'4px 6px',color:'#81c784',fontSize:'11px'}}>{String(d.area_categoria ?? '').split(' | ')[0]}</td>
+                    <td style={{padding:'4px 6px'}}>{ECOS_LAYERS.map(ec => dot(ec, d))}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+          {/* Legend */}
+          <div style={{marginTop:'6px',display:'flex',flexWrap:'wrap',gap:'4px 10px'}}>
+            {ECOS_LAYERS.map(ec => (
+              <span key={ec.key} style={{fontSize:'10px',color:'var(--text-muted)',display:'flex',alignItems:'center',gap:'3px'}}>
+                <span style={{width:'7px',height:'7px',borderRadius:'50%',background:ec.dotColor,display:'inline-block'}}></span>{ec.label}
+              </span>
+            ))}
+          </div>
           {total > PER_PAGE && (
             <div style={{display:'flex',justifyContent:'space-between',marginTop:'8px',fontSize:'11px',color:'var(--text-muted)'}}>
               <button onClick={() => setPage(p => Math.max(0,p-1))} disabled={page===0} style={{background:'none',border:'none',color:'var(--accent-gold)',cursor:'pointer',opacity:page===0?0.3:1}}>&#x2039; Ant</button>
-              <span>{page*PER_PAGE+1}–{Math.min((page+1)*PER_PAGE,total)} / {total}</span>
+              <span>{page*PER_PAGE+1}&ndash;{Math.min((page+1)*PER_PAGE,total)} / {total}</span>
               <button onClick={() => setPage(p => p+1)} disabled={(page+1)*PER_PAGE>=total} style={{background:'none',border:'none',color:'var(--accent-gold)',cursor:'pointer',opacity:(page+1)*PER_PAGE>=total?0.3:1}}>Sig &#x203a;</button>
             </div>
           )}
@@ -2506,16 +2573,19 @@
 
     // ─── Áreas Protegidas Section ─────────────────────────────────────────────
 
-    function AreasProtegidasSection({ visible, onBack, apData }) {
-      const [activeTab,      setActiveTab]      = React.useState('Municipios');
-      const [deptFilter,     setDeptFilter]     = React.useState('ALL');
-      const [protegidoOnly,  setProtegidoOnly]  = React.useState(false);
-      const [checkLat,       setCheckLat]       = React.useState('');
-      const [checkLon,       setCheckLon]       = React.useState('');
-      const [checkResult,    setCheckResult]    = React.useState(null);
-      const [checkLoading,   setCheckLoading]   = React.useState(false);
-      const [geojsonData,    setGeojsonData]    = React.useState(null);
-      const [geojsonError,   setGeojsonError]   = React.useState(null);
+    function AreasProtegidasSection({ visible, onBack, apData, ecoData }) {
+      const [activeTab,    setActiveTab]    = React.useState('Municipios');
+      const [deptFilter,   setDeptFilter]   = React.useState('ALL');
+      const [ecoFilter,    setEcoFilter]    = React.useState('ALL');  // 'ALL' | ec.key
+      const [activeLayers, setActiveLayers] = React.useState(
+        Object.fromEntries(ECOS_LAYERS.map(ec => [ec.key, false]))
+      );
+      const [checkLat,     setCheckLat]     = React.useState('');
+      const [checkLon,     setCheckLon]     = React.useState('');
+      const [checkResult,  setCheckResult]  = React.useState(null);
+      const [checkLoading, setCheckLoading] = React.useState(false);
+      const [geojsonData,  setGeojsonData]  = React.useState(null);
+      const [geojsonError, setGeojsonError] = React.useState(null);
       const TABS = ['Municipios', 'Verificar proyecto'];
 
       const departments = useMemo(() => {
@@ -2523,19 +2593,31 @@
         return ['ALL', ...Array.from(set).sort()];
       }, [apData]);
 
-      const filtered = useMemo(() =>
-        apData
-          .filter(d => deptFilter === 'ALL' || d.NOM_DPTO === deptFilter)
-          .filter(d => !protegidoOnly || parseInt(d.tiene_area_protegida) === 1),
-        [apData, deptFilter, protegidoOnly]
+      // Merge apData (SINAP) + ecoData (ecosistemas) by COD_MPIO
+      const merged = useMemo(() => {
+        const ecoMap = {};
+        ecoData.forEach(d => { ecoMap[String(d.COD_MPIO).trim()] = d; });
+        return apData.map(d => ({ ...d, ...(ecoMap[String(d.COD_MPIO).trim()] || {}) }));
+      }, [apData, ecoData]);
+
+      const filtered = useMemo(() => {
+        let rows = merged.filter(d => deptFilter === 'ALL' || d.NOM_DPTO === deptFilter);
+        if (ecoFilter !== 'ALL') {
+          const ec = ECOS_LAYERS.find(e => e.key === ecoFilter);
+          if (ec) rows = rows.filter(d => parseInt(d[ec.csvKey]) === 1);
+        }
+        return rows;
+      }, [merged, deptFilter, ecoFilter]);
+
+      const totalSinap = useMemo(
+        () => merged.filter(d => parseInt(d.tiene_area_protegida) === 1).length, [merged]
+      );
+      const ecoTotals = useMemo(() =>
+        Object.fromEntries(ECOS_LAYERS.map(ec => [ec.key, merged.filter(d => parseInt(d[ec.csvKey]) === 1).length])),
+        [merged]
       );
 
-      const totalProtegidos = useMemo(
-        () => apData.filter(d => parseInt(d.tiene_area_protegida) === 1).length,
-        [apData]
-      );
-
-      // Load simplified GeoJSON when section becomes visible
+      // Load simplified GeoJSON for the coordinate checker
       React.useEffect(() => {
         if (!visible || geojsonData || geojsonError) return;
         fetch('data/areas_protegidas_simple.geojson')
@@ -2576,15 +2658,21 @@
       }
 
       function downloadApCSV() {
-        const rows = apData.filter(d => parseInt(d.tiene_area_protegida) === 1);
-        const headers = ['COD_MPIO','NOM_MPIO','NOM_DPTO','LATITUD','LONGITUD','n_areas','areas_nombres','area_categoria','area_ambito','area_ha_total'];
-        const lines = rows.map(r =>
-          headers.map(h => h === 'areas_nombres' || h === 'area_categoria' || h === 'area_ambito' ? `"${r[h] ?? ''}"` : r[h] ?? '').join(',')
+        const headers = ['COD_MPIO','NOM_MPIO','NOM_DPTO','LATITUD','LONGITUD',
+          'tiene_area_protegida','areas_nombres',
+          'tiene_paramo','nombre_paramo',
+          'tiene_bosque_seco','nombre_bosque_seco',
+          'tiene_humedal','nombre_humedal',
+          'tiene_reaa','nombre_reaa',
+          'tiene_ley2','nombre_ley2'];
+        const strCols = new Set(['areas_nombres','nombre_paramo','nombre_bosque_seco','nombre_humedal','nombre_reaa','nombre_ley2']);
+        const lines = filtered.map(r =>
+          headers.map(h => strCols.has(h) ? `"${r[h] ?? ''}"` : r[h] ?? '').join(',')
         );
         const csv  = '\uFEFF' + [headers.join(','), ...lines].join('\r\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url  = URL.createObjectURL(blob);
-        const a    = document.createElement('a'); a.href = url; a.download = 'areas_protegidas_municipal.csv'; a.click();
+        const a    = document.createElement('a'); a.href = url; a.download = 'ecosistemas_municipal.csv'; a.click();
         URL.revokeObjectURL(url);
       }
 
@@ -2593,11 +2681,11 @@
           <div className="ov-section-header">
             <div className="ov-breadcrumb">
               <button onClick={onBack}>Resumen general</button>
-              {'\u00a0/\u00a0\u00c1reas Protegidas'}
+              {'\u00a0/\u00a0\u00c1reas Protegidas y Ecosistemas'}
             </div>
             <div className="ov-section-title-row">
-              <div className="ov-section-title">&Aacute;reas Protegidas &middot; SINAP&ndash;RUNAP</div>
-              <span className="ov-alert-badge" style={{background:'#1b5e20'}}>{totalProtegidos} municipios</span>
+              <div className="ov-section-title">&Aacute;reas Protegidas &amp; Ecosistemas Estrat&eacute;gicos</div>
+              <span className="ov-alert-badge" style={{background:'#1b5e20'}}>{filtered.length} municipios</span>
             </div>
           </div>
           <OvSubTabs tabs={TABS} active={activeTab} accentColor="#2e7d32" onSelect={setActiveTab} />
@@ -2606,40 +2694,63 @@
           {activeTab === 'Municipios' && (
             <div style={{background:'var(--bg-primary)'}}>
               <div className="dashboard-main">
-                <div className="kpi-grid reveal">
-                  <KpiCard label="Municipios analizados"  value={apData.length}                                             icon="&#x1F3D9;" />
-                  <KpiCard label="Con \u00e1rea protegida" value={totalProtegidos}                                           icon="&#x1F333;" accent="green" />
-                  <KpiCard label="% de cartera afectada"  value={`${((totalProtegidos/apData.length)*100).toFixed(1)}%`}   icon="&#x1F4CA;" accent="gold" />
-                  <KpiCard label="Filtrados protegidos"   value={filtered.filter(d=>parseInt(d.tiene_area_protegida)===1).length} icon="&#x1F50D;" />
+                {/* KPI strip for each ecosystem */}
+                <div className="kpi-grid reveal" style={{gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))'}}>
+                  <KpiCard label="SINAP &ndash; RUNAP"       value={ecoTotals['sinap']}       icon="&#x1F33F;" accent="green" />
+                  <KpiCard label="P\u00e1ramos"               value={ecoTotals['paramo']}      icon="&#x26F0;&#xFE0F;" accent="gold" />
+                  <KpiCard label="Bosque Seco"                value={ecoTotals['bosque_seco']} icon="&#x1F335;" />
+                  <KpiCard label="Humedales"                  value={ecoTotals['humedal']}     icon="&#x1F30A;" />
+                  <KpiCard label="REAA 2024"                  value={ecoTotals['reaa']}        icon="&#x1F4CB;" accent="green" />
+                  <KpiCard label="Reserva Ley 2\u00aa"        value={ecoTotals['ley2']}        icon="&#x1F6E1;&#xFE0F;" accent="red" />
                 </div>
                 <div className="map-layout">
                   <div className="map-main">
-                    <AreasProtegidasMapPanel apData={filtered} visible={visible && activeTab === 'Municipios'} />
+                    <AreasProtegidasMapPanel
+                      apData={filtered}
+                      ecoData={ecoData}
+                      activeLayers={activeLayers}
+                      visible={visible && activeTab === 'Municipios'}
+                    />
                   </div>
                   <div className="map-side side-panel">
+                    {/* Ecosystem layer toggles */}
                     <div className="side-card">
-                      <div className="side-card-title">Filtros</div>
-                      <div style={{marginBottom:'10px'}}>
-                        <label style={{fontSize:'12px',color:'var(--text-muted)',display:'block',marginBottom:'4px'}}>Departamento</label>
+                      <div className="side-card-title">Capas del mapa</div>
+                      <div style={{fontSize:'11px',color:'var(--text-muted)',marginBottom:'8px'}}>
+                        Activa las capas para visualizar los pol&iacute;gonos sobre el mapa
+                      </div>
+                      {ECOS_LAYERS.map(ec => (
+                        <label key={ec.key} style={{display:'flex',alignItems:'center',gap:'8px',cursor:'pointer',fontSize:'12px',marginBottom:'6px',padding:'5px 6px',borderRadius:'3px',background: activeLayers[ec.key] ? `${ec.color}22` : 'transparent',border:`1px solid ${activeLayers[ec.key] ? ec.color : 'transparent'}`}}>
+                          <input type="checkbox" checked={!!activeLayers[ec.key]}
+                            onChange={() => setActiveLayers(prev => ({...prev, [ec.key]: !prev[ec.key]}))} />
+                          <span style={{width:'10px',height:'10px',borderRadius:'50%',background:ec.dotColor,flexShrink:0,display:'inline-block'}}></span>
+                          <span style={{color: activeLayers[ec.key] ? ec.dotColor : 'var(--text-primary)'}}>{ec.label}</span>
+                          <span style={{marginLeft:'auto',color:'var(--text-muted)',fontFamily:"'DM Mono',monospace",fontSize:'10px'}}>{ecoTotals[ec.key]}</span>
+                        </label>
+                      ))}
+                    </div>
+                    {/* Department + ecosystem filter */}
+                    <div className="side-card" style={{marginTop:'10px'}}>
+                      <div className="side-card-title">Filtros tabla</div>
+                      <div style={{marginBottom:'8px'}}>
+                        <label style={{fontSize:'11px',color:'var(--text-muted)',display:'block',marginBottom:'4px'}}>Departamento</label>
                         <select value={deptFilter} onChange={e => setDeptFilter(e.target.value)}
-                          style={{width:'100%',padding:'6px 8px',background:'var(--bg-card)',border:'1px solid var(--border)',borderRadius:'4px',color:'var(--text-primary)',fontSize:'12px'}}>
+                          style={{width:'100%',padding:'5px 8px',background:'var(--bg-card)',border:'1px solid var(--border)',borderRadius:'4px',color:'var(--text-primary)',fontSize:'12px'}}>
                           {departments.map(d => <option key={d} value={d}>{d === 'ALL' ? 'Todos los departamentos' : d}</option>)}
                         </select>
                       </div>
-                      <label style={{display:'flex',alignItems:'center',gap:'8px',cursor:'pointer',fontSize:'13px'}}>
-                        <input type="checkbox" checked={protegidoOnly} onChange={() => setProtegidoOnly(v => !v)} />
-                        Solo municipios con &aacute;rea protegida
-                      </label>
+                      <div style={{marginBottom:'8px'}}>
+                        <label style={{fontSize:'11px',color:'var(--text-muted)',display:'block',marginBottom:'4px'}}>Ecosistema</label>
+                        <select value={ecoFilter} onChange={e => setEcoFilter(e.target.value)}
+                          style={{width:'100%',padding:'5px 8px',background:'var(--bg-card)',border:'1px solid var(--border)',borderRadius:'4px',color:'var(--text-primary)',fontSize:'12px'}}>
+                          <option value="ALL">Todos los ecosistemas</option>
+                          {ECOS_LAYERS.map(ec => <option key={ec.key} value={ec.key}>{ec.label}</option>)}
+                        </select>
+                      </div>
                       <button onClick={downloadApCSV}
-                        style={{marginTop:'12px',width:'100%',padding:'7px',background:'rgba(200,169,110,0.08)',border:'1px solid var(--border)',borderRadius:'4px',color:'var(--accent-gold)',fontSize:'12px',cursor:'pointer',fontFamily:"'DM Mono',monospace",letterSpacing:'0.06em'}}>
-                        &#x2B07; Exportar CSV
+                        style={{width:'100%',padding:'7px',background:'rgba(200,169,110,0.08)',border:'1px solid var(--border)',borderRadius:'4px',color:'var(--accent-gold)',fontSize:'12px',cursor:'pointer',fontFamily:"'DM Mono',monospace",letterSpacing:'0.06em'}}>
+                        &#x2B07; Exportar CSV ({filtered.length})
                       </button>
-                    </div>
-                    <div className="side-card" style={{marginTop:'12px',fontSize:'12px',color:'var(--text-muted)'}}>
-                      <div className="side-card-title">Fuente</div>
-                      <p>Sistema Nacional de &Aacute;reas Protegidas (SINAP) &mdash; RUNAP</p>
-                      <p style={{marginTop:'4px'}}>Ministerio de Ambiente y Desarrollo Sostenible (MADS)</p>
-                      <p style={{marginTop:'4px'}}>Servicio ArcGIS REST &mdash; OTL_Area_Protegida &middot; 1,773 pol&iacute;gonos</p>
                     </div>
                     <AreasProtegidasTable data={filtered} />
                   </div>
@@ -2741,7 +2852,7 @@
 
     // ─── Overview Dashboard (orchestrator) ───────────────────────────────────
 
-    function OverviewDashboard({ allData, amenazasData, alertaHistData, apData, dataFecha }) {
+    function OverviewDashboard({ allData, amenazasData, alertaHistData, apData, ecoData, dataFecha }) {
       const [activeSection, setActiveSection] = React.useState(null);
 
       function showSection(name) {
@@ -2763,7 +2874,7 @@
             <LluviasSection          visible={activeSection === 'lluvias'}          onBack={goBack} data={allData}       alertaHistData={alertaHistData} dataFecha={dataFecha} />
             <SequiasSection          visible={activeSection === 'sequias'}          onBack={goBack} data={allData}       dataFecha={dataFecha} />
             <DeslizSection           visible={activeSection === 'deslizamientos'}   onBack={goBack} amenazasData={amenazasData} dataFecha={dataFecha} />
-            <AreasProtegidasSection  visible={activeSection === 'areas_protegidas'} onBack={goBack} apData={apData} />
+            <AreasProtegidasSection  visible={activeSection === 'areas_protegidas'} onBack={goBack} apData={apData} ecoData={ecoData} />
           </div>
         </div>
       );
@@ -2776,6 +2887,7 @@
       const [alertaHistData, setAlertaHistData] = useState({});
       const [amenazasData,   setAmenazasData]   = useState({});
       const [apData,         setApData]         = useState([]);
+      const [ecoData,        setEcoData]        = useState([]);
       const [deptFilter,     setDeptFilter]     = useState('ALL');
       const [alertOnly,      setAlertOnly]      = useState(false);
       const [loading,        setLoading]        = useState(true);
@@ -2858,12 +2970,21 @@
         });
       }, []);
 
-      // Load áreas protegidas por municipio
+      // Load áreas protegidas por municipio (SINAP)
       useEffect(() => {
         Papa.parse('data/areas_protegidas_municipal.csv', {
           download: true, header: true, skipEmptyLines: true, encoding: 'UTF-8',
           complete: ({ data }) => setApData(data),
           error: err => console.warn('No se pudo cargar areas_protegidas_municipal.csv:', err),
+        });
+      }, []);
+
+      // Load ecosistemas estratégicos por municipio
+      useEffect(() => {
+        Papa.parse('data/ecosistemas_estrategicos_municipal.csv', {
+          download: true, header: true, skipEmptyLines: true, encoding: 'UTF-8',
+          complete: ({ data }) => setEcoData(data),
+          error: err => console.warn('No se pudo cargar ecosistemas_estrategicos_municipal.csv:', err),
         });
       }, []);
 
@@ -2893,7 +3014,7 @@
           <LandingHero />
           <div id="dashboard">
             <Header dataFecha={dataFecha} />
-            <OverviewDashboard allData={allData} amenazasData={amenazasData} alertaHistData={alertaHistData} apData={apData} dataFecha={dataFecha} />
+            <OverviewDashboard allData={allData} amenazasData={amenazasData} alertaHistData={alertaHistData} apData={apData} ecoData={ecoData} dataFecha={dataFecha} />
             <footer className="site-footer">
               <div>
                 <div className="footer-brand">GGGI &mdash; Sustainable Finance</div>
