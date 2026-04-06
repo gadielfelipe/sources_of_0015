@@ -901,42 +901,102 @@
           <td style="text-align:center;color:${alertaColor(r.alerta_lluvias)};font-weight:600">${r.alerta_lluvias}</td>
         </tr>`).join('');
 
+      const pctMpios = result.nTotal > 0 ? ((result.nAlta / result.nTotal)*100).toFixed(1) : '0.0';
+
       const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
-<title>Reporte Cartera \u2013 Alerta Lluvias ALTA</title>
+<title>Reporte Cartera &#8211; Alerta Lluvias ALTA</title>
 <style>
-  body{font-family:Arial,sans-serif;padding:24px;color:#333;font-size:13px}
-  h1{color:#1a5276;margin-bottom:4px}
-  .meta{color:#888;font-size:12px;margin-bottom:18px}
-  .kpi-row{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap}
-  .kpi{background:#eaf0fb;padding:14px 20px;border-radius:8px;border-left:4px solid #1a5276;min-width:200px}
+  body{font-family:Arial,sans-serif;padding:28px 32px;color:#333;font-size:13px;line-height:1.5}
+  h1{color:#1a5276;margin-bottom:4px;font-size:18px}
+  h2{color:#1a5276;margin:20px 0 8px;font-size:14px;border-bottom:2px solid #d5e8f7;padding-bottom:4px}
+  .meta{color:#888;font-size:11px;margin-bottom:20px}
+  .desc-box{background:#eaf3fb;border-left:4px solid #1a5276;padding:14px 18px;border-radius:6px;margin-bottom:18px}
+  .desc-box p{margin:4px 0;font-size:12.5px}
+  .formula-box{background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:12px 18px;margin:10px 0 18px;font-family:monospace;font-size:13px;color:#1a5276}
+  .source-box{background:#f9f9e8;border-left:4px solid #b7a000;padding:12px 18px;border-radius:6px;margin-bottom:18px;font-size:12px}
+  .kpi-row{display:flex;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+  .kpi{background:#eaf0fb;padding:14px 20px;border-radius:8px;border-left:4px solid #1a5276;min-width:180px}
   .kpi.red{border-color:#e03131}
-  .kpi-val{font-size:1.6em;font-weight:700;color:#1a5276}
+  .kpi-val{font-size:1.5em;font-weight:700;color:#1a5276}
   .kpi.red .kpi-val{color:#e03131}
   .kpi-lbl{font-size:11px;color:#555;margin-top:2px}
-  .indicator-box{background:#1a5276;color:white;border-radius:10px;padding:20px 28px;margin-bottom:20px;display:inline-block}
-  .indicator-val{font-size:2.4em;font-weight:700}
-  .indicator-lbl{font-size:12px;opacity:0.85;margin-top:4px}
-  table{width:100%;border-collapse:collapse;font-size:12px}
+  .indicator-box{background:#1a5276;color:white;border-radius:10px;padding:16px 24px;margin-bottom:20px;display:inline-block}
+  .indicator-val{font-size:2.2em;font-weight:700}
+  .indicator-lbl{font-size:11px;opacity:0.85;margin-top:4px}
+  .exposure-box{background:#fff3cd;border-left:4px solid #e03131;padding:14px 18px;border-radius:6px;margin-bottom:18px}
+  .exposure-box p{margin:4px 0;font-size:12.5px}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
   th{background:#1a5276;color:white;padding:8px 10px;text-align:left}
   td{padding:6px 10px;border-bottom:1px solid #eee}
+  tr:hover td{background:#f5faff}
   @media print{body{padding:10px}.no-print{display:none}}
 </style></head><body>
-<h1>Reporte: Cartera en Municipios con Alerta de Lluvias ALTA</h1>
-<div class="meta">Fuente datos clim\u00e1ticos: IDEAM \u2013 datos.gov.co &nbsp;|&nbsp;
-  Fecha datos: <b>${dataFecha ?? 'N/A'}</b> &nbsp;|&nbsp;
-  Generado: <b>${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'})}</b></div>
+<h1>Reporte: Exposici&#243;n de Cartera &#8211; Alerta de Lluvias (ALTA)</h1>
+<div class="meta">
+  Herramienta: ERIS &#8211; GGGI Colombia &nbsp;|&nbsp;
+  Fecha de datos: <b>${dataFecha ?? 'N/A'}</b> &nbsp;|&nbsp;
+  Generado: <b>${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'})}</b>
+</div>
+
+<h2>1. Descripci&#243;n del indicador</h2>
+<div class="desc-box">
+  <p><b>Indicador:</b> Exposici&#243;n de cartera a municipios con alerta de lluvias ALTA o CR&#205;TICA.</p>
+  <p>Mide qu&#233; proporci&#243;n de la cartera total est&#225; ubicada en municipios donde el sistema IDEAM
+     ha registrado alertas hist&#243;ricas de precipitaci&#243;n intensa, indicando mayor probabilidad de inundaciones,
+     deslizamientos o da&#241;os a infraestructura productiva.</p>
+</div>
+
+<h2>2. F&#243;rmula de c&#225;lculo</h2>
+<div class="formula-box">
+  Exposici&#243;n (%) = (Cartera en mpios. alerta ALTA) / (Cartera total) &times; 100
+</div>
+<p style="font-size:12px;color:#555;margin-top:-10px">
+  Se considera <b>municipio en alerta</b> aquel con alerta hist&#243;rica de lluvias = ALTA o CR&#205;TICA
+  seg&#250;n el registro acumulado del per&#237;odo analizado.
+</p>
+
+<h2>3. Fuente de informaci&#243;n</h2>
+<div class="source-box">
+  <b>Datos clim&#225;ticos:</b> IDEAM &#8211; Instituto de Hidrolog&#237;a, Meteorolog&#237;a y Estudios Ambientales
+  (datos.gov.co, dataset de precipitaci&#243;n diaria por estaci&#243;n &#8211; c&#243;digo <code>s54a-sgyg</code>).<br>
+  <b>Datos de cartera:</b> archivo cargado por el usuario en formato Excel/CSV con columna <code>cartera_total</code>
+  y campo de c&#243;digo municipal DIVIPOLA (<code>COD_MPIO</code>).<br>
+  <b>Cruce geogr&#225;fico:</b> se realiza a nivel municipal (c&#243;digo DIVIPOLA de 5 d&#237;gitos). La herramienta
+  est&#225; disponible en <b>ERIS &#8211; Herramienta Circular 0015, GGGI Colombia</b>.
+</div>
+
+<h2>4. Metodolog&#237;a de alertas</h2>
+<div class="desc-box">
+  <p>La alerta hist&#243;rica se calcula a partir de los registros de precipitaci&#243;n diaria de las estaciones IDEAM:</p>
+  <p>&#8226; <b>BAJA:</b> precipitaci&#243;n dentro de rangos hist&#243;ricos normales, sin eventos extremos recientes.</p>
+  <p>&#8226; <b>MODERADA:</b> precipitaci&#243;n elevada con alguna frecuencia de eventos en el percentil 90.</p>
+  <p>&#8226; <b>ALTA:</b> precipitaci&#243;n acumulada reciente supera el percentil 90 hist&#243;rico del municipio
+     o se registran eventos extremos frecuentes en los &#250;ltimos 2 a&#241;os.</p>
+  <p>&#8226; <b>CR&#205;TICA:</b> combinaci&#243;n de alerta ALTA con antecedente hist&#243;rico de inundaciones municipales
+     (municipios incluidos en el registro de emergencias por inundaci&#243;n IDEAM).</p>
+</div>
+
+<h2>5. Resultados de exposici&#243;n</h2>
 <div class="indicator-box">
   <div class="indicator-val">${result.indicator}%</div>
   <div class="indicator-lbl">Cartera en alerta ALTA / Cartera total</div>
 </div>
+<div class="exposure-box">
+  <p><b>Interpretaci&#243;n:</b> El <b>${result.indicator}%</b> de la cartera analizada est&#225; expuesta a municipios
+     con alerta de lluvias ALTA, correspondiendo a <b>${result.nAlta}</b> de <b>${result.nTotal}</b> municipios
+     en cartera (<b>${pctMpios}%</b> de municipios).</p>
+  <p>Esto implica mayor probabilidad de eventos de da&#241;o por precipitaciones extremas, inundaciones o
+     deslizamientos en la zona de influencia de los proyectos/cartera ubicados en dichos municipios.</p>
+</div>
 <div class="kpi-row">
   <div class="kpi red"><div class="kpi-val">${fmtCOP(result.cartaAlta)}</div><div class="kpi-lbl">Cartera en municipios con alerta ALTA</div></div>
-  <div class="kpi"><div class="kpi-val">${fmtCOP(result.totalCartera)}</div><div class="kpi-lbl">Cartera total</div></div>
+  <div class="kpi"><div class="kpi-val">${fmtCOP(result.totalCartera)}</div><div class="kpi-lbl">Cartera total analizada</div></div>
   <div class="kpi"><div class="kpi-val">${result.nAlta} / ${result.nTotal}</div><div class="kpi-lbl">Municipios en alerta ALTA / Total en cartera</div></div>
 </div>
-<h2 style="color:#1a5276;margin-bottom:8px">Detalle por municipio</h2>
+
+<h2>6. Detalle por municipio</h2>
 <table><thead><tr>
-  <th>C\u00f3digo</th><th>Municipio</th><th style="text-align:right">Cartera total</th><th style="text-align:center">Alerta lluvias</th>
+  <th>C&#243;digo</th><th>Municipio</th><th style="text-align:right">Cartera total</th><th style="text-align:center">Alerta lluvias</th>
 </tr></thead><tbody>${tableRows}</tbody></table>
 </body></html>`;
 
@@ -950,7 +1010,7 @@
 
     function exportReportePDFSection(result, mergedRows, dataFecha, config) {
       const fmtCOP = v => v.toLocaleString('es-CO', { style:'currency', currency:'COP', maximumFractionDigits:0 });
-      const { title, indicadorLabel, alertLabel, alertColor } = config;
+      const { title, indicadorLabel, alertLabel, alertColor, indicador } = config;
 
       const tableRows = mergedRows.map(r => `
         <tr style="${r.enRiesgo ? 'background:#fff0f0' : ''}">
@@ -959,41 +1019,109 @@
           <td style="text-align:center;color:${r.enRiesgo ? alertColor : '#27ae60'};font-weight:600">${r.alerta_indicador}</td>
         </tr>`).join('');
 
+      const pctMpios = result.nTotal > 0 ? ((result.nRiesgo / result.nTotal)*100).toFixed(1) : '0.0';
+
+      const INDICATOR_META = {
+        lluvias: {
+          desc: 'Mide la proporci&#243;n de cartera ubicada en municipios con alerta hist&#243;rica de precipitaci&#243;n intensa (ALTA), indicando mayor riesgo de inundaciones, deslizamientos y da&#241;os a infraestructura.',
+          formula: 'Exposici&#243;n (%) = (Cartera en mpios. alerta ALTA) / (Cartera total) &times; 100',
+          source: 'IDEAM &#8211; dataset de precipitaci&#243;n diaria por estaci&#243;n (datos.gov.co, c&#243;digo <code>s54a-sgyg</code>). Procesamiento: promedio acumulado diario por municipio, comparado contra percentiles hist&#243;ricos.',
+          metodologia: '&#8226; <b>BAJA:</b> precipitaci&#243;n dentro de rangos hist&#243;ricos normales.<br>&#8226; <b>MODERADA:</b> eventos en percentil 90 con baja frecuencia reciente.<br>&#8226; <b>ALTA:</b> precipitaci&#243;n acumulada supera percentil 90 o frecuencia de extremos elevada en los &#250;ltimos 2 a&#241;os.<br>&#8226; <b>CR&#205;TICA:</b> alerta ALTA + antecedente hist&#243;rico de inundaciones registrado por IDEAM.',
+        },
+        sequias: {
+          desc: 'Mide la proporci&#243;n de cartera en municipios con d&#233;ficit h&#237;drico severo (sequ&#237;a recurrente), evaluado mediante el &#205;ndice de Precipitaci&#243;n Estandarizado (SPI) y la frecuencia hist&#243;rica de per&#237;odos secos.',
+          formula: 'Exposici&#243;n (%) = (Cartera en mpios. con sequ&#237;a SEVERA) / (Cartera total) &times; 100',
+          source: 'IDEAM &#8211; dataset de precipitaci&#243;n diaria (datos.gov.co). C&#225;lculo de SPI a escala mensual y acumulado anual por municipio. Clasificaci&#243;n de sequ&#237;a basada en umbrales SPI est&#225;ndar (WMO).',
+          metodologia: '&#8226; <b>Sin sequ&#237;a:</b> SPI &gt; &#8722;1.0, precipitaci&#243;n dentro de rangos normales.<br>&#8226; <b>MODERADA:</b> SPI entre &#8722;1.0 y &#8722;1.5, d&#233;ficit leve recurrente.<br>&#8226; <b>SEVERA:</b> SPI &lt; &#8722;1.5 o m&#225;s de 6 meses consecutivos por debajo del percentil 25.<br>&#8226; <b>EXTREMA:</b> SPI &lt; &#8722;2.0, condici&#243;n cr&#237;tica hist&#243;ricamente atribuida a sequ&#237;a prolongada.',
+        },
+        deslizamientos: {
+          desc: 'Mide la proporci&#243;n de cartera en municipios con amenaza ALTA por movimientos en masa, cruzada con alertas de precipitaci&#243;n activas, lo que eleva significativamente el riesgo de deslizamientos e inestabilidad de taludes.',
+          formula: 'Exposici&#243;n (%) = (Cartera en mpios. amenaza ALTA + alerta lluvia) / (Cartera total) &times; 100',
+          source: 'Mapa Nacional de Amenaza por Movimientos en Masa &#8211; SGC (Servicio Geol&#243;gico Colombiano), escala 1:500.000. Cruzado con alertas diarias de precipitaci&#243;n IDEAM y precipitaci&#243;n acumulada 3 y 10 d&#237;as.',
+          metodologia: '&#8226; <b>BAJA:</b> amenaza SGC baja o media, sin alerta de lluvia activa.<br>&#8226; <b>MODERADA:</b> amenaza SGC media con precipitaci&#243;n elevada o amenaza alta sin alerta.<br>&#8226; <b>ALTA:</b> amenaza SGC ALTA con alerta de lluvia ALTA o precipitaci&#243;n acumulada 3 d&#237;as &gt; umbral regional.<br>&#8226; <b>CR&#205;TICA:</b> amenaza ALTA + lluvia CR&#205;TICA + antecedente de inundaci&#243;n hist&#243;rica.',
+        },
+      };
+
+      const meta = INDICATOR_META[indicador] || INDICATOR_META.lluvias;
+
       const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
 <title>${title}</title>
 <style>
-  body{font-family:Arial,sans-serif;padding:24px;color:#333;font-size:13px}
-  h1{color:#1a5276;margin-bottom:4px}
-  .meta{color:#888;font-size:12px;margin-bottom:18px}
-  .kpi-row{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap}
-  .kpi{background:#eaf0fb;padding:14px 20px;border-radius:8px;border-left:4px solid #1a5276;min-width:200px}
+  body{font-family:Arial,sans-serif;padding:28px 32px;color:#333;font-size:13px;line-height:1.5}
+  h1{color:#1a5276;margin-bottom:4px;font-size:18px}
+  h2{color:#1a5276;margin:20px 0 8px;font-size:14px;border-bottom:2px solid #d5e8f7;padding-bottom:4px}
+  .meta{color:#888;font-size:11px;margin-bottom:20px}
+  .desc-box{background:#eaf3fb;border-left:4px solid #1a5276;padding:14px 18px;border-radius:6px;margin-bottom:18px}
+  .desc-box p{margin:4px 0;font-size:12.5px}
+  .formula-box{background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:12px 18px;margin:10px 0 18px;font-family:monospace;font-size:13px;color:#1a5276}
+  .source-box{background:#f9f9e8;border-left:4px solid #b7a000;padding:12px 18px;border-radius:6px;margin-bottom:18px;font-size:12px}
+  .kpi-row{display:flex;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+  .kpi{background:#eaf0fb;padding:14px 20px;border-radius:8px;border-left:4px solid #1a5276;min-width:180px}
   .kpi.red{border-color:${alertColor}}
-  .kpi-val{font-size:1.6em;font-weight:700;color:#1a5276}
+  .kpi-val{font-size:1.5em;font-weight:700;color:#1a5276}
   .kpi.red .kpi-val{color:${alertColor}}
   .kpi-lbl{font-size:11px;color:#555;margin-top:2px}
-  .indicator-box{background:#1a5276;color:white;border-radius:10px;padding:20px 28px;margin-bottom:20px;display:inline-block}
-  .indicator-val{font-size:2.4em;font-weight:700}
-  .indicator-lbl{font-size:12px;opacity:0.85;margin-top:4px}
-  table{width:100%;border-collapse:collapse;font-size:12px}
+  .indicator-box{background:#1a5276;color:white;border-radius:10px;padding:16px 24px;margin-bottom:20px;display:inline-block}
+  .indicator-val{font-size:2.2em;font-weight:700}
+  .indicator-lbl{font-size:11px;opacity:0.85;margin-top:4px}
+  .exposure-box{background:#fff3cd;border-left:4px solid ${alertColor};padding:14px 18px;border-radius:6px;margin-bottom:18px}
+  .exposure-box p{margin:4px 0;font-size:12.5px}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
   th{background:#1a5276;color:white;padding:8px 10px;text-align:left}
   td{padding:6px 10px;border-bottom:1px solid #eee}
+  tr:hover td{background:#f5faff}
   @media print{body{padding:10px}.no-print{display:none}}
 </style></head><body>
 <h1>${title}</h1>
-<div class="meta">Indicador: <b>${indicadorLabel}</b> &nbsp;|&nbsp; Alerta: <b>${alertLabel}</b> &nbsp;|&nbsp;
-  Fecha datos: <b>${dataFecha ?? 'N/A'}</b> &nbsp;|&nbsp;
-  Generado: <b>${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'})}</b></div>
+<div class="meta">
+  Herramienta: ERIS &#8211; GGGI Colombia &nbsp;|&nbsp;
+  Indicador: <b>${indicadorLabel}</b> &nbsp;|&nbsp;
+  Fecha de datos: <b>${dataFecha ?? 'N/A'}</b> &nbsp;|&nbsp;
+  Generado: <b>${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'})}</b>
+</div>
+
+<h2>1. Descripci&#243;n del indicador</h2>
+<div class="desc-box">
+  <p><b>Indicador:</b> ${indicadorLabel}</p>
+  <p>${meta.desc}</p>
+</div>
+
+<h2>2. F&#243;rmula de c&#225;lculo</h2>
+<div class="formula-box">${meta.formula}</div>
+
+<h2>3. Fuente de informaci&#243;n</h2>
+<div class="source-box">
+  ${meta.source}<br><br>
+  <b>Datos de cartera:</b> archivo cargado por el usuario con columna <code>cartera_total</code>
+  y c&#243;digo municipal DIVIPOLA. Cruce geogr&#225;fico a nivel municipal (5 d&#237;gitos).<br>
+  <b>Plataforma:</b> ERIS &#8211; Herramienta Circular 0015, GGGI Colombia.
+</div>
+
+<h2>4. Metodolog&#237;a de alertas</h2>
+<div class="desc-box">
+  <p>${meta.metodologia}</p>
+</div>
+
+<h2>5. Resultados de exposici&#243;n</h2>
 <div class="indicator-box">
   <div class="indicator-val">${result.indicator}%</div>
   <div class="indicator-lbl">Cartera en riesgo / Cartera total</div>
 </div>
-<div class="kpi-row">
-  <div class="kpi red"><div class="kpi-val">${fmtCOP(result.cartaRiesgo)}</div><div class="kpi-lbl">Cartera municipios en riesgo (${result.nRiesgo})</div></div>
-  <div class="kpi"><div class="kpi-val">${fmtCOP(result.totalCartera)}</div><div class="kpi-lbl">Cartera total (${result.nTotal} mpios)</div></div>
+<div class="exposure-box">
+  <p><b>Interpretaci&#243;n:</b> El <b>${result.indicator}%</b> de la cartera analizada corresponde a municipios
+     clasificados como <b>${alertLabel}</b>, equivalente a <b>${result.nRiesgo}</b> de <b>${result.nTotal}</b>
+     municipios en cartera (<b>${pctMpios}%</b> de municipios).</p>
+  <p>Este porcentaje refleja la exposici&#243;n directa al riesgo clim&#225;tico identificado. Se recomienda
+     priorizar estos municipios para an&#225;lisis de vulnerabilidad y planes de adaptaci&#243;n.</p>
 </div>
-<h2 style="color:#1a5276;margin-bottom:8px">Detalle por municipio</h2>
+<div class="kpi-row">
+  <div class="kpi red"><div class="kpi-val">${fmtCOP(result.cartaRiesgo)}</div><div class="kpi-lbl">Cartera en municipios de riesgo (${result.nRiesgo})</div></div>
+  <div class="kpi"><div class="kpi-val">${fmtCOP(result.totalCartera)}</div><div class="kpi-lbl">Cartera total analizada (${result.nTotal} mpios.)</div></div>
+</div>
+
+<h2>6. Detalle por municipio</h2>
 <table><thead><tr>
-  <th>C\u00f3digo</th><th>Municipio</th>
+  <th>C&#243;digo</th><th>Municipio</th>
   <th style="text-align:right">Cartera total</th>
   <th style="text-align:center">${alertLabel}</th>
 </tr></thead><tbody>${tableRows}</tbody></table>
@@ -1450,9 +1578,9 @@
       const fileRef = useRef(null);
 
       const CONFIGS = {
-        lluvias:        { title: 'Reporte Cartera \u2013 Alerta Lluvias',        indicadorLabel: 'Precipitaci\u00f3n / Lluvias',    alertColor: '#e03131', csv: 'cartera_lluvias.csv'        },
-        sequias:        { title: 'Reporte Cartera \u2013 Sequ\u00eda Severa',    indicadorLabel: 'Sequ\u00eda recurrente (SPI)',    alertColor: '#e8590c', csv: 'cartera_sequias.csv'        },
-        deslizamientos: { title: 'Reporte Cartera \u2013 Deslizamientos ALTA',   indicadorLabel: 'Movimientos en masa (SGC)',       alertColor: '#2d6b3c', csv: 'cartera_deslizamientos.csv' },
+        lluvias:        { indicador:'lluvias',        title: 'Reporte Cartera \u2013 Alerta Lluvias',        indicadorLabel: 'Precipitaci\u00f3n / Lluvias',    alertColor: '#e03131', csv: 'cartera_lluvias.csv'        },
+        sequias:        { indicador:'sequias',        title: 'Reporte Cartera \u2013 Sequ\u00eda Severa',    indicadorLabel: 'Sequ\u00eda recurrente (SPI)',    alertColor: '#e8590c', csv: 'cartera_sequias.csv'        },
+        deslizamientos: { indicador:'deslizamientos', title: 'Reporte Cartera \u2013 Deslizamientos ALTA',   indicadorLabel: 'Movimientos en masa (SGC)',       alertColor: '#2d6b3c', csv: 'cartera_deslizamientos.csv' },
       };
       const cfg = CONFIGS[indicador] ?? CONFIGS.lluvias;
 
@@ -2120,9 +2248,9 @@
               <div className="dashboard-main">
                 <div className="kpi-grid reveal">
                   <KpiCard label="Municipios filtrados"         value={filtered.length}       icon="&#x1F3D9;" />
-                  <KpiCard label="En alerta hist\u00f3rica"     value={kpis.enAlerta}         icon="&#x26A0;&#xFE0F;" accent="red" />
-                  <KpiCard label="Promedio precipitaci\u00f3n"  value={`${kpis.promedio} mm`} icon="&#x1F4A7;" accent="green" />
-                  <KpiCard label="M\u00e1x. precipitaci\u00f3n" value={`${kpis.maximo} mm`}   icon="&#x1F4CD;" accent="gold" sub={kpis.maxMpio} />
+                  <KpiCard label="En alerta hist&oacute;rica"     value={kpis.enAlerta}         icon="&#x26A0;&#xFE0F;" accent="red" />
+                  <KpiCard label="Promedio precipitaci&oacute;n"  value={`${kpis.promedio} mm`} icon="&#x1F4A7;" accent="green" />
+                  <KpiCard label="M&aacute;x. precipitaci&oacute;n" value={`${kpis.maximo} mm`}   icon="&#x1F4CD;" accent="gold" sub={kpis.maxMpio} />
                 </div>
                 <div className="map-layout">
                   <div className="map-main">
