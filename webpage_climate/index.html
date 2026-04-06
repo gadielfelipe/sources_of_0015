@@ -2022,6 +2022,13 @@
           desc: 'Amenaza de movimientos en masa (SGC 1:500k) cruzada con alertas diarias IDEAM y precipitaci\u00f3n acumulada.',
         },
         {
+          id: 'incendios',
+          accent: '#c0392b',
+          img: 'data/incendios.jpg',
+          title: 'Incendios',
+          desc: 'Puntos de calor activos (IDEAM \u2013 VIIRS/MODIS) del \u00faltimo d\u00eda disponible. Municipios y coordenadas de proyecto con amenaza por incendio forestal.',
+        },
+        {
           id: 'areas_protegidas',
           accent: '#1b5e20',
           img: 'data/areasprotegidasdecolombia.jpg',
@@ -2414,6 +2421,259 @@
         url:'https://services6.arcgis.com/hxAwRYAu9QHliJ8T/arcgis/rest/services/OTL_Reserva_Forestal_Ley_2da/FeatureServer/2',
         style:{ color:'#bf360c', weight:1.5, fillColor:'#ff7043', fillOpacity:0.28 } },
     ];
+
+    // ─── Incendios Section ────────────────────────────────────────────────────
+
+    const CONF_COLOR = { Alta: '#e74c3c', Nominal: '#e67e22', Baja: '#f1c40f' };
+    const FUENTE_COLOR = {
+      'VIIRS-NOAA-21': '#e74c3c', 'VIIRS-NOAA-20': '#e67e22',
+      'VIIRS-Suomi-NPP': '#e91e63', 'MODIS-Aqua': '#ff9800', 'MODIS-Terra': '#ffb300',
+    };
+
+    function IncendiosMap({ data, visible }) {
+      const mapDiv     = useRef(null);
+      const leafletMap = useRef(null);
+      const markersRef = useRef(null);
+
+      useEffect(() => {
+        if (!visible || !mapDiv.current) return;
+        if (!leafletMap.current) {
+          leafletMap.current = L.map(mapDiv.current, { zoomControl: true }).setView([4.5, -74], 5);
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; CARTO', maxZoom: 18
+          }).addTo(leafletMap.current);
+        } else {
+          leafletMap.current.invalidateSize();
+          if (markersRef.current) { markersRef.current.clearLayers(); }
+        }
+
+        const group = L.layerGroup();
+        data.forEach(pt => {
+          const lat = parseFloat(pt.lat), lon = parseFloat(pt.lon);
+          if (isNaN(lat) || isNaN(lon)) return;
+          const color = CONF_COLOR[pt.confianza] || '#e67e22';
+          const marker = L.circleMarker([lat, lon], {
+            radius: pt.confianza === 'Alta' ? 7 : 5,
+            color: '#fff', weight: 0.5,
+            fillColor: color, fillOpacity: 0.85,
+          });
+          marker.bindPopup(
+            `<b>${pt.fuente}</b><br>` +
+            `Confianza: <b>${pt.confianza}</b><br>` +
+            `Temp: ${pt.temp_c ? pt.temp_c + ' \u00b0C' : 'N/D'}<br>` +
+            `Captura: ${pt.captura === 'D' ? 'D\u00eda' : pt.captura === 'N' ? 'Noche' : pt.captura}<br>` +
+            `${pt.fecha_hora}`
+          );
+          group.addLayer(marker);
+        });
+        group.addTo(leafletMap.current);
+        markersRef.current = group;
+      }, [visible, data]);
+
+      return (
+        <div ref={mapDiv} style={{width:'100%', height:'480px', borderRadius:'10px',
+          border:'1px solid #333', background:'#0d1b2a'}} />
+      );
+    }
+
+    function IncendiosCheckerPanel({ data }) {
+      const [lat, setLat] = React.useState('');
+      const [lon, setLon] = React.useState('');
+      const [result, setResult] = React.useState(null);
+
+      function haversineKm(lat1, lon1, lat2, lon2) {
+        const R = 6371, toRad = x => x * Math.PI / 180;
+        const dLat = toRad(lat2 - lat1), dLon = toRad(lon2 - lon1);
+        const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      }
+
+      function checkCoords() {
+        const la = parseFloat(lat), lo = parseFloat(lon);
+        if (isNaN(la) || isNaN(lo)) { setResult({ error: true }); return; }
+        let nearest = null, minDist = Infinity;
+        data.forEach(pt => {
+          const d = haversineKm(la, lo, parseFloat(pt.lat), parseFloat(pt.lon));
+          if (d < minDist) { minDist = d; nearest = pt; }
+        });
+        setResult({ dist: minDist, nearest, la, lo });
+      }
+
+      const RADIO_KM = 25;
+      return (
+        <div style={{background:'#1a2a3a', borderRadius:'10px', padding:'20px', maxWidth:'520px'}}>
+          <div style={{fontWeight:700, fontSize:'15px', color:'#fff', marginBottom:'14px'}}>
+            Verificar coordenadas del proyecto
+          </div>
+          <div style={{display:'flex', gap:'10px', marginBottom:'12px'}}>
+            <input value={lat} onChange={e=>setLat(e.target.value)} placeholder="Latitud (ej: 4.5)"
+              style={{flex:1, padding:'8px 10px', borderRadius:'6px', border:'1px solid #334',
+                background:'#0d1b2a', color:'#fff', fontSize:'13px'}} />
+            <input value={lon} onChange={e=>setLon(e.target.value)} placeholder="Longitud (ej: -74.0)"
+              style={{flex:1, padding:'8px 10px', borderRadius:'6px', border:'1px solid #334',
+                background:'#0d1b2a', color:'#fff', fontSize:'13px'}} />
+            <button onClick={checkCoords}
+              style={{padding:'8px 16px', background:'#c0392b', color:'#fff', border:'none',
+                borderRadius:'6px', cursor:'pointer', fontWeight:600, fontSize:'13px'}}>
+              Verificar
+            </button>
+          </div>
+          {result && !result.error && (
+            <div style={{
+              background: result.dist <= RADIO_KM ? '#3b1010' : '#0f2b0f',
+              border: `1px solid ${result.dist <= RADIO_KM ? '#e74c3c' : '#2ecc71'}`,
+              borderRadius:'8px', padding:'14px', color:'#fff', fontSize:'13px'
+            }}>
+              {result.dist <= RADIO_KM ? (
+                <>
+                  <div style={{color:'#e74c3c', fontWeight:700, fontSize:'15px', marginBottom:'8px'}}>
+                    &#x26A0; Punto de calor cercano ({result.dist.toFixed(1)} km)
+                  </div>
+                  <div>Fuente: <b>{result.nearest.fuente}</b></div>
+                  <div>Confianza: <b style={{color: CONF_COLOR[result.nearest.confianza]}}>{result.nearest.confianza}</b></div>
+                  <div>Temp: {result.nearest.temp_c ? result.nearest.temp_c + ' \u00b0C' : 'N/D'}</div>
+                  <div>Fecha/hora: {result.nearest.fecha_hora}</div>
+                </>
+              ) : (
+                <div style={{color:'#2ecc71', fontWeight:600}}>
+                  Sin puntos de calor en radio de {RADIO_KM} km &mdash; m\u00e1s cercano a {result.dist.toFixed(1)} km
+                </div>
+              )}
+            </div>
+          )}
+          {result && result.error && (
+            <div style={{color:'#e74c3c', fontSize:'13px'}}>Ingresa coordenadas v\u00e1lidas.</div>
+          )}
+        </div>
+      );
+    }
+
+    function IncendiosSection({ visible, onBack, incendiosData }) {
+      const [activeTab, setActiveTab] = React.useState('Mapa');
+      const [confFilter, setConfFilter] = React.useState('Todas');
+
+      const fecha = React.useMemo(() => {
+        if (!incendiosData.length) return '';
+        return incendiosData[0].fecha_hora ? incendiosData[0].fecha_hora.split(' ')[0] : '';
+      }, [incendiosData]);
+
+      const filtered = React.useMemo(() => {
+        if (confFilter === 'Todas') return incendiosData;
+        return incendiosData.filter(d => d.confianza === confFilter);
+      }, [incendiosData, confFilter]);
+
+      const stats = React.useMemo(() => {
+        const total = incendiosData.length;
+        const porConf = { Alta: 0, Nominal: 0, Baja: 0 };
+        const porFuente = {};
+        incendiosData.forEach(d => {
+          porConf[d.confianza] = (porConf[d.confianza] || 0) + 1;
+          porFuente[d.fuente]  = (porFuente[d.fuente]  || 0) + 1;
+        });
+        return { total, porConf, porFuente };
+      }, [incendiosData]);
+
+      if (!visible) return null;
+      return (
+        <div style={{padding:'0 0 40px'}}>
+          <div style={{display:'flex', alignItems:'center', gap:'12px', padding:'18px 0 14px',
+            borderBottom:'1px solid #2a3a4a', marginBottom:'18px'}}>
+            <button onClick={onBack} style={{background:'none', border:'1px solid #334',
+              color:'#aab', borderRadius:'6px', padding:'5px 12px', cursor:'pointer', fontSize:'13px'}}>
+              &larr; Volver
+            </button>
+            <span style={{color:'#aab', fontSize:'13px'}}>Dashboard</span>
+            <span style={{color:'#aab'}}>/</span>
+            <span style={{color:'#e74c3c', fontWeight:600}}>Incendios</span>
+          </div>
+
+          <div className="ov-section-title">Puntos de Calor &middot; Incendios</div>
+          {fecha && <div style={{color:'#aab', fontSize:'13px', marginBottom:'16px'}}>
+            Datos: {fecha} &mdash; Fuente: IDEAM (VIIRS / MODIS)
+          </div>}
+
+          {/* KPIs */}
+          <div style={{display:'flex', gap:'12px', flexWrap:'wrap', marginBottom:'20px'}}>
+            {[
+              { label:'Total puntos', value: stats.total, color:'#e67e22' },
+              { label:'Confianza Alta', value: stats.porConf.Alta || 0, color:'#e74c3c' },
+              { label:'Confianza Nominal', value: stats.porConf.Nominal || 0, color:'#e67e22' },
+              { label:'Confianza Baja', value: stats.porConf.Baja || 0, color:'#f1c40f' },
+            ].map(k => (
+              <div key={k.label} style={{background:'#1a2a3a', borderRadius:'10px',
+                padding:'14px 20px', flex:'1', minWidth:'110px', textAlign:'center'}}>
+                <div style={{color: k.color, fontWeight:700, fontSize:'26px'}}>{k.value}</div>
+                <div style={{color:'#aab', fontSize:'12px', marginTop:'4px'}}>{k.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <OvSubTabs tabs={['Mapa','Tabla','Verificar coordenadas']} active={activeTab}
+            accentColor="#e74c3c" onSelect={setActiveTab} />
+
+          {activeTab === 'Mapa' && (
+            <div style={{marginTop:'16px'}}>
+              <div style={{display:'flex', gap:'8px', marginBottom:'12px', flexWrap:'wrap'}}>
+                {['Todas','Alta','Nominal','Baja'].map(f => (
+                  <button key={f} onClick={() => setConfFilter(f)}
+                    style={{padding:'5px 14px', borderRadius:'20px', fontSize:'12px', cursor:'pointer',
+                      border: confFilter===f ? 'none' : '1px solid #334',
+                      background: confFilter===f ? (CONF_COLOR[f]||'#e67e22') : 'transparent',
+                      color: confFilter===f ? '#fff' : '#aab', fontWeight: confFilter===f ? 700 : 400}}>
+                    {f} {f!=='Todas' ? `(${stats.porConf[f]||0})` : `(${stats.total})`}
+                  </button>
+                ))}
+              </div>
+              <IncendiosMap data={filtered} visible={activeTab==='Mapa'} />
+              <div style={{marginTop:'12px', display:'flex', gap:'16px', flexWrap:'wrap'}}>
+                {Object.entries(CONF_COLOR).map(([k,c]) => (
+                  <span key={k} style={{fontSize:'12px', color:'#ccc', display:'flex', alignItems:'center', gap:'6px'}}>
+                    <span style={{width:'12px', height:'12px', borderRadius:'50%', background:c, display:'inline-block'}}/>
+                    {k}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'Tabla' && (
+            <div style={{marginTop:'16px', overflowX:'auto'}}>
+              <table style={{width:'100%', borderCollapse:'collapse', fontSize:'13px', color:'#ccc'}}>
+                <thead>
+                  <tr style={{borderBottom:'1px solid #334'}}>
+                    {['Fuente','Puntos','%'].map(h => (
+                      <th key={h} style={{padding:'8px 12px', textAlign:'left', color:'#aab', fontWeight:600}}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(stats.porFuente).sort((a,b)=>b[1]-a[1]).map(([fuente, n]) => (
+                    <tr key={fuente} style={{borderBottom:'1px solid #1e2d3d'}}>
+                      <td style={{padding:'8px 12px'}}>
+                        <span style={{display:'inline-block', width:'10px', height:'10px', borderRadius:'50%',
+                          background: FUENTE_COLOR[fuente]||'#aaa', marginRight:'8px'}}/>
+                        {fuente}
+                      </td>
+                      <td style={{padding:'8px 12px', fontWeight:600, color:'#fff'}}>{n}</td>
+                      <td style={{padding:'8px 12px', color:'#aab'}}>{((n/stats.total)*100).toFixed(1)}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {activeTab === 'Verificar coordenadas' && (
+            <div style={{marginTop:'16px'}}>
+              <IncendiosCheckerPanel data={incendiosData} />
+              <div style={{marginTop:'12px', color:'#8899aa', fontSize:'12px'}}>
+                Radio de b\u00fasqueda: 25 km. Datos del \u00faltimo d\u00eda disponible en IDEAM.
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
 
     // ─── Áreas Protegidas Map Panel ───────────────────────────────────────────
 
@@ -2852,7 +3112,7 @@
 
     // ─── Overview Dashboard (orchestrator) ───────────────────────────────────
 
-    function OverviewDashboard({ allData, amenazasData, alertaHistData, apData, ecoData, dataFecha }) {
+    function OverviewDashboard({ allData, amenazasData, alertaHistData, apData, ecoData, incendiosData, dataFecha }) {
       const [activeSection, setActiveSection] = React.useState(null);
 
       function showSection(name) {
@@ -2874,6 +3134,7 @@
             <LluviasSection          visible={activeSection === 'lluvias'}          onBack={goBack} data={allData}       alertaHistData={alertaHistData} dataFecha={dataFecha} />
             <SequiasSection          visible={activeSection === 'sequias'}          onBack={goBack} data={allData}       dataFecha={dataFecha} />
             <DeslizSection           visible={activeSection === 'deslizamientos'}   onBack={goBack} amenazasData={amenazasData} dataFecha={dataFecha} />
+            <IncendiosSection        visible={activeSection === 'incendios'}        onBack={goBack} incendiosData={incendiosData} />
             <AreasProtegidasSection  visible={activeSection === 'areas_protegidas'} onBack={goBack} apData={apData} ecoData={ecoData} />
           </div>
         </div>
@@ -2888,6 +3149,7 @@
       const [amenazasData,   setAmenazasData]   = useState({});
       const [apData,         setApData]         = useState([]);
       const [ecoData,        setEcoData]        = useState([]);
+      const [incendiosData,  setIncendiosData]  = useState([]);
       const [deptFilter,     setDeptFilter]     = useState('ALL');
       const [alertOnly,      setAlertOnly]      = useState(false);
       const [loading,        setLoading]        = useState(true);
@@ -2979,6 +3241,15 @@
         });
       }, []);
 
+      // Load incendios último día
+      useEffect(() => {
+        Papa.parse('data/incendios_ultimo_dia.csv', {
+          download: true, header: true, skipEmptyLines: true, encoding: 'UTF-8',
+          complete: ({ data }) => setIncendiosData(data),
+          error: err => console.warn('No se pudo cargar incendios_ultimo_dia.csv:', err),
+        });
+      }, []);
+
       // Load ecosistemas estratégicos por municipio
       useEffect(() => {
         Papa.parse('data/ecosistemas_estrategicos_municipal.csv', {
@@ -3014,7 +3285,7 @@
           <LandingHero />
           <div id="dashboard">
             <Header dataFecha={dataFecha} />
-            <OverviewDashboard allData={allData} amenazasData={amenazasData} alertaHistData={alertaHistData} apData={apData} ecoData={ecoData} dataFecha={dataFecha} />
+            <OverviewDashboard allData={allData} amenazasData={amenazasData} alertaHistData={alertaHistData} apData={apData} ecoData={ecoData} incendiosData={incendiosData} dataFecha={dataFecha} />
             <footer className="site-footer">
               <div>
                 <div className="footer-brand">GGGI &mdash; Sustainable Finance</div>
