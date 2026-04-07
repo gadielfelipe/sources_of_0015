@@ -8,6 +8,7 @@ de tareas de Windows una vez al día.
 import requests
 import pandas as pd
 import io
+import shutil
 import urllib3
 import logging
 from datetime import date, timedelta
@@ -60,11 +61,27 @@ def descargar(date_str: str) -> pd.DataFrame:
 
 
 # ─── Guardar en Excel ────────────────────────────────────────────────────────
+def leer_excel_seguro(path: Path) -> pd.DataFrame:
+    """Lee el Excel copiando a un temporal para evitar PermissionError si está abierto."""
+    tmp = path.parent / f"_tmp_{path.name}"
+    try:
+        shutil.copy2(path, tmp)
+        df = pd.read_excel(tmp, engine="openpyxl")
+        return df
+    finally:
+        if tmp.exists():
+            tmp.unlink()
+
+
 def guardar(df_new: pd.DataFrame) -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     if OUTPUT_FILE.exists():
-        df_existing = pd.read_excel(OUTPUT_FILE, engine="openpyxl")
+        try:
+            df_existing = leer_excel_seguro(OUTPUT_FILE)
+        except Exception as exc:
+            raise RuntimeError(f"No se pudo leer {OUTPUT_FILE.name}: {exc}") from exc
+
         if "fecha_descarga" not in df_existing.columns:
             df_existing.insert(0, "fecha_descarga", pd.NaT)
         df_existing["fecha_descarga"] = pd.to_datetime(df_existing["fecha_descarga"], errors="coerce")
@@ -79,7 +96,11 @@ def guardar(df_new: pd.DataFrame) -> None:
     else:
         df_combined = df_new.copy()
 
-    df_combined.to_excel(OUTPUT_FILE, index=False, engine="openpyxl")
+    # Escribir a temporal primero, luego reemplazar (más seguro ante cortes)
+    tmp_out = OUTPUT_FILE.parent / f"_tmp_{OUTPUT_FILE.name}"
+    df_combined.to_excel(tmp_out, index=False, engine="openpyxl")
+    shutil.move(str(tmp_out), str(OUTPUT_FILE))
+
     log.info(f"Archivo guardado: {OUTPUT_FILE}  ({len(df_combined):,} filas totales)")
     print(f"[OK] Guardado: {OUTPUT_FILE}  –  {len(df_combined):,} filas totales")
 
