@@ -19,9 +19,14 @@ JUPYTER = [PYTHON, "-m", "jupyter", "nbconvert", "--to", "notebook",
 
 TAREAS = [
     {
-        "nombre": "Precipitacion diaria (datos_municipios.csv)",
+        "nombre": "Precipitacion diaria – descarga a Excel histórico",
         "tipo": "notebook",
         "ruta": BASE / "scripts_python" / "Modelos" / "Api" / "appi diaria datos precipitacion.ipynb",
+    },
+    {
+        "nombre": "Precipitacion diaria – cruce municipal + datos_municipios.csv",
+        "tipo": "notebook",
+        "ruta": BASE / "scripts_python" / "datos precipitacion diarios.ipynb",
     },
     {
         "nombre": "Puntos de calor – Incendios (incendios_ultimo_dia.csv)",
@@ -95,6 +100,41 @@ def ejecutar_tarea(tarea: dict) -> bool:
         return False
 
 
+# ─── Git commit de datos ──────────────────────────────────────────────────────
+def commit_datos(fecha: str, tareas_ok: bool) -> None:
+    """Hace git add + commit de los CSVs actualizados. Solo si al menos una tarea OK."""
+    if not tareas_ok:
+        log.warning("Git commit omitido: ninguna tarea completó correctamente.")
+        print("  –  Git commit omitido (sin tareas exitosas).")
+        return
+
+    archivos = [
+        "webpage_climate/data/incendios_ultimo_dia.csv",
+        "webpage_climate/data/datos_municipios.csv",
+        "webpage_climate/data/amenazas_municipal.csv",
+        "scripts_python/Incendios.ipynb",
+        "scripts_python/datos precipitacion diarios.ipynb",
+    ]
+
+    subprocess.run(["git", "add"] + archivos, cwd=BASE, check=False)
+
+    result = subprocess.run(
+        ["git", "commit", "-m", f"auto: actualizacion diaria {fecha}"],
+        cwd=BASE,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    msg = (result.stdout + result.stderr).strip()
+    if result.returncode == 0:
+        log.info(f"Git commit OK  – {msg}")
+        print(f"  ✓  Git commit OK")
+    else:
+        # "nothing to commit" no es un error real
+        log.info(f"Git commit: {msg}")
+        print(f"  –  Git: {msg[:80]}")
+
+
 if __name__ == "__main__":
     inicio = datetime.now()
     log.info("=" * 60)
@@ -117,6 +157,9 @@ if __name__ == "__main__":
     if err_count:
         print(f"  {err_count} tarea(s) con error – revisar {LOG_FILE.name}")
     print(f"{'─'*50}\n")
+
+    # Commit automático de los datos generados
+    commit_datos(inicio.strftime("%Y-%m-%d"), tareas_ok=ok_count > 0)
 
     log.info(f"FIN  {ok_count}/{len(resultados)} OK  {elapsed}s")
     log.info("=" * 60)
