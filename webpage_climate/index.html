@@ -756,19 +756,19 @@
     const CATEGORIA_COLORS = {
       'Sin lluvia (0 mm)':   '#adb5bd',
       'Muy ligera (< 5 mm)': '#74c0fc',
-      'Ligera (5\u201315 mm)':    '#339af0',
-      'Moderada (15\u201330 mm)': '#f0b429',
-      'Fuerte (30\u201360 mm)':   '#e03131',
-      'Extrema (\u2265 100 mm)':  '#7b0000',
+      'Ligera (5–15 mm)':    '#339af0',
+      'Moderada (15–30 mm)': '#f0b429',
+      'Fuerte (30–60 mm)':   '#e03131',
+      'Extrema (≥ 100 mm)':  '#7b0000',
     };
 
     const LEGEND_ENTRIES = [
       { label: 'Sin lluvia (0 mm)',    color: '#adb5bd' },
       { label: 'Muy ligera (< 5 mm)',  color: '#74c0fc' },
-      { label: 'Ligera (5\u201315 mm)',     color: '#339af0' },
-      { label: 'Moderada (15\u201330 mm)',  color: '#f0b429' },
-      { label: 'Fuerte (30\u201360 mm)',    color: '#e03131' },
-      { label: 'Extrema (\u2265 100 mm)',   color: '#7b0000' },
+      { label: 'Ligera (5–15 mm)',     color: '#339af0' },
+      { label: 'Moderada (15–30 mm)',  color: '#f0b429' },
+      { label: 'Fuerte (30–60 mm)',    color: '#e03131' },
+      { label: 'Extrema (≥ 100 mm)',   color: '#7b0000' },
     ];
 
     const SEQUIA_COLORS = {
@@ -809,21 +809,21 @@
     function precipCategoria(mm) {
       if (mm <= 0)  return 'Sin lluvia (0 mm)';
       if (mm <  5)  return 'Muy ligera (< 5 mm)';
-      if (mm < 15)  return 'Ligera (5\u201315 mm)';
-      if (mm < 30)  return 'Moderada (15\u201330 mm)';
-      if (mm < 60)  return 'Fuerte (30\u201360 mm)';
-      return 'Extrema (\u2265 100 mm)';
+      if (mm < 15)  return 'Ligera (5–15 mm)';
+      if (mm < 30)  return 'Moderada (15–30 mm)';
+      if (mm < 60)  return 'Fuerte (30–60 mm)';
+      return 'Extrema (≥ 100 mm)';
     }
 
     function precipTamano(mm) {
       return Math.max(5, Math.min(Math.sqrt(mm + 1) * 2.8 + 4, 22));
     }
 
-    const ALERTA_NIVEL = { 'BAJA': 0, 'MODERADA': 1, 'ALTA': 2, 'CR\u00cdTICA': 3 };
+    const ALERTA_NIVEL = { 'BAJA': 0, 'MODERADA': 1, 'ALTA': 2, 'CRÍTICA': 3 };
 
     function parseRows(raw) {
       return raw.map(r => {
-        const cod                  = r['COD_MPIO'] ?? r['\uFEFFCOD_MPIO'] ?? '';
+        const cod                  = r['COD_MPIO'] ?? r['﻿COD_MPIO'] ?? '';
         const mm                   = parseFloat(r.precip_acum_mm) || 0;
         const alerta_compuesta_raw = (r.alerta_compuesta ?? 'BAJA').trim();
         const afectado             = parseInt(r.municipio_afectado) || 0;
@@ -848,7 +848,7 @@
           fecha:               (r.fecha             ?? '').trim(),
           sequia_categoria:    (r.sequia_categoria   ?? 'NORMAL').trim(),
           categoria:           r.categoria ? r.categoria.trim() : precipCategoria(mm),
-          tamano:              parseFloat(r['tama\u00f1o']) || precipTamano(mm),
+          tamano:              parseFloat(r['tamaño']) || precipTamano(mm),
           municipio_afectado:  afectado,
         };
       }).filter(r => !isNaN(r.LATITUD) && !isNaN(r.LONGITUD));
@@ -878,7 +878,7 @@
           return typeof v === 'string' && v.includes(',') ? `"${v}"` : v;
         }).join(',')
       );
-      const csv  = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+      const csv  = '﻿' + [headers.join(','), ...rows].join('\r\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
@@ -891,11 +891,11 @@
     function exportReportePDF(result, mergedRows, dataFecha) {
       const fmtCOP = v => v.toLocaleString('es-CO', { style:'currency', currency:'COP', maximumFractionDigits:0 });
       const alertaColor = a =>
-        a === 'CR\u00cdTICA' ? '#7b0000' : a === 'ALTA' ? '#e03131' :
+        a === 'CRÍTICA' ? '#7b0000' : a === 'ALTA' ? '#e03131' :
         a === 'MODERADA' ? '#b7770d' : a === 'BAJA' ? '#27ae60' : '#999';
 
       const tableRows = mergedRows.map(r => `
-        <tr style="${r.alerta_lluvias === 'ALTA' ? 'background:#fff0f0' : r.alerta_lluvias === 'CR\u00cdTICA' ? 'background:#fdf0f0' : ''}">
+        <tr style="${r.alerta_lluvias === 'ALTA' ? 'background:#fff0f0' : r.alerta_lluvias === 'CRÍTICA' ? 'background:#fdf0f0' : ''}">
           <td>${r.cod}</td><td>${r.nombre}</td>
           <td style="text-align:right">${fmtCOP(r.cartera_total)}</td>
           <td style="text-align:center;color:${alertaColor(r.alerta_lluvias)};font-weight:600">${r.alerta_lluvias}</td>
@@ -1134,18 +1134,18 @@
     }
 
     const ALERTA_BADGE = {
-      'CR\u00cdTICA': '<span style="color:#c0392b;font-weight:700;">\u26a0 CR\u00cdTICA</span>',
-      'ALTA':         '<span style="color:#e03131;font-weight:600;">\u26a0 ALTA</span>',
-      'MODERADA':     '<span style="color:#e67e22;font-weight:600;">\u26a0 MODERADA</span>',
-      'BAJA':         '<span style="color:#4fa89b;">\u2713 BAJA</span>',
+      'CRÍTICA': '<span style="color:#c0392b;font-weight:700;">⚠ CRÍTICA</span>',
+      'ALTA':         '<span style="color:#e03131;font-weight:600;">⚠ ALTA</span>',
+      'MODERADA':     '<span style="color:#e67e22;font-weight:600;">⚠ MODERADA</span>',
+      'BAJA':         '<span style="color:#4fa89b;">✓ BAJA</span>',
     };
 
     const TENDENCIA_LABEL = {
-      'creciente':    '\u2197 Creciente',
-      'decreciente':  '\u2198 Decreciente',
-      'estable':      '\u2192 Estable',
-      'insuficiente': '\u2014 Insuficiente',
-      'sin_datos':    '\u2014 Sin datos',
+      'creciente':    '↗ Creciente',
+      'decreciente':  '↘ Decreciente',
+      'estable':      '→ Estable',
+      'insuficiente': '— Insuficiente',
+      'sin_datos':    '— Sin datos',
     };
 
     function buildPopup(m) {
@@ -1156,24 +1156,24 @@
         : '';
 
       const extremeToday = m.precip_acum_mm >= 30
-        ? `<p style="color:#e03131;font-weight:600;margin-top:3px;">\u26a0 Probable evento extremo reciente</p>`
+        ? `<p style="color:#e03131;font-weight:600;margin-top:3px;">⚠ Probable evento extremo reciente</p>`
         : (m.precip_acum_mm === 0 && m.sequia_categoria !== 'NORMAL')
-        ? `<p style="color:#e67e22;font-weight:600;margin-top:3px;">\u2600\ufe0f Sin lluvia \u2014 posible sequ\u00eda activa</p>`
+        ? `<p style="color:#e67e22;font-weight:600;margin-top:3px;">☀️ Sin lluvia — posible sequía activa</p>`
         : '';
 
       const sequiaSection = m.sequia_categoria && m.sequia_categoria !== 'NORMAL' ? `
           <hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
-          <p style="font-size:12px;font-weight:600;color:#e67e22;margin-bottom:2px;">\uD83C\uDF35 Sequ\u00eda recurrente</p>
-          <p><b>Categor\u00eda:</b> <span style="color:#e67e22;font-weight:600;">${m.sequia_categoria}</span></p>` : '';
+          <p style="font-size:12px;font-weight:600;color:#e67e22;margin-bottom:2px;">🌵 Sequía recurrente</p>
+          <p><b>Categoría:</b> <span style="color:#e67e22;font-weight:600;">${m.sequia_categoria}</span></p>` : '';
 
-      const tieneAlertaEfectiva = m.alerta_compuesta === 'ALTA' || m.alerta_compuesta === 'CR\u00cdTICA';
+      const tieneAlertaEfectiva = m.alerta_compuesta === 'ALTA' || m.alerta_compuesta === 'CRÍTICA';
       const floodSection = m.municipio_afectado === 1
         ? tieneAlertaEfectiva
           ? `<hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
-             <p style="font-size:12px;font-weight:700;color:#4fa89b;margin-bottom:2px;">\uD83C\uDF0A Municipio hist\u00f3ricamente afectado por inundaciones</p>
-             <p style="font-size:11px;color:#e03131;font-weight:600;">\u26a0 Alto riesgo: alerta activa + antecedente de inundaci\u00f3n</p>`
+             <p style="font-size:12px;font-weight:700;color:#4fa89b;margin-bottom:2px;">🌊 Municipio históricamente afectado por inundaciones</p>
+             <p style="font-size:11px;color:#e03131;font-weight:600;">⚠ Alto riesgo: alerta activa + antecedente de inundación</p>`
           : `<hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
-             <p style="font-size:12px;font-weight:600;color:#4fa89b;margin-bottom:2px;">\uD83C\uDF0A Municipio hist\u00f3ricamente afectado por inundaciones</p>`
+             <p style="font-size:12px;font-weight:600;color:#4fa89b;margin-bottom:2px;">🌊 Municipio históricamente afectado por inundaciones</p>`
         : '';
 
       return `
@@ -1181,15 +1181,15 @@
           <div style="color:#c8a96e;font-size:14px;font-weight:700;margin-bottom:2px;">${m.NOM_MPIO}</div>
           <div style="color:#8a9ab0;font-size:12px;margin-bottom:6px;">${m.NOM_DPTO}</div>
           <hr style="margin:4px 0;border-color:rgba(200,169,110,0.15);">
-          <p style="font-size:12px;font-weight:600;color:#4fa89b;margin-bottom:2px;">\uD83C\uDF27\uFE0F Precipitaci\u00f3n hoy</p>
+          <p style="font-size:12px;font-weight:600;color:#4fa89b;margin-bottom:2px;">🌧️ Precipitación hoy</p>
           <p><b>Acumulada:</b> ${m.precip_acum_mm.toFixed(1)} mm</p>
-          <p><b>M\u00e1x. 10 min:</b> ${m.precip_max_10min.toFixed(1)} mm</p>
+          <p><b>Máx. 10 min:</b> ${m.precip_max_10min.toFixed(1)} mm</p>
           ${extremeToday}
           <hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
-          <p style="font-size:12px;font-weight:600;color:#8a9ab0;margin-bottom:2px;">\uD83D\uDCCA Alerta hist\u00f3rica \u2014 lluvias</p>
+          <p style="font-size:12px;font-weight:600;color:#8a9ab0;margin-bottom:2px;">📊 Alerta histórica — lluvias</p>
           <p><b>Nivel:</b> ${badge}</p>
           <p><b>Frec. extremos hist.:</b> ${(m.frecuencia_extremos * 100).toFixed(1)}%</p>
-          <p><b>Frec. extremos 2 a\u00f1os:</b> ${(m.frecuencia_reciente * 100).toFixed(1)}%</p>
+          <p><b>Frec. extremos 2 años:</b> ${(m.frecuencia_reciente * 100).toFixed(1)}%</p>
           <p><b>Tendencia:</b> ${tendLabel}</p>
           ${sequiaSection}
           ${floodSection}
@@ -1306,9 +1306,9 @@
         : activeMap === 'deslizamientos'
         ? Object.values(amenazasData).filter(d => d.alerta_deslizamiento === 'ALTA').length
         : kpis.enAlerta;
-      const alertaLabel = activeMap === 'sequias'       ? 'Sequ\u00eda SEVERA'
+      const alertaLabel = activeMap === 'sequias'       ? 'Sequía SEVERA'
                         : activeMap === 'deslizamientos' ? 'Alerta deslizamiento'
-                        : 'En alerta hist\u00f3rica';
+                        : 'En alerta histórica';
       const alertaAccent = activeMap === 'sequias' ? 'gold' : 'red';
       return (
         <div className="kpi-grid reveal">
@@ -1425,26 +1425,26 @@
           const dias   = d.dias_lluvia    != null ? d.dias_lluvia : 'N/D';
           const amenazaLabel = { 'MUY_BAJA':'Muy baja','BAJA':'Baja','MEDIA':'Media','ALTA':'Alta','MUY_ALTA':'Muy alta' }[d.amenaza_mm] ?? d.amenaza_mm;
           const alertaBadge  = hasAlerta
-            ? `<span style="color:#d91919;font-weight:700;">\u26a0 ALTA \u2014 Alerta IDEAM</span>`
-            : `<span style="color:#4fa89b;">\u2713 Sin alerta activa</span>`;
+            ? `<span style="color:#d91919;font-weight:700;">⚠ ALTA — Alerta IDEAM</span>`
+            : `<span style="color:#4fa89b;">✓ Sin alerta activa</span>`;
           const fechaLine = d.fecha_ideam
             ? `<p style="color:#8a9ab0;font-size:11px;margin-top:4px;">Alerta al: <b>${d.fecha_ideam}</b></p>` : '';
           const acumSection = hasAlerta ? `
             <hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
-            <p style="font-size:12px;font-weight:600;color:#e67e22;margin-bottom:2px;">\uD83C\uDF27 Precipitaci\u00f3n acumulada</p>
-            <p><b>\u00daltimos 3 d\u00edas:</b> ${acum3}</p>
-            <p><b>\u00daltimos 10 d\u00edas:</b> ${acum10}</p>
-            <p><b>D\u00edas con lluvia:</b> ${dias}</p>` : '';
+            <p style="font-size:12px;font-weight:600;color:#e67e22;margin-bottom:2px;">🌧 Precipitación acumulada</p>
+            <p><b>Últimos 3 días:</b> ${acum3}</p>
+            <p><b>Últimos 10 días:</b> ${acum10}</p>
+            <p><b>Días con lluvia:</b> ${dias}</p>` : '';
 
           const popup = `
             <div style="font-family:'Lora',Georgia,serif;font-size:13px;min-width:210px;color:#f5f0e8;">
               <div style="color:#c8a96e;font-size:14px;font-weight:700;margin-bottom:2px;">${d.nom_mpio}</div>
               <div style="color:#8a9ab0;font-size:12px;margin-bottom:6px;">${d.nom_dpto}</div>
               <hr style="margin:4px 0;border-color:rgba(200,169,110,0.15);">
-              <p style="font-size:12px;font-weight:600;color:#e67e22;margin-bottom:2px;">\u26f0 Amenaza MM \u2014 SGC 1:500k</p>
-              <p><b>Nivel est\u00e1tico:</b> <span style="color:${color};font-weight:600;">${amenazaLabel}</span></p>
+              <p style="font-size:12px;font-weight:600;color:#e67e22;margin-bottom:2px;">⛰ Amenaza MM — SGC 1:500k</p>
+              <p><b>Nivel estático:</b> <span style="color:${color};font-weight:600;">${amenazaLabel}</span></p>
               <hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
-              <p style="font-size:12px;font-weight:600;color:#8a9ab0;margin-bottom:2px;">\uD83D\uDCE1 Alerta diaria IDEAM</p>
+              <p style="font-size:12px;font-weight:600;color:#8a9ab0;margin-bottom:2px;">📡 Alerta diaria IDEAM</p>
               <p>${alertaBadge}</p>
               ${acumSection}
               ${fechaLine}
@@ -1578,9 +1578,9 @@
       const fileRef = useRef(null);
 
       const CONFIGS = {
-        lluvias:        { indicador:'lluvias',        title: 'Reporte Cartera \u2013 Alerta Lluvias',        indicadorLabel: 'Precipitaci\u00f3n / Lluvias',    alertColor: '#e03131', csv: 'cartera_lluvias.csv'        },
-        sequias:        { indicador:'sequias',        title: 'Reporte Cartera \u2013 Sequ\u00eda Severa',    indicadorLabel: 'Sequ\u00eda recurrente (SPI)',    alertColor: '#e8590c', csv: 'cartera_sequias.csv'        },
-        deslizamientos: { indicador:'deslizamientos', title: 'Reporte Cartera \u2013 Deslizamientos ALTA',   indicadorLabel: 'Movimientos en masa (SGC)',       alertColor: '#2d6b3c', csv: 'cartera_deslizamientos.csv' },
+        lluvias:        { indicador:'lluvias',        title: 'Reporte Cartera – Alerta Lluvias',        indicadorLabel: 'Precipitación / Lluvias',    alertColor: '#e03131', csv: 'cartera_lluvias.csv'        },
+        sequias:        { indicador:'sequias',        title: 'Reporte Cartera – Sequía Severa',    indicadorLabel: 'Sequía recurrente (SPI)',    alertColor: '#e8590c', csv: 'cartera_sequias.csv'        },
+        deslizamientos: { indicador:'deslizamientos', title: 'Reporte Cartera – Deslizamientos ALTA',   indicadorLabel: 'Movimientos en masa (SGC)',       alertColor: '#2d6b3c', csv: 'cartera_deslizamientos.csv' },
       };
       const cfg = CONFIGS[indicador] ?? CONFIGS.lluvias;
 
@@ -1592,12 +1592,12 @@
           header: true, skipEmptyLines: true,
           complete: ({ data, errors }) => {
             if (errors.length) console.warn('Cartera warnings:', errors);
-            if (!data.length) { setCarteraError('El archivo est\u00e1 vac\u00edo.'); return; }
+            if (!data.length) { setCarteraError('El archivo está vacío.'); return; }
             const keys      = Object.keys(data[0]);
             const codCol    = keys.find(k => /cod/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /cod/i.test(k)) ?? keys[0];
             const carteraCol = keys.find(k => /cartera/i.test(k));
             const nameCol    = keys.find(k => /nom/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /nombre|name/i.test(k));
-            if (!carteraCol) { setCarteraError('No se encontr\u00f3 columna "cartera_total". Verifique el formato.'); return; }
+            if (!carteraCol) { setCarteraError('No se encontró columna "cartera_total". Verifique el formato.'); return; }
             let totalCartera = 0, cartaRiesgo = 0, nTotal = 0, nRiesgo = 0;
             const merged = [];
             data.forEach(r => {
@@ -1623,7 +1623,7 @@
         if (!carteraData) return;
         const headers = ['cod','nombre','cartera_total','alerta_indicador'];
         const rows = carteraData.map(r => [r.cod, `"${r.nombre}"`, r.cartera_total, r.alerta_indicador].join(','));
-        const csv  = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+        const csv  = '﻿' + [headers.join(','), ...rows].join('\r\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
@@ -1750,7 +1750,7 @@
                       {amenazaLbl[d.amenaza_mm] ?? d.amenaza_mm}
                     </td>
                     <td className="td-right">{d.acum_3dias_mm != null ? d.acum_3dias_mm.toFixed(1) : 'N/D'}</td>
-                    <td className="td-center">{d.alerta_deslizamiento==='ALTA' ? '\uD83D\uDD34' : '\uD83D\uDFE2'}</td>
+                    <td className="td-center">{d.alerta_deslizamiento==='ALTA' ? '🔴' : '🟢'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -1828,7 +1828,7 @@
           .sort((a, b) => b.avg - a.avg)
           .slice(0, 10);
 
-        const labels = sorted.map(d => d.name.length > 16 ? d.name.slice(0, 16) + '\u2026' : d.name);
+        const labels = sorted.map(d => d.name.length > 16 ? d.name.slice(0, 16) + '…' : d.name);
         const values = sorted.map(d => parseFloat(d.avg.toFixed(2)));
 
         if (chartRef.current) {
@@ -1913,7 +1913,7 @@
                     <td className="td-muted hide-sm">{d.NOM_DPTO}</td>
                     <td className="td-right">{d.precip_acum_mm}</td>
                     <td className="td-center" title={d.alerta_compuesta}>
-                      {d.alerta > 0 ? '\uD83D\uDD34' : '\uD83D\uDFE2'}
+                      {d.alerta > 0 ? '🔴' : '🟢'}
                     </td>
                   </tr>
                 ))}
@@ -1949,7 +1949,7 @@
           skipEmptyLines: true,
           complete: ({ data, errors }) => {
             if (errors.length) console.warn('Cartera CSV warnings:', errors);
-            if (!data.length) { setCarteraError('El archivo est\u00e1 vac\u00edo.'); return; }
+            if (!data.length) { setCarteraError('El archivo está vacío.'); return; }
 
             const firstRow = data[0];
             const keys     = Object.keys(firstRow);
@@ -1958,7 +1958,7 @@
             const nameCol    = keys.find(k => /nom/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /nombre|name/i.test(k));
 
             if (!carteraCol) {
-              setCarteraError('No se encontr\u00f3 columna "cartera_total" en el archivo. Verifique el formato.');
+              setCarteraError('No se encontró columna "cartera_total" en el archivo. Verifique el formato.');
               return;
             }
 
@@ -1990,7 +1990,7 @@
         const rows    = carteraData.map(r =>
           [r.cod, `"${r.nombre}"`, r.cartera_total, r.alerta_lluvias].join(',')
         );
-        const csv  = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+        const csv  = '﻿' + [headers.join(','), ...rows].join('\r\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
@@ -2133,35 +2133,35 @@
           accent: '#1a6faa',
           img: 'data/lluvia.jpeg',
           title: 'Lluvias',
-          desc: 'Monitoreo de precipitaci\u00f3n diaria y alertas hist\u00f3ricas por municipio. An\u00e1lisis de eventos extremos y tendencias acumuladas.',
+          desc: 'Monitoreo de precipitación diaria y alertas históricas por municipio. Análisis de eventos extremos y tendencias acumuladas.',
         },
         {
           id: 'sequias',
           accent: '#b85c1a',
           img: 'data/sequia.jpeg',
-          title: 'Sequ\u00edas',
-          desc: 'Indicadores de d\u00e9ficit h\u00eddrico recurrente, categor\u00eda SPI y municipios con condiciones cr\u00edticas de sequ\u00eda.',
+          title: 'Sequías',
+          desc: 'Indicadores de déficit hídrico recurrente, categoría SPI y municipios con condiciones críticas de sequía.',
         },
         {
           id: 'deslizamientos',
           accent: '#2d6b3c',
           img: 'data/deslizamiento.jpeg',
           title: 'Deslizamientos',
-          desc: 'Amenaza de movimientos en masa (SGC 1:500k) cruzada con alertas diarias IDEAM y precipitaci\u00f3n acumulada.',
+          desc: 'Amenaza de movimientos en masa (SGC 1:500k) cruzada con alertas diarias IDEAM y precipitación acumulada.',
         },
         {
           id: 'incendios',
           accent: '#c0392b',
           img: 'data/incendios.jpg',
           title: 'Incendios',
-          desc: 'Puntos de calor activos (IDEAM \u2013 VIIRS/MODIS) del \u00faltimo d\u00eda disponible. Municipios y coordenadas de proyecto con amenaza por incendio forestal.',
+          desc: 'Puntos de calor activos (IDEAM – VIIRS/MODIS) del último día disponible. Municipios y coordenadas de proyecto con amenaza por incendio forestal.',
         },
         {
           id: 'areas_protegidas',
           accent: '#1b5e20',
           img: 'data/areasprotegidasdecolombia.jpg',
-          title: '\u00c1reas Protegidas',
-          desc: 'Municipios de cartera que intersectan con el Sistema Nacional de \u00c1reas Protegidas (SINAP\u2013RUNAP). Verificaci\u00f3n de coordenadas de proyecto.',
+          title: 'Áreas Protegidas',
+          desc: 'Municipios de cartera que intersectan con el Sistema Nacional de Áreas Protegidas (SINAP–RUNAP). Verificación de coordenadas de proyecto.',
         },
       ];
       return (
@@ -2212,7 +2212,7 @@
       const [activeTab,  setActiveTab]  = React.useState('Mapa');
       const [deptFilter, setDeptFilter] = React.useState('ALL');
       const [alertOnly,  setAlertOnly]  = React.useState(false);
-      const TABS = ['Mapa', 'Datos hist\u00f3ricos', 'Metodolog\u00eda'];
+      const TABS = ['Mapa', 'Datos históricos', 'Metodología'];
 
       const departments = useMemo(() => {
         const set = new Set(data.map(d => d.NOM_DPTO));
@@ -2233,7 +2233,7 @@
           <div className="ov-section-header">
             <div className="ov-breadcrumb">
               <button onClick={onBack}>Resumen general</button>
-              {'\u00a0/\u00a0Lluvias'}
+              {' / Lluvias'}
             </div>
             <div className="ov-section-title-row">
               <div className="ov-section-title">Alertas &middot; Lluvias</div>
@@ -2243,7 +2243,7 @@
           <OvSubTabs tabs={TABS} active={activeTab} accentColor="#1a6faa" onSelect={setActiveTab} />
 
           {/* ── Mapa / Datos históricos ── */}
-          {activeTab !== 'Metodolog\u00eda' && (
+          {activeTab !== 'Metodología' && (
             <div style={{background:'var(--bg-primary)'}}>
               <div className="dashboard-main">
                 <div className="kpi-grid reveal">
@@ -2254,7 +2254,7 @@
                 </div>
                 <div className="map-layout">
                   <div className="map-main">
-                    <MapPanel data={filtered} mode="lluvias" visible={visible && activeTab !== 'Metodolog\u00eda'} />
+                    <MapPanel data={filtered} mode="lluvias" visible={visible && activeTab !== 'Metodología'} />
                   </div>
                   <div className="map-side side-panel">
                     <FilterBox
@@ -2271,8 +2271,8 @@
                     <CarteraBoxSection
                       indicador="lluvias"
                       alertaLookup={alertaHistData}
-                      alertTargets={['ALTA', 'CR\u00cdTICA']}
-                      alertLabel="Alerta hist\u00f3rica lluvias \u2265 ALTA"
+                      alertTargets={['ALTA', 'CRÍTICA']}
+                      alertLabel="Alerta histórica lluvias ≥ ALTA"
                       dataFecha={dataFecha}
                     />
                   </div>
@@ -2282,7 +2282,7 @@
           )}
 
           {/* ── Metodología ── */}
-          {activeTab === 'Metodolog\u00eda' && (
+          {activeTab === 'Metodología' && (
             <div style={{background:'var(--bg-primary)', padding:'32px 24px'}}>
               <div style={{maxWidth:'960px', margin:'0 auto'}}>
                 <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'18px', flexWrap:'wrap', gap:'12px'}}>
@@ -2329,7 +2329,7 @@
       const [activeTab,  setActiveTab]  = React.useState('Mapa');
       const [deptFilter, setDeptFilter] = React.useState('ALL');
       const [severeOnly, setSevereOnly] = React.useState(false);
-      const TABS = ['Mapa', 'Datos hist\u00f3ricos', 'Metodolog\u00eda'];
+      const TABS = ['Mapa', 'Datos históricos', 'Metodología'];
 
       const departments = useMemo(() => {
         const set = new Set(data.map(d => d.NOM_DPTO));
@@ -2360,7 +2360,7 @@
         const lines = rows.map(r =>
           [r.COD_MPIO, `"${r.NOM_MPIO}"`, `"${r.NOM_DPTO}"`, r.sequia_categoria, r.precip_acum_mm].join(',')
         );
-        const csv  = '\uFEFF' + [headers.join(','), ...lines].join('\r\n');
+        const csv  = '﻿' + [headers.join(','), ...lines].join('\r\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
@@ -2373,7 +2373,7 @@
           <div className="ov-section-header">
             <div className="ov-breadcrumb">
               <button onClick={onBack}>Resumen general</button>
-              {'\u00a0/\u00a0Sequ\u00edas'}
+              {' / Sequías'}
             </div>
             <div className="ov-section-title-row">
               <div className="ov-section-title">Alertas &middot; Sequ&iacute;as</div>
@@ -2385,9 +2385,9 @@
             <div className="dashboard-main">
               <div className="kpi-grid reveal">
                 <KpiCard label="Municipios filtrados"         value={filtered.length}         icon="&#x1F3D9;" />
-                <KpiCard label="Sequ\u00eda severa/extrema"   value={enAlertaSequia}           icon="&#x2600;&#xFE0F;" accent="red" />
-                <KpiCard label="Promedio precipitaci\u00f3n"  value={`${kpisSeq.promedio} mm`} icon="&#x1F4A7;" accent="green" />
-                <KpiCard label="M\u00e1x. precipitaci\u00f3n" value={`${kpisSeq.maximo} mm`}   icon="&#x1F4CD;" accent="gold" sub={kpisSeq.maxMpio} />
+                <KpiCard label="Sequía severa/extrema"   value={enAlertaSequia}           icon="&#x2600;&#xFE0F;" accent="red" />
+                <KpiCard label="Promedio precipitación"  value={`${kpisSeq.promedio} mm`} icon="&#x1F4A7;" accent="green" />
+                <KpiCard label="Máx. precipitación" value={`${kpisSeq.maximo} mm`}   icon="&#x1F4CD;" accent="gold" sub={kpisSeq.maxMpio} />
               </div>
               <div className="map-layout">
                 <div className="map-main">
@@ -2401,7 +2401,7 @@
                     onDeptChange={setDeptFilter}
                     onAlertToggle={() => setSevereOnly(v => !v)}
                     onDownload={() => downloadSequiasCSV(filtered, dataFecha)}
-                    alertLabel="Solo sequ\u00eda severa / extrema"
+                    alertLabel="Solo sequía severa / extrema"
                   />
                   <StatsBox filteredCount={filtered.length} total={data.length} />
                   <SequiasTableBox data={filtered} />
@@ -2409,7 +2409,7 @@
                     indicador="sequias"
                     alertaLookup={sequiaAlertaLookup}
                     alertTargets={['SEVERA','EXTREMA']}
-                    alertLabel="Sequ\u00eda SEVERA o EXTREMA"
+                    alertLabel="Sequía SEVERA o EXTREMA"
                     dataFecha={dataFecha}
                   />
                 </div>
@@ -2426,7 +2426,7 @@
       const [activeTab,  setActiveTab]  = React.useState('Mapa');
       const [deptFilter, setDeptFilter] = React.useState('ALL');
       const [alertOnly,  setAlertOnly]  = React.useState(false);
-      const TABS = ['Mapa', 'Datos hist\u00f3ricos', 'Metodolog\u00eda'];
+      const TABS = ['Mapa', 'Datos históricos', 'Metodología'];
 
       const entries = useMemo(
         () => Object.entries(amenazasData).map(([cod, d]) => ({ cod, ...d })),
@@ -2468,7 +2468,7 @@
           [r.cod, `"${r.nom_mpio}"`, `"${r.nom_dpto}"`, r.amenaza_mm, r.alerta_deslizamiento,
            r.acum_3dias_mm ?? '', r.acum_10dias_mm ?? ''].join(',')
         );
-        const csv  = '\uFEFF' + [headers.join(','), ...lines].join('\r\n');
+        const csv  = '﻿' + [headers.join(','), ...lines].join('\r\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
@@ -2481,7 +2481,7 @@
           <div className="ov-section-header">
             <div className="ov-breadcrumb">
               <button onClick={onBack}>Resumen general</button>
-              {'\u00a0/\u00a0Deslizamientos'}
+              {' / Deslizamientos'}
             </div>
             <div className="ov-section-title-row">
               <div className="ov-section-title">Alertas &middot; Deslizamientos</div>
@@ -2494,8 +2494,8 @@
               <div className="kpi-grid reveal">
                 <KpiCard label="Municipios filtrados"      value={filteredEntries.length} icon="&#x1F3D9;" />
                 <KpiCard label="Alerta deslizamiento ALTA" value={enAlertaDesliz}         icon="&#x26F0;&#xFE0F;" accent="red" />
-                <KpiCard label="Zonas cr\u00edticas"       value="12"                     icon="&#x26A0;&#xFE0F;" accent="gold" />
-                <KpiCard label="Umbral detonante"          value=">80 mm/d\u00eda"        icon="&#x1F327;&#xFE0F;" accent="green" />
+                <KpiCard label="Zonas críticas"       value="12"                     icon="&#x26A0;&#xFE0F;" accent="gold" />
+                <KpiCard label="Umbral detonante"          value=">80 mm/día"        icon="&#x1F327;&#xFE0F;" accent="green" />
               </div>
               <div className="map-layout">
                 <div className="map-main">
@@ -2533,7 +2533,7 @@
       { key:'sinap',      label:'SINAP – RUNAP',         color:'#1b5e20', dotColor:'#2e7d32', csvKey:'tiene_area_protegida', csvName:'areas_nombres',
         url:'https://services6.arcgis.com/hxAwRYAu9QHliJ8T/arcgis/rest/services/OTL_Area_Protegida/FeatureServer/0',
         style:{ color:'#1b5e20', weight:1.2, fillColor:'#2e7d32', fillOpacity:0.25 } },
-      { key:'paramo',     label:'P\u00e1ramos',           color:'#4a148c', dotColor:'#9c27b0', csvKey:'tiene_paramo',         csvName:'nombre_paramo',
+      { key:'paramo',     label:'Páramos',           color:'#4a148c', dotColor:'#9c27b0', csvKey:'tiene_paramo',         csvName:'nombre_paramo',
         url:'https://services6.arcgis.com/hxAwRYAu9QHliJ8T/arcgis/rest/services/Ecosistema_Estrategico/FeatureServer/1',
         style:{ color:'#4a148c', weight:1.2, fillColor:'#9c27b0', fillOpacity:0.30 } },
       { key:'bosque_seco',label:'Bosque Seco Tropical',  color:'#e65100', dotColor:'#ff6d00', csvKey:'tiene_bosque_seco',    csvName:'nombre_bosque_seco',
@@ -2545,7 +2545,7 @@
       { key:'reaa',       label:'REAA 2024',              color:'#006064', dotColor:'#00bcd4', csvKey:'tiene_reaa',           csvName:'nombre_reaa',
         url:'https://services6.arcgis.com/hxAwRYAu9QHliJ8T/arcgis/rest/services/Ecosistema_Area_Ambiental/FeatureServer/1',
         style:{ color:'#006064', weight:1, fillColor:'#00bcd4', fillOpacity:0.22 } },
-      { key:'ley2',       label:'Reserva Ley 2\u00aa',    color:'#bf360c', dotColor:'#ff7043', csvKey:'tiene_ley2',           csvName:'nombre_ley2',
+      { key:'ley2',       label:'Reserva Ley 2ª',    color:'#bf360c', dotColor:'#ff7043', csvKey:'tiene_ley2',           csvName:'nombre_ley2',
         url:'https://services6.arcgis.com/hxAwRYAu9QHliJ8T/arcgis/rest/services/OTL_Reserva_Forestal_Ley_2da/FeatureServer/2',
         style:{ color:'#bf360c', weight:1.5, fillColor:'#ff7043', fillOpacity:0.28 } },
     ];
@@ -2585,12 +2585,15 @@
             color: '#fff', weight: 0.5,
             fillColor: color, fillOpacity: 0.85,
           });
+          const mpio = pt.municipio && pt.municipio !== '' ? pt.municipio : null;
+          const dpto = pt.departamento && pt.departamento !== '' ? pt.departamento : null;
           marker.bindPopup(
+            `${mpio ? `<div style="font-weight:700;font-size:13px;margin-bottom:4px">${mpio}${dpto ? `, ${dpto}` : ''}</div>` : ''}` +
             `<b>${pt.fuente}</b><br>` +
-            `Confianza: <b>${pt.confianza}</b><br>` +
-            `Temp: ${pt.temp_c ? pt.temp_c + ' \u00b0C' : 'N/D'}<br>` +
+            `Confianza: <b style="color:${CONF_COLOR[pt.confianza]||'#e67e22'}">${pt.confianza}</b><br>` +
+            `Temp: ${pt.temp_c ? pt.temp_c + ' &deg;C' : 'N/D'}<br>` +
             `Captura: ${pt.captura === 'D' ? 'D\u00eda' : pt.captura === 'N' ? 'Noche' : pt.captura}<br>` +
-            `${pt.fecha_hora}`
+            `<span style="color:#aaa;font-size:11px">${pt.fecha_hora}</span>`
           );
           group.addLayer(marker);
         });
@@ -2657,10 +2660,16 @@
                   <div style={{color:'#e74c3c', fontWeight:700, fontSize:'15px', marginBottom:'8px'}}>
                     &#x26A0; Punto de calor cercano ({result.dist.toFixed(1)} km)
                   </div>
+                  {result.nearest.municipio && result.nearest.municipio !== '' && (
+                    <div style={{fontWeight:700, fontSize:'14px', marginBottom:'6px', color:'#ffd'}}>
+                      {result.nearest.municipio}{result.nearest.departamento ? `, ${result.nearest.departamento}` : ''}
+                    </div>
+                  )}
                   <div>Fuente: <b>{result.nearest.fuente}</b></div>
                   <div>Confianza: <b style={{color: CONF_COLOR[result.nearest.confianza]}}>{result.nearest.confianza}</b></div>
                   <div>Temp: {result.nearest.temp_c ? result.nearest.temp_c + ' \u00b0C' : 'N/D'}</div>
                   <div>Fecha/hora: {result.nearest.fecha_hora}</div>
+                  <div style={{color:'#aab', fontSize:'11px', marginTop:'6px'}}>Coordenadas: {parseFloat(result.nearest.lat).toFixed(4)}, {parseFloat(result.nearest.lon).toFixed(4)}</div>
                 </>
               ) : (
                 <div style={{color:'#2ecc71', fontWeight:600}}>
@@ -2670,7 +2679,7 @@
             </div>
           )}
           {result && result.error && (
-            <div style={{color:'#e74c3c', fontSize:'13px'}}>Ingresa coordenadas v\u00e1lidas.</div>
+            <div style={{color:'#e74c3c', fontSize:'13px'}}>Ingresa coordenadas válidas.</div>
           )}
         </div>
       );
@@ -2694,11 +2703,20 @@
         const total = incendiosData.length;
         const porConf = { Alta: 0, Nominal: 0, Baja: 0 };
         const porFuente = {};
+        const porMpio = {};
         incendiosData.forEach(d => {
           porConf[d.confianza] = (porConf[d.confianza] || 0) + 1;
           porFuente[d.fuente]  = (porFuente[d.fuente]  || 0) + 1;
+          if (d.municipio && d.municipio !== '') {
+            const key = `${d.municipio}||${d.departamento||''}||${d.cod_mpio||''}`;
+            porMpio[key] = (porMpio[key] || 0) + 1;
+          }
         });
-        return { total, porConf, porFuente };
+        const mpioList = Object.entries(porMpio)
+          .map(([key, n]) => { const [mpio, dpto, cod] = key.split('||'); return { mpio, dpto, cod, n }; })
+          .sort((a, b) => b.n - a.n);
+        const nMpios = mpioList.length;
+        return { total, porConf, porFuente, mpioList, nMpios };
       }, [incendiosData]);
 
       if (!visible) return null;
@@ -2724,9 +2742,9 @@
           <div style={{display:'flex', gap:'12px', flexWrap:'wrap', marginBottom:'20px'}}>
             {[
               { label:'Total puntos', value: stats.total, color:'#e67e22' },
+              { label:'Municipios alertados', value: stats.nMpios, color:'#e74c3c' },
               { label:'Confianza Alta', value: stats.porConf.Alta || 0, color:'#e74c3c' },
               { label:'Confianza Nominal', value: stats.porConf.Nominal || 0, color:'#e67e22' },
-              { label:'Confianza Baja', value: stats.porConf.Baja || 0, color:'#f1c40f' },
             ].map(k => (
               <div key={k.label} style={{background:'#1a2a3a', borderRadius:'10px',
                 padding:'14px 20px', flex:'1', minWidth:'110px', textAlign:'center'}}>
@@ -2765,29 +2783,58 @@
           )}
 
           {activeTab === 'Tabla' && (
-            <div style={{marginTop:'16px', overflowX:'auto'}}>
-              <table style={{width:'100%', borderCollapse:'collapse', fontSize:'13px', color:'#ccc'}}>
-                <thead>
-                  <tr style={{borderBottom:'1px solid #334'}}>
-                    {['Fuente','Puntos','%'].map(h => (
-                      <th key={h} style={{padding:'8px 12px', textAlign:'left', color:'#aab', fontWeight:600}}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(stats.porFuente).sort((a,b)=>b[1]-a[1]).map(([fuente, n]) => (
-                    <tr key={fuente} style={{borderBottom:'1px solid #1e2d3d'}}>
-                      <td style={{padding:'8px 12px'}}>
-                        <span style={{display:'inline-block', width:'10px', height:'10px', borderRadius:'50%',
-                          background: FUENTE_COLOR[fuente]||'#aaa', marginRight:'8px'}}/>
-                        {fuente}
-                      </td>
-                      <td style={{padding:'8px 12px', fontWeight:600, color:'#fff'}}>{n}</td>
-                      <td style={{padding:'8px 12px', color:'#aab'}}>{((n/stats.total)*100).toFixed(1)}%</td>
+            <div style={{marginTop:'16px'}}>
+              {/* Municipios con alerta */}
+              <div style={{fontWeight:600, color:'#fff', marginBottom:'8px', fontSize:'14px'}}>
+                Municipios con puntos de calor ({stats.nMpios})
+              </div>
+              <div style={{overflowX:'auto', marginBottom:'24px'}}>
+                <table style={{width:'100%', borderCollapse:'collapse', fontSize:'13px', color:'#ccc'}}>
+                  <thead>
+                    <tr style={{borderBottom:'1px solid #334'}}>
+                      {['Municipio','Departamento','Puntos','%'].map(h => (
+                        <th key={h} style={{padding:'8px 12px', textAlign:'left', color:'#aab', fontWeight:600}}>{h}</th>
+                      ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {stats.mpioList.map(({mpio, dpto, n}) => (
+                      <tr key={mpio+dpto} style={{borderBottom:'1px solid #1e2d3d'}}>
+                        <td style={{padding:'8px 12px', color:'#fff', fontWeight:600}}>{mpio}</td>
+                        <td style={{padding:'8px 12px', color:'#aab'}}>{dpto}</td>
+                        <td style={{padding:'8px 12px', color:'#e67e22', fontWeight:700}}>{n}</td>
+                        <td style={{padding:'8px 12px', color:'#aab'}}>{((n/stats.total)*100).toFixed(1)}%</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {/* Por fuente */}
+              <div style={{fontWeight:600, color:'#fff', marginBottom:'8px', fontSize:'14px'}}>Por sat&eacute;lite / fuente</div>
+              <div style={{overflowX:'auto'}}>
+                <table style={{width:'100%', borderCollapse:'collapse', fontSize:'13px', color:'#ccc'}}>
+                  <thead>
+                    <tr style={{borderBottom:'1px solid #334'}}>
+                      {['Fuente','Puntos','%'].map(h => (
+                        <th key={h} style={{padding:'8px 12px', textAlign:'left', color:'#aab', fontWeight:600}}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(stats.porFuente).sort((a,b)=>b[1]-a[1]).map(([fuente, n]) => (
+                      <tr key={fuente} style={{borderBottom:'1px solid #1e2d3d'}}>
+                        <td style={{padding:'8px 12px'}}>
+                          <span style={{display:'inline-block', width:'10px', height:'10px', borderRadius:'50%',
+                            background: FUENTE_COLOR[fuente]||'#aaa', marginRight:'8px'}}/>
+                          {fuente}
+                        </td>
+                        <td style={{padding:'8px 12px', fontWeight:600, color:'#fff'}}>{n}</td>
+                        <td style={{padding:'8px 12px', color:'#aab'}}>{((n/stats.total)*100).toFixed(1)}%</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
@@ -2795,7 +2842,7 @@
             <div style={{marginTop:'16px'}}>
               <IncendiosCheckerPanel data={incendiosData} />
               <div style={{marginTop:'12px', color:'#8899aa', fontSize:'12px'}}>
-                Radio de b\u00fasqueda: 25 km. Datos del \u00faltimo d\u00eda disponible en IDEAM.
+                Radio de búsqueda: 25 km. Datos del último día disponible en IDEAM.
               </div>
             </div>
           )}
@@ -3027,7 +3074,7 @@
       function checkCoordinates() {
         const lat = parseFloat(checkLat), lon = parseFloat(checkLon);
         if (isNaN(lat) || isNaN(lon)) return;
-        if (!geojsonData) { setCheckResult({ error: 'Datos geogr\u00e1ficos aún no cargados. Espere un momento.' }); return; }
+        if (!geojsonData) { setCheckResult({ error: 'Datos geográficos aún no cargados. Espere un momento.' }); return; }
         setCheckLoading(true);
         const pt = [lon, lat];
         const matches = [];
@@ -3057,7 +3104,7 @@
         const lines = filtered.map(r =>
           headers.map(h => strCols.has(h) ? `"${r[h] ?? ''}"` : r[h] ?? '').join(',')
         );
-        const csv  = '\uFEFF' + [headers.join(','), ...lines].join('\r\n');
+        const csv  = '﻿' + [headers.join(','), ...lines].join('\r\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a'); a.href = url; a.download = 'ecosistemas_municipal.csv'; a.click();
@@ -3069,7 +3116,7 @@
           <div className="ov-section-header">
             <div className="ov-breadcrumb">
               <button onClick={onBack}>Resumen general</button>
-              {'\u00a0/\u00a0\u00c1reas Protegidas y Ecosistemas'}
+              {' / Áreas Protegidas y Ecosistemas'}
             </div>
             <div className="ov-section-title-row">
               <div className="ov-section-title">&Aacute;reas Protegidas &amp; Ecosistemas Estrat&eacute;gicos</div>
@@ -3085,11 +3132,11 @@
                 {/* KPI strip for each ecosystem */}
                 <div className="kpi-grid reveal" style={{gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))'}}>
                   <KpiCard label="SINAP &ndash; RUNAP"       value={ecoTotals['sinap']}       icon="&#x1F33F;" accent="green" />
-                  <KpiCard label="P\u00e1ramos"               value={ecoTotals['paramo']}      icon="&#x26F0;&#xFE0F;" accent="gold" />
+                  <KpiCard label="Páramos"               value={ecoTotals['paramo']}      icon="&#x26F0;&#xFE0F;" accent="gold" />
                   <KpiCard label="Bosque Seco"                value={ecoTotals['bosque_seco']} icon="&#x1F335;" />
                   <KpiCard label="Humedales"                  value={ecoTotals['humedal']}     icon="&#x1F30A;" />
                   <KpiCard label="REAA 2024"                  value={ecoTotals['reaa']}        icon="&#x1F4CB;" accent="green" />
-                  <KpiCard label="Reserva Ley 2\u00aa"        value={ecoTotals['ley2']}        icon="&#x1F6E1;&#xFE0F;" accent="red" />
+                  <KpiCard label="Reserva Ley 2ª"        value={ecoTotals['ley2']}        icon="&#x1F6E1;&#xFE0F;" accent="red" />
                 </div>
                 <div className="map-layout">
                   <div className="map-main">
@@ -3184,7 +3231,7 @@
                   onClick={checkCoordinates}
                   disabled={checkLoading || !checkLat || !checkLon}
                   style={{padding:'11px 28px',background:'rgba(46,125,50,0.15)',border:'1px solid rgba(46,125,50,0.5)',borderRadius:'4px',color:'#81c784',fontSize:'13px',fontFamily:"'DM Mono',monospace",letterSpacing:'0.08em',cursor:'pointer',opacity:(!checkLat||!checkLon)?0.4:1,transition:'all 0.2s'}}>
-                  {checkLoading ? '&#x23F3; Verificando...' : '&#x1F50D; Verificar ubicaci\u00f3n'}
+                  {checkLoading ? '&#x23F3; Verificando...' : '&#x1F50D; Verificar ubicación'}
                 </button>
 
                 {checkResult && !checkResult.error && (
@@ -3323,7 +3370,7 @@
           complete: ({ data }) => {
             const map = {};
             data.forEach(r => {
-              const cod = (r['COD_MPIO'] ?? r['\uFEFFCOD_MPIO'] ?? '').toString().trim();
+              const cod = (r['COD_MPIO'] ?? r['﻿COD_MPIO'] ?? '').toString().trim();
               if (cod) map[cod] = (r.alerta_lluvias ?? 'BAJA').trim();
             });
             setAlertaHistData(map);
@@ -3339,7 +3386,7 @@
           complete: ({ data }) => {
             const map = {};
             data.forEach(r => {
-              const cod = (r['cod_divipola'] ?? r['\uFEFFcod_divipola'] ?? '').toString().trim();
+              const cod = (r['cod_divipola'] ?? r['﻿cod_divipola'] ?? '').toString().trim();
               if (cod) map[cod] = {
                 amenaza_mm:           (r.amenaza_mm           ?? '').trim(),
                 amenaza_mm_val:       parseInt(r.amenaza_mm_val) || 0,
