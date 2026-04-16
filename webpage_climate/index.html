@@ -258,7 +258,22 @@
     .kpi-card.accent-red   { border-left-color: var(--danger); }
     .kpi-card.accent-gold  { border-left-color: var(--accent-gold); }
     .kpi-card.accent-green { border-left-color: var(--accent-teal); }
-    .kpi-icon { font-size: 20px; margin-bottom: 10px; }
+    .kpi-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .kpi-icon {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      opacity: 0.45;
+      flex-shrink: 0;
+    }
     .kpi-value {
       font-family: 'DM Mono', monospace;
       font-size: 28px;
@@ -266,20 +281,25 @@
       color: var(--accent-gold);
       line-height: 1;
       margin-bottom: 6px;
+      letter-spacing: -0.5px;
     }
     .kpi-label {
-      font-family: 'Lora', serif;
-      font-size: 11px;
+      font-family: 'Inter', 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       color: var(--text-muted);
     }
     .kpi-sub {
       font-family: 'DM Mono', monospace;
       font-size: 10px;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 6px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      opacity: 0.7;
     }
 
     /* ── Map layout ─────────────────────────────────────── */
@@ -1288,13 +1308,101 @@
 
     // ─── KPI Cards ────────────────────────────────────────────────────────────
 
+    const ICONS = {
+      municipios: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="7" width="5" height="9"/><rect x="11" y="3" width="5" height="13"/>
+          <line x1="1" y1="16" x2="17" y2="16"/>
+          <rect x="3.5" y="10" width="2" height="2.5"/><rect x="12" y="6.5" width="2" height="2.5"/><rect x="12" y="11" width="2" height="2.5"/>
+        </svg>
+      ),
+      alerta: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 2.5L16 15H2L9 2.5z"/>
+          <line x1="9" y1="7.5" x2="9" y2="11"/>
+          <circle cx="9" cy="13" r="0.6" fill="currentColor" stroke="none"/>
+        </svg>
+      ),
+      precipMedia: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
+          <path d="M9 2C9 2 5.5 7.5 5.5 10.5a3.5 3.5 0 007 0C12.5 7.5 9 2 9 2z"/>
+          <line x1="3" y1="16" x2="15" y2="16" strokeDasharray="2 2"/>
+        </svg>
+      ),
+      precipMax: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="1.5" y1="15" x2="16.5" y2="15"/>
+          <rect x="2" y="10" width="3.5" height="5" rx="0.3"/><rect x="7.25" y="6" width="3.5" height="9" rx="0.3"/><rect x="12.5" y="2.5" width="3.5" height="12.5" rx="0.3"/>
+        </svg>
+      ),
+      sequia: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
+          <circle cx="9" cy="9" r="3.5"/>
+          <line x1="9" y1="1.5" x2="9" y2="3.5"/><line x1="9" y1="14.5" x2="9" y2="16.5"/>
+          <line x1="1.5" y1="9" x2="3.5" y2="9"/><line x1="14.5" y1="9" x2="16.5" y2="9"/>
+          <line x1="3.7" y1="3.7" x2="5.1" y2="5.1"/><line x1="12.9" y1="12.9" x2="14.3" y2="14.3"/>
+          <line x1="14.3" y1="3.7" x2="12.9" y2="5.1"/><line x1="5.1" y1="12.9" x2="3.7" y2="14.3"/>
+        </svg>
+      ),
+      deslizamiento: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="1,15 7,6 11,10 15,4"/>
+          <line x1="1" y1="15" x2="17" y2="15"/>
+          <circle cx="15" cy="4" r="1.2" fill="currentColor" stroke="none"/>
+        </svg>
+      ),
+      umbral: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
+          <line x1="2" y1="9" x2="16" y2="9" strokeDasharray="3 2"/>
+          <polyline points="2,13 6,8 10,11 14,5 16,7"/>
+          <circle cx="14" cy="5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+      ),
+      protectedArea: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 2L15 5v5c0 3.5-2.5 6-6 7C3 16 0.5 13.5 3 10V5L9 2z"/>
+        </svg>
+      ),
+      paramo: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="1,15 6,6 9,9 12,4 17,15"/>
+          <line x1="1" y1="15" x2="17" y2="15"/>
+        </svg>
+      ),
+      bosque: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+          <polygon points="9,2 14,9 11,9 15,14 3,14 7,9 4,9"/><line x1="9" y1="14" x2="9" y2="16"/>
+        </svg>
+      ),
+      humedal: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
+          <path d="M2 10 C4 7 7 13 9 10 C11 7 14 13 16 10"/>
+          <path d="M2 14 C4 11 7 17 9 14 C11 11 14 17 16 14"/>
+        </svg>
+      ),
+      clipboard: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="4" y="3" width="10" height="13" rx="1"/>
+          <path d="M7 3V2h4v1"/><line x1="6.5" y1="8" x2="11.5" y2="8"/><line x1="6.5" y1="11" x2="9.5" y2="11"/>
+        </svg>
+      ),
+      shield: (
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 2L15 4.5v5c0 3.5-2.5 6-6 7-3.5-1-6-3.5-6-7V4.5L9 2z"/>
+          <polyline points="6.5,9 8,10.5 11.5,7"/>
+        </svg>
+      ),
+    };
+
     function KpiCard({ label, value, sub, icon, accent }) {
       const cls = accent ? `kpi-card accent-${accent}` : 'kpi-card';
       return (
         <div className={cls}>
-          <div className="kpi-icon">{icon}</div>
+          <div className="kpi-card-header">
+            <div className="kpi-label">{label}</div>
+            <div className="kpi-icon">{icon}</div>
+          </div>
           <div className="kpi-value">{value}</div>
-          <div className="kpi-label">{label}</div>
           {sub && <div className="kpi-sub" title={sub}>{sub}</div>}
         </div>
       );
@@ -1306,16 +1414,16 @@
         : activeMap === 'deslizamientos'
         ? Object.values(amenazasData).filter(d => d.alerta_deslizamiento === 'ALTA').length
         : kpis.enAlerta;
-      const alertaLabel = activeMap === 'sequias'       ? 'Sequía SEVERA'
+      const alertaLabel = activeMap === 'sequias'       ? 'Sequía severa'
                         : activeMap === 'deslizamientos' ? 'Alerta deslizamiento'
-                        : 'En alerta histórica';
+                        : 'Municipios en alerta';
       const alertaAccent = activeMap === 'sequias' ? 'gold' : 'red';
       return (
         <div className="kpi-grid reveal">
-          <KpiCard label="Total municipios"               value={kpis.total}            icon="&#x1F3D9;" />
-          <KpiCard label={alertaLabel}                    value={alertaValue}           icon="&#x26A0;&#xFE0F;" accent={alertaAccent} />
-          <KpiCard label="Promedio precipitaci&oacute;n"  value={`${kpis.promedio} mm`} icon="&#x1F4A7;" accent="green" />
-          <KpiCard label="M&aacute;x. precipitaci&oacute;n" value={`${kpis.maximo} mm`} icon="&#x1F4CD;" accent="gold" sub={kpis.maxMpio} />
+          <KpiCard label="Municipios monitoreados"           value={kpis.total}            icon={ICONS.municipios} />
+          <KpiCard label={alertaLabel}                       value={alertaValue}           icon={ICONS.alerta}     accent={alertaAccent} />
+          <KpiCard label="Precipitaci&#243;n promedio"       value={`${kpis.promedio} mm`} icon={ICONS.precipMedia} accent="green" />
+          <KpiCard label="Precipitaci&#243;n m&#225;xima"   value={`${kpis.maximo} mm`}   icon={ICONS.precipMax}  accent="gold" sub={kpis.maxMpio} />
         </div>
       );
     }
@@ -2247,10 +2355,10 @@
             <div style={{background:'var(--bg-primary)'}}>
               <div className="dashboard-main">
                 <div className="kpi-grid reveal">
-                  <KpiCard label="Municipios filtrados"         value={filtered.length}       icon="&#x1F3D9;" />
-                  <KpiCard label="En alerta hist&oacute;rica"     value={kpis.enAlerta}         icon="&#x26A0;&#xFE0F;" accent="red" />
-                  <KpiCard label="Promedio precipitaci&oacute;n"  value={`${kpis.promedio} mm`} icon="&#x1F4A7;" accent="green" />
-                  <KpiCard label="M&aacute;x. precipitaci&oacute;n" value={`${kpis.maximo} mm`}   icon="&#x1F4CD;" accent="gold" sub={kpis.maxMpio} />
+                  <KpiCard label="Municipios filtrados"          value={filtered.length}       icon={ICONS.municipios} />
+                  <KpiCard label="Municipios en alerta"          value={kpis.enAlerta}         icon={ICONS.alerta}     accent="red" />
+                  <KpiCard label="Precipitaci&#243;n promedio"   value={`${kpis.promedio} mm`} icon={ICONS.precipMedia} accent="green" />
+                  <KpiCard label="Precipitaci&#243;n m&#225;xima" value={`${kpis.maximo} mm`}  icon={ICONS.precipMax}  accent="gold" sub={kpis.maxMpio} />
                 </div>
                 <div className="map-layout">
                   <div className="map-main">
@@ -2384,10 +2492,10 @@
           <div style={{background:'var(--bg-primary)'}}>
             <div className="dashboard-main">
               <div className="kpi-grid reveal">
-                <KpiCard label="Municipios filtrados"         value={filtered.length}         icon="&#x1F3D9;" />
-                <KpiCard label="Sequía severa/extrema"   value={enAlertaSequia}           icon="&#x2600;&#xFE0F;" accent="red" />
-                <KpiCard label="Promedio precipitación"  value={`${kpisSeq.promedio} mm`} icon="&#x1F4A7;" accent="green" />
-                <KpiCard label="Máx. precipitación" value={`${kpisSeq.maximo} mm`}   icon="&#x1F4CD;" accent="gold" sub={kpisSeq.maxMpio} />
+                <KpiCard label="Municipios filtrados"          value={filtered.length}           icon={ICONS.municipios} />
+                <KpiCard label="Sequ&#237;a severa / extrema"  value={enAlertaSequia}            icon={ICONS.sequia}     accent="red" />
+                <KpiCard label="Precipitaci&#243;n promedio"   value={`${kpisSeq.promedio} mm`}  icon={ICONS.precipMedia} accent="green" />
+                <KpiCard label="Precipitaci&#243;n m&#225;xima" value={`${kpisSeq.maximo} mm`}  icon={ICONS.precipMax}  accent="gold" sub={kpisSeq.maxMpio} />
               </div>
               <div className="map-layout">
                 <div className="map-main">
@@ -2492,10 +2600,10 @@
           <div style={{background:'var(--bg-primary)'}}>
             <div className="dashboard-main">
               <div className="kpi-grid reveal">
-                <KpiCard label="Municipios filtrados"      value={filteredEntries.length} icon="&#x1F3D9;" />
-                <KpiCard label="Alerta deslizamiento ALTA" value={enAlertaDesliz}         icon="&#x26F0;&#xFE0F;" accent="red" />
-                <KpiCard label="Zonas críticas"       value="12"                     icon="&#x26A0;&#xFE0F;" accent="gold" />
-                <KpiCard label="Umbral detonante"          value=">80 mm/día"        icon="&#x1F327;&#xFE0F;" accent="green" />
+                <KpiCard label="Municipios filtrados"       value={filteredEntries.length} icon={ICONS.municipios} />
+                <KpiCard label="Alerta deslizamiento ALTA"  value={enAlertaDesliz}         icon={ICONS.deslizamiento} accent="red" />
+                <KpiCard label="Zonas cr&#237;ticas"        value="12"                     icon={ICONS.alerta}        accent="gold" />
+                <KpiCard label="Umbral detonante"           value=">80 mm/d&#237;a"        icon={ICONS.umbral}        accent="green" />
               </div>
               <div className="map-layout">
                 <div className="map-main">
@@ -3131,12 +3239,12 @@
               <div className="dashboard-main">
                 {/* KPI strip for each ecosystem */}
                 <div className="kpi-grid reveal" style={{gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))'}}>
-                  <KpiCard label="SINAP &ndash; RUNAP"       value={ecoTotals['sinap']}       icon="&#x1F33F;" accent="green" />
-                  <KpiCard label="Páramos"               value={ecoTotals['paramo']}      icon="&#x26F0;&#xFE0F;" accent="gold" />
-                  <KpiCard label="Bosque Seco"                value={ecoTotals['bosque_seco']} icon="&#x1F335;" />
-                  <KpiCard label="Humedales"                  value={ecoTotals['humedal']}     icon="&#x1F30A;" />
-                  <KpiCard label="REAA 2024"                  value={ecoTotals['reaa']}        icon="&#x1F4CB;" accent="green" />
-                  <KpiCard label="Reserva Ley 2ª"        value={ecoTotals['ley2']}        icon="&#x1F6E1;&#xFE0F;" accent="red" />
+                  <KpiCard label="SINAP &ndash; RUNAP"        value={ecoTotals['sinap']}       icon={ICONS.protectedArea} accent="green" />
+                  <KpiCard label="P&#225;ramos"               value={ecoTotals['paramo']}      icon={ICONS.paramo}        accent="gold" />
+                  <KpiCard label="Bosque Seco"                value={ecoTotals['bosque_seco']} icon={ICONS.bosque} />
+                  <KpiCard label="Humedales"                  value={ecoTotals['humedal']}     icon={ICONS.humedal} />
+                  <KpiCard label="REAA 2024"                  value={ecoTotals['reaa']}        icon={ICONS.clipboard}     accent="green" />
+                  <KpiCard label="Reserva Ley 2&#170;"        value={ecoTotals['ley2']}        icon={ICONS.shield}        accent="red" />
                 </div>
                 <div className="map-layout">
                   <div className="map-main">
