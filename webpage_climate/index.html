@@ -807,6 +807,24 @@
       { label: 'Extrema',  color: '#7b0000' },
     ];
 
+    // ── Choropleth fill colors (polygon map) ──────────────────────────────
+    const ALERTA_POLY_COLORS = {
+      'BAJA':      '#92c17c',
+      'MODERADA':  '#f5d040',
+      'ALTA':      '#e07030',
+      'CRÍTICA':   '#c01010',
+      'SIN_DATOS': '#d8d4ce',
+    };
+    const SEQUIA_POLY_COLORS = {
+      'NORMAL':   '#c8e6b0',
+      'LEVE':     '#ffe680',
+      'MODERADA': '#ffb74d',
+      'SEVERA':   '#e07030',
+      'EXTREMA':  '#c01010',
+    };
+
+    let _municipiosGeo = null; // GeoJSON cache compartido entre instancias de MapPanel
+
     const AMENAZA_MM_COLORS = {
       'MUY_BAJA': '#218a21',
       'BAJA':     '#90ee90',
@@ -1576,22 +1594,49 @@
     function MapPanel({ data, mode = 'lluvias', visible = true }) {
       const mapDiv      = useRef(null);
       const leafletMap  = useRef(null);
-      const layerGroup  = useRef(null);
+      const geoLayerRef = useRef(null);
+      const pulseRef    = useRef(null);
       const initialized = useRef(false);
+      const [geoReady, setGeoReady] = useState(!!_municipiosGeo);
 
+      // ── Init mapa (una sola vez) ─────────────────────────────────────────
       useEffect(() => {
         if (initialized.current) return;
         initialized.current = true;
+
         const map = L.map(mapDiv.current, { center: [4.5, -74.0], zoom: 5 });
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+
+        // Pane intermedio para los polígonos (entre base y labels)
+        map.createPane('choroPane');
+        map.getPane('choroPane').style.zIndex = '350';
+        map.getPane('choroPane').style.pointerEvents = 'auto';
+
+        // Basemap limpio sin etiquetas
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
           maxZoom: 19,
         }).addTo(map);
+
+        // Etiquetas encima de polígonos (overlayPane z-index 400)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+          attribution: '', maxZoom: 19,
+        }).addTo(map);
+
         map.fitBounds([[1, -79], [13, -67]]);
-        layerGroup.current = L.layerGroup().addTo(map);
         leafletMap.current = map;
+
+        // Cargar GeoJSON (usa caché si ya fue cargado)
+        if (_municipiosGeo) {
+          setGeoReady(true);
+        } else {
+          fetch('data/municipios_alertas.geojson')
+            .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+            .then(geo => { _municipiosGeo = geo; setGeoReady(true); })
+            .catch(err => console.error('Error cargando GeoJSON:', err));
+        }
       }, []);
 
+      // ── Redimensionar al hacerse visible ────────────────────────────────
       useEffect(() => {
         if (visible && leafletMap.current) {
           setTimeout(() => {
@@ -1601,77 +1646,105 @@
         }
       }, [visible]);
 
+      // ── Limpiar intervalo de pulso al desmontar ──────────────────────────
+      useEffect(() => () => { if (pulseRef.current) clearInterval(pulseRef.current); }, []);
+
+      // ── Dibujar coropleta ────────────────────────────────────────────────
       useEffect(() => {
-        if (!layerGroup.current) return;
-        layerGroup.current.clearLayers();
+        if (!geoReady || !leafletMap.current || !_municipiosGeo) return;
 
-        if (mode === 'sequias') {
-          data.forEach(m => {
-            const cat    = m.sequia_categoria ?? 'NORMAL';
-            const color  = SEQUIA_COLORS[cat] ?? '#adb5bd';
-            const radius = 6;
+        // Detener pulso anterior
+        if (pulseRef.current) { clearInterval(pulseRef.current); pulseRef.current = null; }
 
-            if (cat === 'SEVERA') {
-              const r2   = radius + 5;
-              const size = r2 * 2;
-              const pulseIcon = L.divIcon({
-                className: '',
-                html: `<div class="sequia-alert-pulse" style="width:${size}px;height:${size}px;margin-left:-${r2}px;margin-top:-${r2}px;"></div>`,
-                iconSize: [0, 0], iconAnchor: [0, 0],
-              });
-              L.marker([m.LATITUD, m.LONGITUD], { icon: pulseIcon, interactive: false, zIndexOffset: -100 })
-                .addTo(layerGroup.current);
-            }
+        // Lookup rápido: COD_MPIO → fila de datos
+        const lookup = {};
+        data.forEach(m => { lookup[String(m.COD_MPIO)] = m; });
 
-            L.circleMarker([m.LATITUD, m.LONGITUD], {
-              radius,
-              fillColor:   color,
-              color:       cat === 'SEVERA' ? '#f0b429' : 'rgba(255,255,255,0.25)',
-              weight:      cat === 'SEVERA' ? 2.0 : 0.8,
+        // Remover capa anterior
+        if (geoLayerRef.current) { geoLayerRef.current.remove(); geoLayerRef.current = null; }
+
+        function getStyle(feature) {
+          const cod    = String(feature.properties.COD_MPIO ?? '');
+          const row    = lookup[cod] ?? feature.properties;
+          const alerta = row.alerta_compuesta ?? 'SIN_DATOS';
+          const sequia = row.sequia_categoria ?? 'NORMAL';
+
+          if (mode === 'sequias') {
+            const isAlert = sequia === 'SEVERA' || sequia === 'EXTREMA';
+            return {
+              pane:        'choroPane',
+              fillColor:   SEQUIA_POLY_COLORS[sequia] ?? '#d8d4ce',
+              fillOpacity: sequia === 'NORMAL' ? 0.50 : 0.75,
+              color:       isAlert ? '#a04010' : '#bbb',
+              weight:      isAlert ? 1.5 : 0.4,
               opacity:     1,
-              fillOpacity: 0.85,
-            })
-            .bindPopup(buildPopup(m), { maxWidth: 240 })
-            .addTo(layerGroup.current);
-          });
-          return;
-        }
-
-        // mode === 'lluvias'
-        data.forEach(m => {
-          const color  = CATEGORIA_COLORS[m.categoria] ?? '#adb5bd';
-          const radius = Math.max(5, Math.min(m.tamano, 22));
-
-          if (m.alerta >= 2) {
-            const size = radius * 2;
-            const pulseIcon = L.divIcon({
-              className: '',
-              html: `<div class="alert-pulse" style="width:${size}px;height:${size}px;margin-left:-${radius}px;margin-top:-${radius}px;"></div>`,
-              iconSize: [0, 0], iconAnchor: [0, 0],
-            });
-            L.marker([m.LATITUD, m.LONGITUD], { icon: pulseIcon, interactive: false, zIndexOffset: -100 })
-              .addTo(layerGroup.current);
+            };
           }
 
-          const borderColor  = m.alerta >= 2 ? '#e03131' : m.alerta === 1 ? '#f0b429' : 'rgba(255,255,255,0.25)';
-          const borderWeight = m.alerta >= 1 ? 2.0 : 0.8;
-
-          L.circleMarker([m.LATITUD, m.LONGITUD], {
-            radius,
-            fillColor:   color,
-            color:       borderColor,
-            weight:      borderWeight,
+          const isAlert = alerta === 'ALTA' || alerta === 'CRÍTICA';
+          return {
+            pane:        'choroPane',
+            fillColor:   ALERTA_POLY_COLORS[alerta] ?? '#d8d4ce',
+            fillOpacity: alerta === 'SIN_DATOS' ? 0.30 : alerta === 'BAJA' ? 0.52 : 0.78,
+            color:       alerta === 'CRÍTICA' ? '#7b0000' : isAlert ? '#c03020' : '#bbb',
+            weight:      isAlert ? 1.5 : 0.4,
             opacity:     1,
-            fillOpacity: 0.82,
-          })
-          .bindPopup(buildPopup(m), { maxWidth: 240 })
-          .addTo(layerGroup.current);
+          };
+        }
+
+        const layer = L.geoJSON(_municipiosGeo, {
+          style: getStyle,
+          onEachFeature(feature, lyr) {
+            const cod = String(feature.properties.COD_MPIO ?? '');
+            const row = { ...feature.properties, ...(lookup[cod] ?? {}) };
+            // Asegurar numéricos para el popup
+            row.precip_acum_mm    = Number(row.precip_acum_mm    ?? 0);
+            row.precip_max_10min  = Number(row.precip_max_10min  ?? 0);
+            row.frecuencia_extremos = Number(row.frecuencia_extremos ?? 0);
+            row.frecuencia_reciente = Number(row.frecuencia_reciente ?? 0);
+            row.n_estaciones      = Number(row.n_estaciones      ?? 0);
+            lyr.bindPopup(buildPopup(row), { maxWidth: 260 });
+          },
+        }).addTo(leafletMap.current);
+
+        geoLayerRef.current = layer;
+
+        // ── Titilación en municipios con alerta ALTA / CRÍTICA ────────────
+        const alertLayers = [];
+        layer.eachLayer(lyr => {
+          const cod    = String(lyr.feature.properties.COD_MPIO ?? '');
+          const row    = lookup[cod] ?? lyr.feature.properties;
+          const alerta = row.alerta_compuesta ?? lyr.feature.properties.alerta_compuesta ?? '';
+          const sequia = row.sequia_categoria ?? lyr.feature.properties.sequia_categoria ?? '';
+          const pulse  = mode === 'sequias'
+            ? (sequia === 'SEVERA'  || sequia === 'EXTREMA')
+            : (alerta === 'ALTA'   || alerta === 'CRÍTICA');
+          if (pulse) alertLayers.push({ lyr, alerta, sequia });
         });
-      }, [data, mode]);
+
+        if (alertLayers.length > 0) {
+          let phase = true;
+          pulseRef.current = setInterval(() => {
+            alertLayers.forEach(({ lyr, alerta, sequia }) => {
+              const isCritica = mode === 'sequias' ? sequia === 'EXTREMA' : alerta === 'CRÍTICA';
+              lyr.setStyle({ fillOpacity: phase ? (isCritica ? 0.82 : 0.75) : 0.08, weight: phase ? 1.8 : 0.6 });
+            });
+            phase = !phase;
+          }, 750);
+        }
+      }, [data, mode, geoReady]);
 
       return (
-        <div className="map-panel-wrap">
+        <div className="map-panel-wrap" style={{position:'relative'}}>
           <div ref={mapDiv} className="map-div" />
+          {!geoReady && (
+            <div style={{position:'absolute',inset:0,display:'flex',alignItems:'center',
+              justifyContent:'center',background:'rgba(10,15,26,0.55)',zIndex:999,
+              color:'var(--text-muted)',fontFamily:'DM Mono',fontSize:'11px',letterSpacing:'0.14em',
+              pointerEvents:'none'}}>
+              CARGANDO POL&Iacute;GONOS&hellip;
+            </div>
+          )}
           <Legend mode={mode} />
         </div>
       );
