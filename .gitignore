@@ -1,1 +1,5 @@
 webpage_climate/data/precipitacion_historica.csv
+# Large geospatial files — exceed GitHub 100 MB limit
+data/areas_protegidas/
+scripts_python/data/areas_protegidas/
+scripts_python/data/ecosistemas_cache/paramos.geojson
