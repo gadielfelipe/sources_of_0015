@@ -865,7 +865,7 @@
         const mm                   = parseFloat(r.precip_acum_mm) || 0;
         const alerta_compuesta_raw = (r.alerta_compuesta ?? 'BAJA').trim();
         const afectado             = parseInt(r.municipio_afectado) || 0;
-        const alerta_compuesta     = afectado === 1 ? alerta_compuesta_raw : 'BAJA';
+        const alerta_compuesta     = alerta_compuesta_raw;
         const alert                = ALERTA_NIVEL[alerta_compuesta] ?? 0;
         return {
           COD_MPIO:            String(cod),
