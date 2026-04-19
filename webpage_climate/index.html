@@ -895,7 +895,7 @@
     function computeKpis(data) {
       if (!data.length) return { total: 0, enAlerta: 0, enAlertaSequia: 0, promedio: '0.00', maximo: 0, maxMpio: '' };
       const total          = data.length;
-      const enAlerta       = data.filter(d => d.alerta >= 2).length;   // ALTA + CRÍTICA (= los que titilan)
+      const enAlerta       = data.filter(d => d.alerta > 0).length;    // MODERADA + ALTA + CRÍTICA
       const enAlertaSequia = data.filter(d => d.sequia_categoria === 'SEVERA').length;
       const sum            = data.reduce((acc, d) => acc + d.precip_acum_mm, 0);
       const promedio       = (sum / total).toFixed(2);
@@ -1718,7 +1718,7 @@
           const sequia = row.sequia_categoria ?? lyr.feature.properties.sequia_categoria ?? '';
           const pulse  = mode === 'sequias'
             ? (sequia === 'SEVERA'  || sequia === 'EXTREMA')
-            : (alerta === 'ALTA'   || alerta === 'CRÍTICA');
+            : (alerta === 'ALTA'   || alerta === 'CRÍTICA' || alerta === 'MODERADA');
           if (pulse) alertLayers.push({ lyr, alerta, sequia });
         });
 
@@ -1726,8 +1726,12 @@
           let phase = true;
           pulseRef.current = setInterval(() => {
             alertLayers.forEach(({ lyr, alerta, sequia }) => {
-              const isCritica = mode === 'sequias' ? sequia === 'EXTREMA' : alerta === 'CRÍTICA';
-              lyr.setStyle({ fillOpacity: phase ? (isCritica ? 0.82 : 0.75) : 0.08, weight: phase ? 1.8 : 0.6 });
+              const isCritica  = mode === 'sequias' ? sequia === 'EXTREMA' : alerta === 'CRÍTICA';
+              const isModera   = alerta === 'MODERADA' && mode !== 'sequias';
+              // MODERADA: pulso suave (no desaparece del todo); ALTA/CRÍTICA: pulso dramático
+              const hiOp = isCritica ? 0.82 : 0.75;
+              const loOp = isModera  ? 0.32 : 0.08;
+              lyr.setStyle({ fillOpacity: phase ? hiOp : loOp, weight: phase ? 1.8 : 0.6 });
             });
             phase = !phase;
           }, 750);
@@ -2429,7 +2433,7 @@
               <div className="dashboard-main">
                 <div className="kpi-grid reveal">
                   <KpiCard label="Municipios filtrados"          value={filtered.length}       icon={ICONS.municipios} />
-                  <KpiCard label="Alerta ALTA / CR&#205;TICA"       value={kpis.enAlerta}         icon={ICONS.alerta}     accent="red" />
+                  <KpiCard label="Municipios en alerta"          value={kpis.enAlerta}         icon={ICONS.alerta}     accent="red" />
                   <KpiCard label="Precipitaci&#243;n promedio"   value={`${kpis.promedio} mm`} icon={ICONS.precipMedia} accent="green" />
                   <KpiCard label="Precipitaci&#243;n m&#225;xima" value={`${kpis.maximo} mm`}  icon={ICONS.precipMax}  accent="gold" sub={kpis.maxMpio} />
                 </div>
