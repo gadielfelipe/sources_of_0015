@@ -2277,31 +2277,36 @@
 
     // ─── Overview KPI Strip ───────────────────────────────────────────────────
 
-    function OverviewKpiStrip() {
+    function OverviewKpiStrip({ allData, amenazasData, apData }) {
+      const nMpios      = allData.length;
+      const nLluvias    = allData.filter(d => d.alerta >= 2).length;               // ALTA + CRÍTICA
+      const nSequias    = allData.filter(d => ['SEVERA','EXTREMA'].includes(d.sequia_categoria)).length;
+      const nDesliz     = Object.values(amenazasData).filter(d => d.alerta_deslizamiento === 'ALTA').length;
+      const nAreas      = apData.filter(r => (r.tiene_area_protegida ?? r['﻿tiene_area_protegida'] ?? '0') === '1').length;
       return (
         <div className="overview-kpi-strip">
           <div className="ov-kpi">
-            <div className="ov-kpi-value">1,121</div>
+            <div className="ov-kpi-value">{nMpios.toLocaleString('es-CO')}</div>
             <div className="ov-kpi-label">Municipios monitoreados</div>
             <div className="ov-kpi-sub">red nacional IDEAM</div>
           </div>
           <div className="ov-kpi">
-            <div className="ov-kpi-value" style={{color:'#1a6faa'}}>87</div>
+            <div className="ov-kpi-value" style={{color:'#1a6faa'}}>{nLluvias}</div>
             <div className="ov-kpi-label">Alertas activas &middot; Lluvias</div>
-            <div className="ov-kpi-sub">municipios en alerta hist&oacute;rica</div>
+            <div className="ov-kpi-sub">municipios ALTA o CR&Iacute;TICA</div>
           </div>
           <div className="ov-kpi">
-            <div className="ov-kpi-value" style={{color:'#b85c1a'}}>54</div>
+            <div className="ov-kpi-value" style={{color:'#b85c1a'}}>{nSequias}</div>
             <div className="ov-kpi-label">Alertas activas &middot; Sequ&iacute;as</div>
             <div className="ov-kpi-sub">municipios con d&eacute;ficit cr&iacute;tico</div>
           </div>
           <div className="ov-kpi">
-            <div className="ov-kpi-value" style={{color:'#2d6b3c'}}>77</div>
+            <div className="ov-kpi-value" style={{color:'#2d6b3c'}}>{nDesliz}</div>
             <div className="ov-kpi-label">Alertas activas &middot; Deslizamientos</div>
             <div className="ov-kpi-sub">municipios susceptibilidad alta</div>
           </div>
           <div className="ov-kpi">
-            <div className="ov-kpi-value" style={{color:'#1b5e20'}}>91</div>
+            <div className="ov-kpi-value" style={{color:'#1b5e20'}}>{nAreas || '—'}</div>
             <div className="ov-kpi-label">&Aacute;reas Protegidas &middot; SINAP</div>
             <div className="ov-kpi-sub">municipios con &aacute;rea protegida</div>
           </div>
@@ -3486,7 +3491,7 @@
 
       return (
         <div>
-          <OverviewKpiStrip />
+          <OverviewKpiStrip allData={allData} amenazasData={amenazasData} apData={apData} />
           <div style={{display: activeSection ? 'none' : 'block'}}>
             <OverviewSectionCards onSelect={showSection} />
           </div>
