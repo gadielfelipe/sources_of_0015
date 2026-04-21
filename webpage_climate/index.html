@@ -1664,7 +1664,7 @@
         if (geoLayerRef.current) { geoLayerRef.current.remove(); geoLayerRef.current = null; }
 
         function getStyle(feature) {
-          const cod    = String(feature.properties.COD_MPIO ?? '');
+          const cod    = String(feature.properties.COD_MPIO ?? '').replace(/\.0$/, '');
           const row    = lookup[cod] ?? feature.properties;
           const alerta = row.alerta_compuesta ?? 'SIN_DATOS';
           const sequia = row.sequia_categoria ?? 'NORMAL';
@@ -1695,7 +1695,7 @@
         const layer = L.geoJSON(_municipiosGeo, {
           style: getStyle,
           onEachFeature(feature, lyr) {
-            const cod = String(feature.properties.COD_MPIO ?? '');
+            const cod = String(feature.properties.COD_MPIO ?? '').replace(/\.0$/, '');
             const row = { ...feature.properties, ...(lookup[cod] ?? {}) };
             // Asegurar numéricos para el popup
             row.precip_acum_mm    = Number(row.precip_acum_mm    ?? 0);
@@ -1712,7 +1712,7 @@
         // ── Titilación en municipios con alerta ALTA / CRÍTICA ────────────
         const alertLayers = [];
         layer.eachLayer(lyr => {
-          const cod    = String(lyr.feature.properties.COD_MPIO ?? '');
+          const cod    = String(lyr.feature.properties.COD_MPIO ?? '').replace(/\.0$/, '');
           const row    = lookup[cod] ?? lyr.feature.properties;
           const alerta = row.alerta_compuesta ?? lyr.feature.properties.alerta_compuesta ?? '';
           const sequia = row.sequia_categoria ?? lyr.feature.properties.sequia_categoria ?? '';
