@@ -895,7 +895,7 @@
     function computeKpis(data) {
       if (!data.length) return { total: 0, enAlerta: 0, enAlertaSequia: 0, promedio: '0.00', maximo: 0, maxMpio: '' };
       const total          = data.length;
-      const enAlerta       = data.filter(d => d.alerta > 0).length;    // MODERADA + ALTA + CRÍTICA
+      const enAlerta       = data.filter(d => d.alerta >= 2).length;   // ALTA + CRÍTICA
       const enAlertaSequia = data.filter(d => d.sequia_categoria === 'SEVERA').length;
       const sum            = data.reduce((acc, d) => acc + d.precip_acum_mm, 0);
       const promedio       = (sum / total).toFixed(2);
@@ -2453,7 +2453,7 @@
       const filtered = useMemo(() =>
         data
           .filter(d => deptFilter === 'ALL' || d.NOM_DPTO === deptFilter)
-          .filter(d => !alertOnly || d.alerta > 0),
+          .filter(d => !alertOnly || d.alerta >= 2),
         [data, deptFilter, alertOnly]
       );
 
