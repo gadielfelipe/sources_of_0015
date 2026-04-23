@@ -1761,7 +1761,7 @@
           const sequia = row.sequia_categoria ?? lyr.feature.properties.sequia_categoria ?? '';
           const pulse  = mode === 'sequias'
             ? (sequia === 'SEVERA'  || sequia === 'EXTREMA')
-            : (alerta === 'ALTA'   || alerta === 'CRÍTICA' || alerta === 'MODERADA');
+            : (alerta === 'ALTA'   || alerta === 'CRÍTICA');
           if (pulse) alertLayers.push({ lyr, alerta, sequia });
         });
 
@@ -1770,10 +1770,8 @@
           pulseRef.current = setInterval(() => {
             alertLayers.forEach(({ lyr, alerta, sequia }) => {
               const isCritica  = mode === 'sequias' ? sequia === 'EXTREMA' : alerta === 'CRÍTICA';
-              const isModera   = alerta === 'MODERADA' && mode !== 'sequias';
-              // MODERADA: pulso suave (no desaparece del todo); ALTA/CRÍTICA: pulso dramático
               const hiOp = isCritica ? 0.82 : 0.75;
-              const loOp = isModera  ? 0.32 : 0.08;
+              const loOp = 0.08;
               lyr.setStyle({ fillOpacity: phase ? hiOp : loOp, weight: phase ? 1.8 : 0.6 });
             });
             phase = !phase;
