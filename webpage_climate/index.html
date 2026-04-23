@@ -3580,7 +3580,7 @@
               if (cod) map[cod] = {
                 amenaza_mm:           (r.amenaza_mm           ?? '').trim(),
                 amenaza_mm_val:       parseInt(r.amenaza_mm_val) || 0,
-                alerta_deslizamiento: (r.alerta_deslizamiento ?? '').trim(),
+                alerta_deslizamiento: (r.amenaza_mm ?? '').trim() === 'MUY_ALTA' ? 'ALTA' : '',
                 acum_3dias_mm:        parseFloat(r.acum_3dias_mm)  || null,
                 acum_10dias_mm:       parseFloat(r.acum_10dias_mm) || null,
                 dias_lluvia:          parseFloat(r.dias_lluvia)    || null,
