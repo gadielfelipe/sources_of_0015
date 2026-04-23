@@ -2134,12 +2134,12 @@
               </thead>
               <tbody>
                 {sorted.map((d, i) => (
-                  <tr key={d.COD_MPIO || i}>
+                  <tr key={d.COD_MPIO || i} style={d.alerta >= 3 ? {background:'#fff0f0'} : d.alerta === 2 ? {background:'#fff5f0'} : {}}>
                     <td>{d.NOM_MPIO}</td>
                     <td className="td-muted hide-sm">{d.NOM_DPTO}</td>
                     <td className="td-right">{d.precip_acum_mm}</td>
                     <td className="td-center" title={d.alerta_compuesta}>
-                      {d.alerta > 0 ? '🔴' : '🟢'}
+                      {d.alerta >= 3 ? '🔴' : d.alerta === 2 ? '🟠' : d.alerta === 1 ? '🟡' : '🟢'}
                     </td>
                   </tr>
                 ))}
@@ -3673,7 +3673,7 @@
       const filteredData = useMemo(() => {
         return allData
           .filter(d => deptFilter === 'ALL' || d.NOM_DPTO === deptFilter)
-          .filter(d => !alertOnly || d.alerta > 0);
+          .filter(d => !alertOnly || d.alerta >= 2);   // ALTA + CRÍTICA
       }, [allData, deptFilter, alertOnly]);
 
       const kpis = useMemo(() => computeKpis(allData), [allData]);
