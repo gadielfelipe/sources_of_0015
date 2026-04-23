@@ -1484,6 +1484,19 @@
               <div className="legend-dot" style={{border:'2px solid #d91919', background:'transparent'}} />
               <span className="legend-label">Alerta IDEAM activa</span>
             </div>
+          </>) : mode === 'areas_protegidas' ? (<>
+            <div className="legend-title">&Aacute;reas &amp; Ecosistemas</div>
+            {[
+              { color: '#1b5e20', label: 'SINAP + ecosistemas' },
+              { color: '#2e7d32', label: 'Solo área protegida' },
+              { color: '#558b2f', label: 'Solo ecosistemas' },
+              { color: '#b0bec5', label: 'Sin cobertura' },
+            ].map(e => (
+              <div key={e.label} className="legend-item">
+                <div className="legend-dot" style={{background: e.color}} />
+                <span className="legend-label">{e.label}</span>
+              </div>
+            ))}
           </>) : (<>
             <div className="legend-title">Sequ&iacute;a recurrente</div>
             {SEQUIA_LEGEND_ENTRIES.map(e => (
@@ -3100,46 +3113,70 @@
     // ─── Áreas Protegidas Map Panel ───────────────────────────────────────────
 
     function AreasProtegidasMapPanel({ apData, ecoData, activeLayers, visible = true }) {
-      const mapDiv       = useRef(null);
-      const leafletMap   = useRef(null);
-      const muniGroup    = useRef(null);
-      const ecoGroups    = useRef({});
-      const initialized  = useRef(false);
+      const mapDiv      = useRef(null);
+      const leafletMap  = useRef(null);
+      const geoLayerRef = useRef(null);
+      const ecoGroups   = useRef({});
+      const initialized = useRef(false);
+      const [geoReady, setGeoReady] = useState(!!_municipiosGeo);
 
       // Init map once
       useEffect(() => {
         if (initialized.current) return;
         initialized.current = true;
-        const map = L.map(mapDiv.current, { center: [4.5, -74.0], zoom: 5, preferCanvas: true });
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-          attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19,
+        const map = L.map(mapDiv.current, { center: [4.5, -74.0], zoom: 5 });
+
+        // Pane intermedio para polígonos (entre base y etiquetas)
+        map.createPane('choroPane');
+        map.getPane('choroPane').style.zIndex = '350';
+        map.getPane('choroPane').style.pointerEvents = 'auto';
+
+        // Basemap sin etiquetas
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+          maxZoom: 19,
         }).addTo(map);
+
+        // Etiquetas encima de polígonos
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {
+          attribution: '', maxZoom: 19,
+        }).addTo(map);
+
         map.fitBounds([[1, -79], [13, -67]]);
-        muniGroup.current = L.layerGroup().addTo(map);
-        // Create one LayerGroup per ecosystem layer (all initially hidden)
-        ECOS_LAYERS.forEach(ec => {
-          ecoGroups.current[ec.key] = L.layerGroup();
-        });
+
+        // Grupos para capas ArcGIS de ecosistemas (ocultos por defecto)
+        ECOS_LAYERS.forEach(ec => { ecoGroups.current[ec.key] = L.layerGroup(); });
         leafletMap.current = map;
+
+        // Cargar GeoJSON (usa caché compartida)
+        if (_municipiosGeo) {
+          setGeoReady(true);
+        } else {
+          fetch('data/municipios_alertas.geojson')
+            .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+            .then(geo => { _municipiosGeo = geo; setGeoReady(true); })
+            .catch(err => console.error('Error cargando GeoJSON:', err));
+        }
       }, []);
 
-      // Resize on visibility
+      // Redimensionar al hacerse visible
       useEffect(() => {
         if (visible && leafletMap.current) {
-          setTimeout(() => { leafletMap.current.invalidateSize(); leafletMap.current.fitBounds([[1,-79],[13,-67]]); }, 80);
+          setTimeout(() => {
+            leafletMap.current.invalidateSize();
+            leafletMap.current.fitBounds([[1,-79],[13,-67]]);
+          }, 80);
         }
       }, [visible]);
 
-      // Toggle esri-leaflet feature layers based on activeLayers
+      // Activar/desactivar capas ArcGIS de ecosistemas
       useEffect(() => {
         if (!leafletMap.current) return;
         ECOS_LAYERS.forEach(ec => {
           const grp = ecoGroups.current[ec.key];
           if (!grp) return;
-          const isOn = activeLayers[ec.key];
-          if (isOn) {
+          if (activeLayers[ec.key]) {
             if (!leafletMap.current.hasLayer(grp)) {
-              // Load from ArcGIS FeatureServer if not yet populated
               if (grp.getLayers().length === 0) {
                 const fl = L.esri.featureLayer({
                   url: ec.url,
@@ -3148,7 +3185,7 @@
                     const p = feature.properties || {};
                     const name = p.uab_nombre_area_protegida || p.nombre || p.uab_nombre_reserva || p.nombre_cap || p.nomah || p.region || '';
                     const area = p.area_ha ? `${parseFloat(p.area_ha).toLocaleString('es-CO',{maximumFractionDigits:0})} ha` : '';
-                    layer.bindPopup(`<div style="font-family:'Lora',serif;font-size:13px;color:#1a1a1a;min-width:180px;">
+                    layer.bindPopup(`<div style="font-family:'Segoe UI',sans-serif;font-size:13px;color:#1a1a1a;min-width:180px;">
                       <div style="font-weight:700;color:${ec.dotColor};margin-bottom:3px;">${ec.label}</div>
                       ${name ? `<div style="font-size:12px;">${name}</div>` : ''}
                       ${area  ? `<div style="font-size:11px;color:#555;">&#x1F4CF; ${area}</div>` : ''}
@@ -3165,39 +3202,74 @@
         });
       }, [activeLayers]);
 
-      // Redraw municipal dots
+      // Dibujar coropleta de municipios
       useEffect(() => {
-        if (!muniGroup.current) return;
-        muniGroup.current.clearLayers();
-        apData.filter(d => !isNaN(parseFloat(d.LATITUD)) && !isNaN(parseFloat(d.LONGITUD))).forEach(d => {
-          // Determine active ecosystems for this municipality
-          const hits = ECOS_LAYERS.filter(ec => parseInt(d[ec.csvKey]) === 1);
-          const hasAny = hits.length > 0;
-          const mainColor = hits.length > 0 ? hits[0].dotColor : '#546e7a';
-          const radius = hasAny ? 8 : 5;
+        if (!geoReady || !leafletMap.current || !_municipiosGeo) return;
+        if (geoLayerRef.current) { geoLayerRef.current.remove(); geoLayerRef.current = null; }
 
-          const ecosHTML = hits.length > 0
-            ? hits.map(ec => `<span style="display:inline-block;background:${ec.color};color:#fff;font-size:10px;padding:1px 5px;border-radius:2px;margin:1px;">${ec.label}</span>`).join('')
-            : '<span style="color:#78909c;font-size:11px;">Sin ecosistemas registrados</span>';
-
-          const m = L.circleMarker([parseFloat(d.LATITUD), parseFloat(d.LONGITUD)], {
-            radius,
-            color: hasAny ? mainColor : 'rgba(255,255,255,0.15)',
-            weight: hasAny ? 1.5 : 0.5,
-            fillColor: mainColor,
-            fillOpacity: hasAny ? 0.85 : 0.35,
-          });
-          m.bindPopup(`
-            <div style="font-family:'Lora',serif;font-size:13px;min-width:200px;color:#f5f0e8;">
-              <div style="color:#c8a96e;font-size:14px;font-weight:700;margin-bottom:2px;">${d.NOM_MPIO}</div>
-              <div style="color:#8a9ab0;font-size:12px;margin-bottom:8px;">${d.NOM_DPTO}</div>
-              <div>${ecosHTML}</div>
-            </div>`, { maxWidth: 280 });
-          m.addTo(muniGroup.current);
+        // Lookup COD_MPIO → fila merged (apData + ecoData)
+        const ecoMap = {};
+        ecoData.forEach(d => { ecoMap[String(d.COD_MPIO ?? '').trim()] = d; });
+        const lookup = {};
+        apData.forEach(d => {
+          const cod = String(d.COD_MPIO ?? d['﻿COD_MPIO'] ?? '').trim();
+          if (cod) lookup[cod] = { ...d, ...(ecoMap[cod] ?? {}) };
         });
-      }, [apData]);
 
-      return <div className="map-panel-wrap"><div ref={mapDiv} className="map-div" /></div>;
+        function ecoHits(row) {
+          return ECOS_LAYERS.filter(ec => parseInt(row[ec.csvKey]) === 1);
+        }
+
+        function getStyle(feature) {
+          const cod = String(feature.properties.COD_MPIO ?? '').replace(/\.0$/, '');
+          const row = lookup[cod];
+          if (!row) return { pane:'choroPane', fillColor:'#cfd8dc', fillOpacity:0.30, color:'#b0bec5', weight:0.4, opacity:1 };
+          const hasSinap = parseInt(row.tiene_area_protegida) === 1;
+          const hasEco   = ecoHits(row).length > 0;
+          if (hasSinap && hasEco) return { pane:'choroPane', fillColor:'#1b5e20', fillOpacity:0.82, color:'#14421a', weight:1.2, opacity:1 };
+          if (hasSinap)           return { pane:'choroPane', fillColor:'#2e7d32', fillOpacity:0.72, color:'#1a5c1e', weight:1.0, opacity:1 };
+          if (hasEco)             return { pane:'choroPane', fillColor:'#558b2f', fillOpacity:0.65, color:'#3a6020', weight:0.8, opacity:1 };
+          return { pane:'choroPane', fillColor:'#b0bec5', fillOpacity:0.38, color:'#90a4ae', weight:0.4, opacity:1 };
+        }
+
+        const layer = L.geoJSON(_municipiosGeo, {
+          style: getStyle,
+          onEachFeature(feature, lyr) {
+            const cod  = String(feature.properties.COD_MPIO ?? '').replace(/\.0$/, '');
+            const row  = lookup[cod] ?? {};
+            const nom  = row.NOM_MPIO  ?? feature.properties.NOM_MPIO  ?? cod;
+            const dpto = row.NOM_DPTO  ?? feature.properties.NOM_DPTO  ?? '';
+            const hasSinap = parseInt(row.tiene_area_protegida) === 1;
+            const hits = ecoHits(row);
+            const ecosHTML = hits.length > 0
+              ? hits.map(ec => `<span style="display:inline-block;background:${ec.color};color:#fff;font-size:10px;padding:1px 6px;border-radius:2px;margin:1px;">${ec.label}</span>`).join('')
+              : '<span style="color:#78909c;font-size:11px;">Sin ecosistemas registrados</span>';
+            const sinapBadge = hasSinap
+              ? `<p style="margin-top:5px;"><span style="color:#1b5e20;font-weight:700;">✓ Área protegida SINAP–RUNAP</span></p>`
+              : '';
+            const areasNombres = row.areas_nombres
+              ? `<p style="font-size:11px;color:#8a9ab0;margin-top:3px;">${row.areas_nombres}</p>` : '';
+            lyr.bindPopup(`
+              <div style="font-family:'Segoe UI',sans-serif;font-size:13px;min-width:210px;">
+                <div style="font-size:14px;font-weight:700;margin-bottom:2px;">${nom}</div>
+                <div style="color:#888;font-size:12px;margin-bottom:6px;">${dpto}</div>
+                <hr style="margin:4px 0;border-color:#eee;">
+                ${sinapBadge}${areasNombres}
+                <p style="margin-top:6px;font-size:11px;font-weight:600;color:#2e7d32;">Ecosistemas estrat&#233;gicos</p>
+                <div style="margin-top:3px;">${ecosHTML}</div>
+              </div>`, { maxWidth: 260 });
+          },
+        }).addTo(leafletMap.current);
+
+        geoLayerRef.current = layer;
+      }, [apData, ecoData, geoReady]);
+
+      return (
+        <div className="map-panel-wrap">
+          <div ref={mapDiv} className="map-div" />
+          <Legend mode="areas_protegidas" />
+        </div>
+      );
     }
 
     // ─── Áreas Protegidas Table ───────────────────────────────────────────────
