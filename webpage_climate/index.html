@@ -2682,6 +2682,11 @@
         return m;
       }, [filteredEntries]);
 
+      const zonasCriticas = useMemo(
+        () => new Set(entries.filter(d => d.alerta_deslizamiento === 'ALTA').map(d => d.nom_dpto).filter(Boolean)).size,
+        [entries]
+      );
+
       const enAlertaDesliz = useMemo(
         () => filteredEntries.filter(d => d.alerta_deslizamiento === 'ALTA').length,
         [filteredEntries]
@@ -2725,7 +2730,7 @@
               <div className="kpi-grid reveal">
                 <KpiCard label="Municipios filtrados"       value={filteredEntries.length} icon={ICONS.municipios} />
                 <KpiCard label="Alerta deslizamiento ALTA"  value={enAlertaDesliz}         icon={ICONS.deslizamiento} accent="red" />
-                <KpiCard label="Zonas cr&#237;ticas"        value="12"                     icon={ICONS.alerta}        accent="gold" />
+                <KpiCard label="Zonas cr&#237;ticas"        value={zonasCriticas}          icon={ICONS.alerta}        accent="gold" />
                 <KpiCard label="Umbral detonante"           value=">80 mm/d&#237;a"        icon={ICONS.umbral}        accent="green" />
               </div>
               <div className="map-layout">
