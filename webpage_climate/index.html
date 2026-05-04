@@ -2418,6 +2418,13 @@
           title: 'Áreas Protegidas',
           desc: 'Municipios de cartera que intersectan con el Sistema Nacional de Áreas Protegidas (SINAP–RUNAP). Verificación de coordenadas de proyecto.',
         },
+        {
+          id: 'territorios',
+          accent: '#7b4f2e',
+          img: 'data/areasprotegidasdecolombia.jpg',
+          title: 'Territorios Étnicos y Campesinos',
+          desc: 'Municipios de cartera que intersectan con Resguardos Indígenas, Consejos Comunitarios, Zonas de Reserva Campesina y Territorios Campesinos Agroalimentarios (ANT).',
+        },
       ];
       return (
         <div className="ov-cards-grid">
@@ -3606,7 +3613,171 @@
 
     // ─── Overview Dashboard (orchestrator) ───────────────────────────────────
 
-    function OverviewDashboard({ allData, amenazasData, alertaHistData, apData, ecoData, incendiosData, dataFecha }) {
+    // ─── Territorios Étnicos y Campesinos Section ─────────────────────────────
+
+    const TERR_LAYERS = [
+      { key: 'resguardo', label: 'Resguardos Indígenas',      col_tiene: 'tiene_resguardo', col_nombre: 'nombre_resguardo', color: '#8d4e26', dotColor: '#c47c44' },
+      { key: 'consejo',   label: 'Consejos Comunitarios',     col_tiene: 'tiene_consejo',   col_nombre: 'nombre_consejo',   color: '#4a6741', dotColor: '#7ab573' },
+      { key: 'zrc',       label: 'Zonas Reserva Campesina',   col_tiene: 'tiene_zrc',       col_nombre: 'nombre_zrc',       color: '#5c4a8c', dotColor: '#9b82d4' },
+      { key: 'tca',       label: 'Territorios Campesinos Agroalimentarios', col_tiene: 'tiene_tca', col_nombre: 'nombre_tca', color: '#7a5c2e', dotColor: '#d4a85c' },
+    ];
+
+    function TerritoriosSection({ visible, onBack, terrData }) {
+      const [deptFilter, setDeptFilter] = React.useState('ALL');
+      const [terrFilter, setTerrFilter] = React.useState('ALL');
+
+      const departments = React.useMemo(() => {
+        const s = new Set(terrData.map(d => d.NOM_DPTO));
+        return ['ALL', ...Array.from(s).sort()];
+      }, [terrData]);
+
+      const totals = React.useMemo(() =>
+        Object.fromEntries(TERR_LAYERS.map(t => [
+          t.key,
+          terrData.filter(d => parseInt(d[t.col_tiene]) === 1).length
+        ])),
+        [terrData]
+      );
+
+      const filtered = React.useMemo(() => {
+        let rows = terrData.filter(d => deptFilter === 'ALL' || d.NOM_DPTO === deptFilter);
+        if (terrFilter !== 'ALL') {
+          const t = TERR_LAYERS.find(l => l.key === terrFilter);
+          if (t) rows = rows.filter(d => parseInt(d[t.col_tiene]) === 1);
+        }
+        return rows;
+      }, [terrData, deptFilter, terrFilter]);
+
+      const anyOverlap = React.useMemo(
+        () => filtered.filter(d => TERR_LAYERS.some(t => parseInt(d[t.col_tiene]) === 1)),
+        [filtered]
+      );
+
+      function downloadCSV() {
+        const headers = ['COD_MPIO','NOM_MPIO','NOM_DPTO','LATITUD','LONGITUD',
+          'tiene_resguardo','nombre_resguardo','n_resguardos',
+          'tiene_consejo','nombre_consejo','n_consejos',
+          'tiene_zrc','nombre_zrc','n_zrc',
+          'tiene_tca','nombre_tca','n_tca'];
+        const strCols = new Set(['nombre_resguardo','nombre_consejo','nombre_zrc','nombre_tca']);
+        const lines = filtered.map(r =>
+          headers.map(h => strCols.has(h) ? `"${r[h] ?? ''}"` : r[h] ?? '').join(',')
+        );
+        const csv  = '﻿' + [headers.join(','), ...lines].join('\r\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a'); a.href = url; a.download = 'territorios_municipal.csv'; a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      return (
+        <div className={`ov-content-section${visible ? ' ov-visible' : ''}`}>
+          <div className="ov-section-header">
+            <div className="ov-breadcrumb">
+              <button onClick={onBack}>Resumen general</button>
+              {' / Territorios Étnicos y Campesinos'}
+            </div>
+            <div className="ov-section-title-row">
+              <div className="ov-section-title">Territorios &Eacute;tnicos &amp; Campesinos</div>
+              <span className="ov-alert-badge" style={{background:'#7b4f2e'}}>{anyOverlap.length} municipios con traslape</span>
+            </div>
+          </div>
+
+          <div style={{background:'var(--bg-primary)'}}>
+            <div className="dashboard-main">
+              {/* KPI strip */}
+              <div className="kpi-grid reveal" style={{gridTemplateColumns:'repeat(auto-fit,minmax(160px,1fr))'}}>
+                {TERR_LAYERS.map(t => (
+                  <KpiCard key={t.key} label={t.label} value={totals[t.key]} icon={ICONS.protectedArea} />
+                ))}
+              </div>
+
+              <div className="map-layout">
+                <div className="map-side side-panel" style={{order:1}}>
+                  {/* Filters */}
+                  <div className="side-card">
+                    <div className="side-card-title">Filtros</div>
+                    <div style={{marginBottom:'8px'}}>
+                      <label style={{fontSize:'11px',color:'var(--text-muted)',display:'block',marginBottom:'4px'}}>Departamento</label>
+                      <select value={deptFilter} onChange={e => setDeptFilter(e.target.value)}
+                        style={{width:'100%',padding:'5px 8px',background:'var(--bg-card)',border:'1px solid var(--border)',borderRadius:'4px',color:'var(--text-primary)',fontSize:'12px'}}>
+                        {departments.map(d => <option key={d} value={d}>{d === 'ALL' ? 'Todos los departamentos' : d}</option>)}
+                      </select>
+                    </div>
+                    <div style={{marginBottom:'8px'}}>
+                      <label style={{fontSize:'11px',color:'var(--text-muted)',display:'block',marginBottom:'4px'}}>Tipo de territorio</label>
+                      <select value={terrFilter} onChange={e => setTerrFilter(e.target.value)}
+                        style={{width:'100%',padding:'5px 8px',background:'var(--bg-card)',border:'1px solid var(--border)',borderRadius:'4px',color:'var(--text-primary)',fontSize:'12px'}}>
+                        <option value="ALL">Todos los tipos</option>
+                        {TERR_LAYERS.map(t => <option key={t.key} value={t.key}>{t.label} ({totals[t.key]})</option>)}
+                      </select>
+                    </div>
+                    <button onClick={downloadCSV}
+                      style={{width:'100%',padding:'7px',background:'rgba(200,169,110,0.08)',border:'1px solid var(--border)',borderRadius:'4px',color:'var(--accent-gold)',fontSize:'12px',cursor:'pointer',fontFamily:"'DM Mono',monospace",letterSpacing:'0.06em'}}>
+                      &#x2B07; Exportar CSV ({filtered.length})
+                    </button>
+                  </div>
+                  {/* Legend */}
+                  <div className="side-card" style={{marginTop:'10px'}}>
+                    <div className="side-card-title">Tipos de territorio</div>
+                    {TERR_LAYERS.map(t => (
+                      <div key={t.key} style={{display:'flex',alignItems:'center',gap:'8px',fontSize:'12px',marginBottom:'6px',padding:'5px 6px',borderRadius:'3px',background:`${t.color}18`}}>
+                        <span style={{width:'10px',height:'10px',borderRadius:'50%',background:t.dotColor,flexShrink:0,display:'inline-block'}}></span>
+                        <span style={{color:'var(--text-primary)',flex:1}}>{t.label}</span>
+                        <span style={{color:'var(--text-muted)',fontFamily:"'DM Mono',monospace",fontSize:'10px'}}>{totals[t.key]}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Table */}
+                <div style={{flex:1,overflowX:'auto',order:2}}>
+                  <table style={{width:'100%',borderCollapse:'collapse',fontSize:'12px'}}>
+                    <thead>
+                      <tr style={{borderBottom:'1px solid var(--border)'}}>
+                        <th style={{padding:'8px',textAlign:'left',color:'var(--text-muted)',fontWeight:500}}>Municipio</th>
+                        <th style={{padding:'8px',textAlign:'left',color:'var(--text-muted)',fontWeight:500}}>Departamento</th>
+                        {TERR_LAYERS.map(t => (
+                          <th key={t.key} style={{padding:'8px',textAlign:'center',color:t.dotColor,fontWeight:500,fontSize:'10px',maxWidth:'80px'}}>{t.label}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filtered.map((row, i) => {
+                        const hasAny = TERR_LAYERS.some(t => parseInt(row[t.col_tiene]) === 1);
+                        return (
+                          <tr key={i} style={{borderBottom:'1px solid var(--border)',background: hasAny ? 'rgba(123,79,46,0.08)' : 'transparent'}}>
+                            <td style={{padding:'7px 8px',color:'var(--text-primary)',fontWeight: hasAny ? 600 : 400}}>{row.NOM_MPIO}</td>
+                            <td style={{padding:'7px 8px',color:'var(--text-muted)'}}>{row.NOM_DPTO}</td>
+                            {TERR_LAYERS.map(t => (
+                              <td key={t.key} style={{padding:'7px 8px',textAlign:'center'}}>
+                                {parseInt(row[t.col_tiene]) === 1
+                                  ? <span title={row[t.col_nombre]} style={{color:t.dotColor,fontWeight:600}}>✓</span>
+                                  : <span style={{color:'var(--text-muted)',opacity:0.3}}>–</span>}
+                              </td>
+                            ))}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  {filtered.length === 0 && (
+                    <div style={{padding:'24px',textAlign:'center',color:'var(--text-muted)',fontSize:'13px'}}>
+                      Sin municipios para los filtros seleccionados.
+                      {terrData.length === 0 && ' Ejecuta el notebook territorios.ipynb para generar territorios_municipal.csv.'}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── Overview Dashboard (orchestrator) ───────────────────────────────────
+
+    function OverviewDashboard({ allData, amenazasData, alertaHistData, apData, ecoData, incendiosData, terrData, dataFecha }) {
       const [activeSection, setActiveSection] = React.useState(null);
 
       function showSection(name) {
@@ -3630,6 +3801,7 @@
             <DeslizSection           visible={activeSection === 'deslizamientos'}   onBack={goBack} amenazasData={amenazasData} dataFecha={dataFecha} />
             <IncendiosSection        visible={activeSection === 'incendios'}        onBack={goBack} incendiosData={incendiosData} />
             <AreasProtegidasSection  visible={activeSection === 'areas_protegidas'} onBack={goBack} apData={apData} ecoData={ecoData} />
+            <TerritoriosSection      visible={activeSection === 'territorios'}      onBack={goBack} terrData={terrData} />
           </div>
         </div>
       );
@@ -3644,6 +3816,7 @@
       const [apData,         setApData]         = useState([]);
       const [ecoData,        setEcoData]        = useState([]);
       const [incendiosData,  setIncendiosData]  = useState([]);
+      const [terrData,       setTerrData]       = useState([]);
       const [deptFilter,     setDeptFilter]     = useState('ALL');
       const [alertOnly,      setAlertOnly]      = useState(false);
       const [loading,        setLoading]        = useState(true);
@@ -3744,6 +3917,15 @@
         });
       }, []);
 
+      // Load territorios étnicos y campesinos por municipio
+      useEffect(() => {
+        Papa.parse('data/territorios_municipal.csv', {
+          download: true, header: true, skipEmptyLines: true, encoding: 'UTF-8',
+          complete: ({ data }) => setTerrData(data),
+          error: err => console.warn('No se pudo cargar territorios_municipal.csv:', err),
+        });
+      }, []);
+
       // Load ecosistemas estratégicos por municipio
       useEffect(() => {
         Papa.parse('data/ecosistemas_estrategicos_municipal.csv', {
@@ -3779,7 +3961,7 @@
           <LandingHero />
           <div id="dashboard">
             <Header dataFecha={dataFecha} />
-            <OverviewDashboard allData={allData} amenazasData={amenazasData} alertaHistData={alertaHistData} apData={apData} ecoData={ecoData} incendiosData={incendiosData} dataFecha={dataFecha} />
+            <OverviewDashboard allData={allData} amenazasData={amenazasData} alertaHistData={alertaHistData} apData={apData} ecoData={ecoData} incendiosData={incendiosData} terrData={terrData} dataFecha={dataFecha} />
             <footer className="site-footer">
               <div>
                 <div className="footer-brand">GGGI &mdash; Sustainable Finance</div>
