@@ -939,6 +939,22 @@
       return { total, enAlertaSequia, pctSevera, topMpio: top.NOM_MPIO, topFrecuencia: top.frecuencia_reciente };
     }
 
+    // KPIs de la sección Lluvias sobre el universo completo de municipios
+    // (radio 50 km); "en alerta" usa alerta_lluvias histórica (igual que el
+    // mapa y la caja de cartera). La precipitación promedio/máxima solo se
+    // calcula sobre los municipios con dato diario real, para no sesgar el
+    // promedio con ceros de municipios sin estación.
+    function computeKpisLluvias(data) {
+      const total    = data.length;
+      const enAlerta = data.filter(d => d.alerta_lluvias === 'ALTA' || d.alerta_lluvias === 'CRÍTICA').length;
+      const conDato  = data.filter(d => d.tieneDatoDiario);
+      if (!conDato.length) return { total, enAlerta, promedio: '0.00', maximo: 0, maxMpio: '' };
+      const sum      = conDato.reduce((acc, d) => acc + d.precip_acum_mm, 0);
+      const promedio = (sum / conDato.length).toFixed(2);
+      const maxRow   = conDato.reduce((a, b) => (b.precip_acum_mm > a.precip_acum_mm ? b : a));
+      return { total, enAlerta, promedio, maximo: maxRow.precip_acum_mm, maxMpio: maxRow.NOM_MPIO };
+    }
+
     function computeKpis(data) {
       if (!data.length) return { total: 0, enAlerta: 0, enAlertaSequia: 0, promedio: '0.00', maximo: 0, maxMpio: '' };
       const total          = data.length;
@@ -2641,25 +2657,54 @@
 
     // ─── Lluvias Section ──────────────────────────────────────────────────────
 
-    function LluviasSection({ visible, onBack, data, alertaHistData, dataFecha }) {
+    function LluviasSection({ visible, onBack, data, alertaHistData, alertaHistRows, dataFecha }) {
       const [activeTab,  setActiveTab]  = React.useState('Mapa');
       const [deptFilter, setDeptFilter] = React.useState('ALL');
       const [alertOnly,  setAlertOnly]  = React.useState(false);
       const TABS = ['Mapa', 'Datos históricos', 'Metodología'];
 
+      // Universo completo (radio 50 km) enriquecido con el dato diario real
+      // cuando existe, para no perder cobertura de municipios sin estación
+      // propia (antes limitados a los 587 con precipitación "de hoy").
+      const merged = useMemo(() => {
+        const dailyLookup = {};
+        data.forEach(d => { dailyLookup[d.COD_MPIO] = d; });
+        return alertaHistRows.map(h => {
+          const daily = dailyLookup[h.COD_MPIO];
+          return {
+            COD_MPIO:           h.COD_MPIO,
+            NOM_MPIO:           h.NOM_MPIO,
+            NOM_DPTO:           h.NOM_DPTO,
+            alerta_lluvias:     h.alerta_lluvias,
+            alerta_compuesta:   daily ? daily.alerta_compuesta : h.alerta_lluvias,
+            alerta:             daily ? daily.alerta : (ALERTA_NIVEL[h.alerta_lluvias] ?? 0),
+            precip_acum_mm:     daily ? daily.precip_acum_mm   : 0,
+            precip_max_10min:   daily ? daily.precip_max_10min : 0,
+            tieneDatoDiario:    !!daily,
+            frecuencia_extremos: h.frecuencia_extremos,
+            frecuencia_reciente: h.frecuencia_reciente,
+            ratio_reciente:      h.ratio_reciente,
+            tendencia:           h.tendencia,
+            sequia_categoria:    h.sequia_categoria,
+            n_estaciones:        daily ? daily.n_estaciones : h.n_estaciones,
+            fecha:               daily ? daily.fecha : '',
+          };
+        });
+      }, [data, alertaHistRows]);
+
       const departments = useMemo(() => {
-        const set = new Set(data.map(d => d.NOM_DPTO));
+        const set = new Set(merged.map(d => d.NOM_DPTO));
         return ['ALL', ...Array.from(set).sort()];
-      }, [data]);
+      }, [merged]);
 
       const filtered = useMemo(() =>
-        data
+        merged
           .filter(d => deptFilter === 'ALL' || d.NOM_DPTO === deptFilter)
-          .filter(d => !alertOnly || d.alerta >= 2),
-        [data, deptFilter, alertOnly]
+          .filter(d => !alertOnly || d.alerta_lluvias === 'ALTA' || d.alerta_lluvias === 'CRÍTICA'),
+        [merged, deptFilter, alertOnly]
       );
 
-      const kpis = useMemo(() => computeKpis(filtered), [filtered]);
+      const kpis = useMemo(() => computeKpisLluvias(filtered), [filtered]);
 
       return (
         <div className={`ov-content-section${visible ? ' ov-visible' : ''}`}>
@@ -2699,7 +2744,7 @@
                       onDownload={() => downloadCSV(filtered, `lluvias_${dataFecha ?? 'export'}.csv`)}
                       alertLabel="Solo municipios en alerta lluvias"
                     />
-                    <StatsBox filteredCount={filtered.length} total={data.length} />
+                    <StatsBox filteredCount={filtered.length} total={merged.length} />
                     <TableBox data={filtered} />
                     <CarteraBoxSection
                       indicador="lluvias"
@@ -3968,7 +4013,7 @@
             <OverviewSectionCards onSelect={showSection} />
           </div>
           <div className="ov-sections-container">
-            <LluviasSection          visible={activeSection === 'lluvias'}          onBack={goBack} data={allData}       alertaHistData={alertaHistData} dataFecha={dataFecha} />
+            <LluviasSection          visible={activeSection === 'lluvias'}          onBack={goBack} data={allData}       alertaHistData={alertaHistData} alertaHistRows={alertaHistRows} dataFecha={dataFecha} />
             <SequiasSection          visible={activeSection === 'sequias'}          onBack={goBack} data={alertaHistRows} dataFecha={dataFecha} />
             <DeslizSection           visible={activeSection === 'deslizamientos'}   onBack={goBack} amenazasData={amenazasData} dataFecha={dataFecha} />
             <IncendiosSection        visible={activeSection === 'incendios'}        onBack={goBack} incendiosData={incendiosData} />
