@@ -900,6 +900,44 @@
       }).filter(r => !isNaN(r.LATITUD) && !isNaN(r.LONGITUD));
     }
 
+    // Parser para alerta_historica_municipal.csv (radio 50 km) — cobertura
+    // completa de municipios, usada como fuente de "número de municipios"
+    // en la portada y en la sección Sequías.
+    function parseHistRows(raw) {
+      return raw.map(r => {
+        const cod = (r['COD_MPIO'] ?? r['﻿COD_MPIO'] ?? '').toString().trim();
+        return {
+          COD_MPIO:                       cod,
+          NOM_MPIO:                       (r.NOM_MPIO ?? '').trim(),
+          NOM_DPTO:                       (r.NOM_DPTO ?? '').trim(),
+          alerta_lluvias:                 (r.alerta_lluvias ?? 'BAJA').trim(),
+          frecuencia_extremos:            parseFloat(r.frecuencia_extremos) || 0,
+          frecuencia_reciente:            parseFloat(r.frecuencia_reciente) || 0,
+          ratio_reciente:                 parseFloat(r.ratio_reciente)      || 0,
+          tendencia:                      (r.tendencia ?? 'sin_datos').trim(),
+          ratio_anio_corrido:             parseFloat(r.ratio_anio_corrido)  || 0,
+          ratio_ultimos_6m:               parseFloat(r.ratio_ultimos_6m)    || 0,
+          condicion_lluvia_6m:            (r.condicion_lluvia_6m ?? 'sin_datos').trim(),
+          sequia_categoria:               (r.sequia_categoria ?? 'NORMAL').trim(),
+          sequia_nivel:                   parseFloat(r.sequia_nivel)        || 0,
+          n_estaciones:                   parseInt(r.n_estaciones, 10)      || 0,
+          distancia_km_estacion_asignada: parseFloat(r.distancia_km_estacion_asignada) || 0,
+          municipio_afectado:             parseInt(r.municipio_afectado, 10) || 0,
+        };
+      }).filter(r => r.COD_MPIO);
+    }
+
+    // KPIs de la sección Sequías a partir del dataset histórico (sin datos
+    // de precipitación diaria — solo frecuencia/categoría de sequía).
+    function computeKpisSequia(data) {
+      if (!data.length) return { total: 0, enAlertaSequia: 0, pctSevera: '0.0', topMpio: '', topFrecuencia: 0 };
+      const total          = data.length;
+      const enAlertaSequia = data.filter(d => ['SEVERA','EXTREMA'].includes(d.sequia_categoria)).length;
+      const pctSevera      = ((enAlertaSequia / total) * 100).toFixed(1);
+      const top            = data.reduce((a, b) => (b.frecuencia_reciente > a.frecuencia_reciente ? b : a));
+      return { total, enAlertaSequia, pctSevera, topMpio: top.NOM_MPIO, topFrecuencia: top.frecuencia_reciente };
+    }
+
     function computeKpis(data) {
       if (!data.length) return { total: 0, enAlerta: 0, enAlertaSequia: 0, promedio: '0.00', maximo: 0, maxMpio: '' };
       const total          = data.length;
@@ -1186,6 +1224,14 @@
       'BAJA':         '<span style="color:#4fa89b;">✓ BAJA</span>',
     };
 
+    const SEQUIA_BADGE = {
+      'EXTREMA':  '<span style="color:#7b0000;font-weight:700;">⚠ EXTREMA</span>',
+      'SEVERA':   '<span style="color:#e8590c;font-weight:600;">⚠ SEVERA</span>',
+      'MODERADA': '<span style="color:#f0b429;font-weight:600;">MODERADA</span>',
+      'LEVE':     '<span style="color:#c8a96e;">LEVE</span>',
+      'NORMAL':   '<span style="color:#4fa89b;">✓ NORMAL</span>',
+    };
+
     const TENDENCIA_LABEL = {
       'creciente':    '↗ Creciente',
       'decreciente':  '↘ Decreciente',
@@ -1247,8 +1293,9 @@
     // Popup del mapa "Lluvias" cuando se colorea con el GeoJSON histórico
     // (alerta_historica_municipal.geojson, radio máx. 50 km) en vez del
     // dataset diario — no existe precipitación "de hoy" en esta capa.
-    function buildPopupHist(m) {
-      const badge     = ALERTA_BADGE[m.alerta_lluvias] ?? ALERTA_BADGE['BAJA'];
+    function buildPopupHist(m, mode = 'lluvias') {
+      const badge       = ALERTA_BADGE[m.alerta_lluvias] ?? ALERTA_BADGE['BAJA'];
+      const sequiaBadge = SEQUIA_BADGE[m.sequia_categoria] ?? SEQUIA_BADGE['NORMAL'];
       const sinDatos  = m.alerta_lluvias === 'SIN_DATOS';
       const condLabel = { EXCESO: 'Exceso', DEFICIT: 'Déficit', NORMAL: 'Normal', sin_datos: 'Sin datos' }[m.condicion_lluvia_6m] ?? m.condicion_lluvia_6m;
 
@@ -1270,6 +1317,23 @@
       const sinDatosNote = sinDatos
         ? `<p style="color:#8a9ab0;font-size:11px;margin-top:4px;">Sin estación IDEAM dentro de 50&nbsp;km.</p>`
         : `<p style="color:#8a9ab0;font-size:11px;margin-top:4px;">Estación asignada a ${Number(m.distancia_km_estacion_asignada ?? 0).toFixed(1)} km &middot; ${m.n_estaciones} estación(es) en el municipio.</p>`;
+
+      if (mode === 'sequias') {
+        return `
+          <div style="font-family:'Lora',Georgia,serif;font-size:13px;min-width:220px;color:#f5f0e8;">
+            <div style="color:#c8a96e;font-size:14px;font-weight:700;margin-bottom:2px;">${m.NOM_MPIO}</div>
+            <div style="color:#8a9ab0;font-size:12px;margin-bottom:6px;">${m.NOM_DPTO}</div>
+            <hr style="margin:4px 0;border-color:rgba(200,169,110,0.15);">
+            <p style="font-size:12px;font-weight:600;color:#8a9ab0;margin-bottom:2px;">🌵 Alerta histórica — sequía (radio 50 km)</p>
+            <p><b>Categoría:</b> ${sequiaBadge}</p>
+            ${!sinDatos ? `
+            <p><b>Frec. extremos hist.:</b> ${(Number(m.frecuencia_extremos ?? 0) * 100).toFixed(1)}%</p>
+            <p><b>Frec. extremos 2 años:</b> ${(Number(m.frecuencia_reciente ?? 0) * 100).toFixed(1)}%</p>
+            <p><b>Condición últimos 6 meses:</b> ${condLabel}</p>` : ''}
+            ${floodSection}
+            ${sinDatosNote}
+          </div>`;
+      }
 
       return `
         <div style="font-family:'Lora',Georgia,serif;font-size:13px;min-width:220px;color:#f5f0e8;">
@@ -1705,10 +1769,10 @@
       const geoLayerRef = useRef(null);
       const pulseRef    = useRef(null);
       const initialized = useRef(false);
-      // mode='lluvias' usa el GeoJSON histórico (radio 50 km, generado por
-      // datos precipitacion historicos.ipynb); mode='sequias' sigue usando
-      // el GeoJSON diario compartido con el resto de paneles.
-      const isHist = mode === 'lluvias';
+      // mode='lluvias' y mode='sequias' usan el GeoJSON histórico (radio 50 km,
+      // generado por datos precipitacion historicos.ipynb), que ya trae
+      // alerta_lluvias y sequia_categoria embebidos por municipio.
+      const isHist = mode === 'lluvias' || mode === 'sequias';
       const [geoReady, setGeoReady] = useState(!!(isHist ? _municipiosGeoHist : _municipiosGeo));
 
       // ── Init mapa (una sola vez) ─────────────────────────────────────────
@@ -1788,6 +1852,18 @@
 
         function getStyle(feature) {
           if (isHist) {
+            if (mode === 'sequias') {
+              const sequia  = feature.properties.sequia_categoria ?? 'NORMAL';
+              const isAlert = sequia === 'SEVERA' || sequia === 'EXTREMA';
+              return {
+                pane:        'choroPane',
+                fillColor:   SEQUIA_POLY_COLORS[sequia] ?? '#d8d4ce',
+                fillOpacity: sequia === 'NORMAL' ? 0.50 : 0.75,
+                color:       isAlert ? '#a04010' : '#bbb',
+                weight:      isAlert ? 1.5 : 0.4,
+                opacity:     1,
+              };
+            }
             const alerta   = feature.properties.alerta_lluvias ?? 'SIN_DATOS';
             const isAlert  = alerta === 'ALTA' || alerta === 'CRÍTICA';
             return {
@@ -1803,19 +1879,6 @@
           const cod    = String(feature.properties.COD_MPIO ?? '').replace(/\.0$/, '');
           const row    = lookup[cod] ?? feature.properties;
           const alerta = row.alerta_compuesta ?? 'SIN_DATOS';
-          const sequia = row.sequia_categoria ?? 'NORMAL';
-
-          if (mode === 'sequias') {
-            const isAlert = sequia === 'SEVERA' || sequia === 'EXTREMA';
-            return {
-              pane:        'choroPane',
-              fillColor:   SEQUIA_POLY_COLORS[sequia] ?? '#d8d4ce',
-              fillOpacity: sequia === 'NORMAL' ? 0.50 : 0.75,
-              color:       isAlert ? '#a04010' : '#bbb',
-              weight:      isAlert ? 1.5 : 0.4,
-              opacity:     1,
-            };
-          }
 
           const isAlert = alerta === 'ALTA' || alerta === 'CRÍTICA';
           return {
@@ -1832,7 +1895,7 @@
           style: getStyle,
           onEachFeature(feature, lyr) {
             if (isHist) {
-              lyr.bindPopup(buildPopupHist(feature.properties), { maxWidth: 260 });
+              lyr.bindPopup(buildPopupHist(feature.properties, mode), { maxWidth: 260 });
               return;
             }
             const cod = String(feature.properties.COD_MPIO ?? '').replace(/\.0$/, '');
@@ -1853,6 +1916,11 @@
         const alertLayers = [];
         layer.eachLayer(lyr => {
           if (isHist) {
+            if (mode === 'sequias') {
+              const sequia = lyr.feature.properties.sequia_categoria ?? '';
+              if (sequia === 'SEVERA' || sequia === 'EXTREMA') alertLayers.push({ lyr, alerta: '', sequia });
+              return;
+            }
             const alerta = lyr.feature.properties.alerta_lluvias ?? '';
             if (alerta === 'ALTA' || alerta === 'CRÍTICA') alertLayers.push({ lyr, alerta, sequia: '' });
             return;
@@ -2027,7 +2095,7 @@
                   <th>Municipio</th>
                   <th className="hide-sm">Dpto.</th>
                   <th className="center">Categor&iacute;a</th>
-                  <th className="right">mm</th>
+                  <th className="right">Frec. 2a</th>
                 </tr>
               </thead>
               <tbody>
@@ -2038,7 +2106,7 @@
                     <td className="td-center" style={{color: catColor[d.sequia_categoria]??'#adb5bd', fontWeight: d.sequia_categoria!=='NORMAL'?600:400}}>
                       {d.sequia_categoria}
                     </td>
-                    <td className="td-right">{d.precip_acum_mm}</td>
+                    <td className="td-right">{((d.frecuencia_reciente ?? 0) * 100).toFixed(1)}%</td>
                   </tr>
                 ))}
               </tbody>
@@ -2424,10 +2492,10 @@
 
     // ─── Overview KPI Strip ───────────────────────────────────────────────────
 
-    function OverviewKpiStrip({ allData, amenazasData, apData }) {
-      const nMpios      = allData.length;
-      const nLluvias    = allData.filter(d => d.alerta >= 2).length;               // ALTA + CRÍTICA
-      const nSequias    = allData.filter(d => ['SEVERA','EXTREMA'].includes(d.sequia_categoria)).length;
+    function OverviewKpiStrip({ allData, alertaHistRows, amenazasData, apData }) {
+      const nMpios      = alertaHistRows.length;                                   // cobertura completa (radio 50 km)
+      const nLluvias    = allData.filter(d => d.alerta >= 2).length;               // ALTA + CRÍTICA (dato diario)
+      const nSequias    = alertaHistRows.filter(d => ['SEVERA','EXTREMA'].includes(d.sequia_categoria)).length;
       const nDesliz     = Object.values(amenazasData).filter(d => d.alerta_deslizamiento === 'ALTA').length;
       const nAreas      = apData.filter(r => (r.tiene_area_protegida ?? r['﻿tiene_area_protegida'] ?? '0') === '1').length;
       return (
@@ -2691,7 +2759,7 @@
         () => filtered.filter(d => ['SEVERA','EXTREMA'].includes(d.sequia_categoria)).length,
         [filtered]
       );
-      const kpisSeq = useMemo(() => computeKpis(filtered), [filtered]);
+      const kpisSeq = useMemo(() => computeKpisSequia(filtered), [filtered]);
 
       const sequiaAlertaLookup = useMemo(() => {
         const m = {};
@@ -2700,9 +2768,10 @@
       }, [data]);
 
       function downloadSequiasCSV(rows, fecha) {
-        const headers = ['COD_MPIO','NOM_MPIO','NOM_DPTO','sequia_categoria','precip_acum_mm'];
+        const headers = ['COD_MPIO','NOM_MPIO','NOM_DPTO','sequia_categoria','frecuencia_extremos','frecuencia_reciente','condicion_lluvia_6m'];
         const lines = rows.map(r =>
-          [r.COD_MPIO, `"${r.NOM_MPIO}"`, `"${r.NOM_DPTO}"`, r.sequia_categoria, r.precip_acum_mm].join(',')
+          [r.COD_MPIO, `"${r.NOM_MPIO}"`, `"${r.NOM_DPTO}"`, r.sequia_categoria,
+           (r.frecuencia_extremos * 100).toFixed(1), (r.frecuencia_reciente * 100).toFixed(1), r.condicion_lluvia_6m].join(',')
         );
         const csv  = '﻿' + [headers.join(','), ...lines].join('\r\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -2730,8 +2799,8 @@
               <div className="kpi-grid reveal">
                 <KpiCard label="Municipios filtrados"          value={filtered.length}           icon={ICONS.municipios} />
                 <KpiCard label="Sequ&#237;a severa / extrema"  value={enAlertaSequia}            icon={ICONS.sequia}     accent="red" />
-                <KpiCard label="Precipitaci&#243;n promedio"   value={`${kpisSeq.promedio} mm`}  icon={ICONS.precipMedia} accent="green" />
-                <KpiCard label="Precipitaci&#243;n m&#225;xima" value={`${kpisSeq.maximo} mm`}  icon={ICONS.precipMax}  accent="gold" sub={kpisSeq.maxMpio} />
+                <KpiCard label="D&#233;ficit severo/extremo"   value={`${kpisSeq.pctSevera}%`}   icon={ICONS.sequia}     accent="gold" />
+                <KpiCard label="Municipio m&#225;s cr&#237;tico" value={kpisSeq.topMpio || '—'}  icon={ICONS.alerta}     accent="red" sub={`${(kpisSeq.topFrecuencia * 100).toFixed(1)}% frec. reciente`} />
               </div>
               <div className="map-layout">
                 <div className="map-main">
@@ -3859,7 +3928,7 @@
 
     // ─── Overview Dashboard (orchestrator) ───────────────────────────────────
 
-    function OverviewDashboard({ allData, amenazasData, alertaHistData, apData, ecoData, incendiosData, terrData, dataFecha }) {
+    function OverviewDashboard({ allData, amenazasData, alertaHistData, alertaHistRows, apData, ecoData, incendiosData, terrData, dataFecha }) {
       const [activeSection, setActiveSection] = React.useState(null);
 
       function showSection(name) {
@@ -3873,13 +3942,13 @@
 
       return (
         <div>
-          <OverviewKpiStrip allData={allData} amenazasData={amenazasData} apData={apData} />
+          <OverviewKpiStrip allData={allData} alertaHistRows={alertaHistRows} amenazasData={amenazasData} apData={apData} />
           <div style={{display: activeSection ? 'none' : 'block'}}>
             <OverviewSectionCards onSelect={showSection} />
           </div>
           <div className="ov-sections-container">
             <LluviasSection          visible={activeSection === 'lluvias'}          onBack={goBack} data={allData}       alertaHistData={alertaHistData} dataFecha={dataFecha} />
-            <SequiasSection          visible={activeSection === 'sequias'}          onBack={goBack} data={allData}       dataFecha={dataFecha} />
+            <SequiasSection          visible={activeSection === 'sequias'}          onBack={goBack} data={alertaHistRows} dataFecha={dataFecha} />
             <DeslizSection           visible={activeSection === 'deslizamientos'}   onBack={goBack} amenazasData={amenazasData} dataFecha={dataFecha} />
             <IncendiosSection        visible={activeSection === 'incendios'}        onBack={goBack} incendiosData={incendiosData} />
             <AreasProtegidasSection  visible={activeSection === 'areas_protegidas'} onBack={goBack} apData={apData} ecoData={ecoData} />
@@ -3894,6 +3963,7 @@
     function App() {
       const [allData,        setAllData]       = useState([]);
       const [alertaHistData, setAlertaHistData] = useState({});
+      const [alertaHistRows, setAlertaHistRows] = useState([]);
       const [amenazasData,   setAmenazasData]   = useState({});
       const [apData,         setApData]         = useState([]);
       const [ecoData,        setEcoData]        = useState([]);
@@ -3942,11 +4012,10 @@
         Papa.parse('data/alerta_historica_municipal.csv', {
           download: true, header: true, skipEmptyLines: true, encoding: 'UTF-8',
           complete: ({ data }) => {
+            const rows = parseHistRows(data);
+            setAlertaHistRows(rows);
             const map = {};
-            data.forEach(r => {
-              const cod = (r['COD_MPIO'] ?? r['﻿COD_MPIO'] ?? '').toString().trim();
-              if (cod) map[cod] = (r.alerta_lluvias ?? 'BAJA').trim();
-            });
+            rows.forEach(r => { map[r.COD_MPIO] = r.alerta_lluvias; });
             setAlertaHistData(map);
           },
           error: err => console.warn('No se pudo cargar alerta_historica_municipal.csv:', err),
@@ -4043,7 +4112,7 @@
           <LandingHero />
           <div id="dashboard">
             <Header dataFecha={dataFecha} />
-            <OverviewDashboard allData={allData} amenazasData={amenazasData} alertaHistData={alertaHistData} apData={apData} ecoData={ecoData} incendiosData={incendiosData} terrData={terrData} dataFecha={dataFecha} />
+            <OverviewDashboard allData={allData} amenazasData={amenazasData} alertaHistData={alertaHistData} alertaHistRows={alertaHistRows} apData={apData} ecoData={ecoData} incendiosData={incendiosData} terrData={terrData} dataFecha={dataFecha} />
             <footer className="site-footer">
               <div>
                 <div className="footer-brand">GGGI &mdash; Sustainable Finance</div>
