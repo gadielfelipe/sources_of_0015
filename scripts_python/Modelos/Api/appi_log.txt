@@ -308,3 +308,2126 @@ C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:7
   self._get_loop()
 [NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
 [23/04/2026 16:33:04.09] Ejecucion exitosa 
+[24/04/2026 16:32:21.55] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[24/04/2026 16:33:12.72] Ejecucion exitosa 
+[27/04/2026 16:32:21.77] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11488 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[27/04/2026 16:33:45.13] Ejecucion exitosa 
+[28/04/2026 16:32:21.86] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[28/04/2026 16:33:42.43] Ejecucion exitosa 
+[29/04/2026 16:32:21.55] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[29/04/2026 16:33:08.23] Ejecucion exitosa 
+[30/04/2026 16:32:21.37] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+ERROR:tornado.general:Uncaught exception in ZMQStream callback
+Traceback (most recent call last):
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\eventloop\zmqstream.py", line 565, in _log_error
+    f.result()
+    ~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 348, in dispatch_control
+    await self.process_control(msg)
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 385, in process_control
+    self._publish_status_and_flush("idle", "control", self.control_stream)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 661, in _publish_status_and_flush
+    self._publish_status(status, channel, parent)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 651, in _publish_status
+    self.session.send(
+    ~~~~~~~~~~~~~~~~~^
+        self.iopub_socket,
+        ^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        ident=self._topic("status"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_client\session.py", line 867, in send
+    stream.send_multipart(to_send, copy=copy)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 418, in send_multipart
+    return self.io_thread.send_multipart(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 348, in send_multipart
+    self.schedule(lambda: self._really_send(*args, **kwargs))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 341, in schedule
+    f()
+    ~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 348, in <lambda>
+    self.schedule(lambda: self._really_send(*args, **kwargs))
+                          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 359, in _really_send
+    self.socket.send_multipart(msg, *args, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\sugar\socket.py", line 749, in send_multipart
+    self.send(msg, zmq.SNDMORE | flags, copy=copy, track=track)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\sugar\socket.py", line 698, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 1152, in zmq.backend.cython._zmq.Socket.send
+    def send(self, data, flags=0, copy: bint = True, track: bint = False):
+    ^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 1194, in zmq.backend.cython._zmq.Socket.send
+    _check_closed(self)
+    ^^^
+  File "zmq/backend/cython/_zmq.py", line 1339, in zmq.backend.cython._zmq._check_closed
+    raise ZMQError(ENOTSOCK)
+    ^^^
+zmq.error.ZMQError: not a socket
+--- Logging error ---
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[30/04/2026 16:33:23.45] Ejecucion exitosa 
+[04/05/2026 10:11:05.60] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11726 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[04/05/2026 10:13:01.64] Ejecucion exitosa 
+[05/05/2026 16:32:21.34] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+ERROR:tornado.general:Uncaught exception in ZMQStream callback
+Traceback (most recent call last):
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\eventloop\zmqstream.py", line 565, in _log_error
+    f.result()
+    ~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 348, in dispatch_control
+    await self.process_control(msg)
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 385, in process_control
+    self._publish_status_and_flush("idle", "control", self.control_stream)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 661, in _publish_status_and_flush
+    self._publish_status(status, channel, parent)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 651, in _publish_status
+    self.session.send(
+    ~~~~~~~~~~~~~~~~~^
+        self.iopub_socket,
+        ^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        ident=self._topic("status"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_client\session.py", line 867, in send
+    stream.send_multipart(to_send, copy=copy)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 418, in send_multipart
+    return self.io_thread.send_multipart(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 348, in send_multipart
+    self.schedule(lambda: self._really_send(*args, **kwargs))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 341, in schedule
+    f()
+    ~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 348, in <lambda>
+    self.schedule(lambda: self._really_send(*args, **kwargs))
+                          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 359, in _really_send
+    self.socket.send_multipart(msg, *args, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\sugar\socket.py", line 749, in send_multipart
+    self.send(msg, zmq.SNDMORE | flags, copy=copy, track=track)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\sugar\socket.py", line 698, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 1152, in zmq.backend.cython._zmq.Socket.send
+    def send(self, data, flags=0, copy: bint = True, track: bint = False):
+    ^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 1194, in zmq.backend.cython._zmq.Socket.send
+    _check_closed(self)
+    ^^^
+  File "zmq/backend/cython/_zmq.py", line 1339, in zmq.backend.cython._zmq._check_closed
+    raise ZMQError(ENOTSOCK)
+    ^^^
+zmq.error.ZMQError: not a socket
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\eventloop\zmqstream.py", line 565, in _log_error
+    f.result()
+    ~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 348, in dispatch_control
+    await self.process_control(msg)
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 385, in process_control
+    self._publish_status_and_flush("idle", "control", self.control_stream)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 661, in _publish_status_and_flush
+    self._publish_status(status, channel, parent)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 651, in _publish_status
+    self.session.send(
+    ~~~~~~~~~~~~~~~~~^
+        self.iopub_socket,
+        ^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        ident=self._topic("status"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_client\session.py", line 867, in send
+    stream.send_multipart(to_send, copy=copy)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 418, in send_multipart
+    return self.io_thread.send_multipart(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 348, in send_multipart
+    self.schedule(lambda: self._really_send(*args, **kwargs))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 341, in schedule
+    f()
+    ~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 348, in <lambda>
+    self.schedule(lambda: self._really_send(*args, **kwargs))
+                          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 359, in _really_send
+    self.socket.send_multipart(msg, *args, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\sugar\socket.py", line 749, in send_multipart
+    self.send(msg, zmq.SNDMORE | flags, copy=copy, track=track)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\sugar\socket.py", line 698, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 1152, in zmq.backend.cython._zmq.Socket.send
+    def send(self, data, flags=0, copy: bint = True, track: bint = False):
+    ^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 1194, in zmq.backend.cython._zmq.Socket.send
+    _check_closed(self)
+    ^^^
+  File "zmq/backend/cython/_zmq.py", line 1339, in zmq.backend.cython._zmq._check_closed
+    raise ZMQError(ENOTSOCK)
+    ^^^
+zmq.error.ZMQError: not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\logging\__init__.py", line 1154, in emit
+    stream.write(msg + self.terminator)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 760, in write
+    self._schedule_flush()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 656, in _schedule_flush
+    self.pub_thread.schedule(_schedule_in_thread)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 341, in schedule
+    f()
+    ~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 654, in _schedule_in_thread
+    self._io_loop.call_later(self.flush_interval, self._flush)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\tornado\ioloop.py", line 617, in call_later
+    return self.call_at(self.time() + delay, callback, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\tornado\platform\asyncio.py", line 222, in call_at
+    return self.asyncio_loop.call_later(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        max(0, when - self.time()),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self._run_callback,
+        ^^^^^^^^^^^^^^^^^^^
+        functools.partial(callback, *args, **kwargs),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 793, in call_later
+    timer = self.call_at(self.time() + delay, callback, *args,
+                         context=context)
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 806, in call_at
+    self._check_closed()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 550, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+Call stack:
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[05/05/2026 16:33:10.81] Ejecucion exitosa 
+[07/05/2026 10:30:53.45] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11337 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[07/05/2026 10:33:31.79] Ejecucion exitosa 
+[07/05/2026 16:32:21.65] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11178 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[07/05/2026 16:33:31.70] Ejecucion exitosa 
+[08/05/2026 16:32:21.29] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[08/05/2026 16:33:14.75] Ejecucion exitosa 
+[09/05/2026 17:25:01.33] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[09/05/2026 17:30:02.54] Ejecucion exitosa 
+[12/05/2026 16:32:22.26] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Scripts\jupyter-nbconvert.EXE\__main__.py", line 5, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\application.py", line 284, in launch_instance
+    super().launch_instance(argv=argv, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\traitlets\config\application.py", line 1075, in launch_instance
+    app.start()
+    ~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 420, in start
+    self.convert_notebooks()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 597, in convert_notebooks
+    self.convert_single_notebook(notebook_filename)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 563, in convert_single_notebook
+    output, resources = self.export_single_notebook(
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        notebook_filename, resources, input_buffer=input_buffer
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 487, in export_single_notebook
+    output, resources = self.exporter.from_filename(
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        notebook_filename, resources=resources
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 201, in from_filename
+    return self.from_file(f, resources=resources, **kw)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 220, in from_file
+    return self.from_notebook_node(
+           ~~~~~~~~~~~~~~~~~~~~~~~^
+        nbformat.read(file_stream, as_version=4), resources=resources, **kw
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\notebook.py", line 36, in from_notebook_node
+    nb_copy, resources = super().from_notebook_node(nb, resources, **kw)
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 154, in from_notebook_node
+    nb_copy, resources = self._preprocess(nb_copy, resources)
+                         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 353, in _preprocess
+    nbc, resc = preprocessor(nbc, resc)
+                ~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\base.py", line 48, in __call__
+    return self.preprocess(nb, resources)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\execute.py", line 103, in preprocess
+    self.preprocess_cell(cell, resources, index)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\execute.py", line 124, in preprocess_cell
+    cell = self.execute_cell(cell, index, store_history=True)
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\utils\__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbclient\client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbclient\client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+DATASET_ID = "s54a-sgyg"
+client = Socrata("www.datos.gov.co", None)
+
+# Obtener fecha más reciente con ORDER BY en lugar de max() — más confiable
+latest = client.get(DATASET_ID, select="fechaobservacion", order="fechaobservacion DESC", limit=1)
+fecha_max_api = latest[0]["fechaobservacion"][:10]
+print(f"Última fecha disponible en API: {fecha_max_api}")
+
+# Última fecha ya guardada en el histórico
+HIST_PATH_CHECK = r"C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output4\Indicadores\precipitacion diaria\precipitacion_diaria.xlsx"
+import os
+if os.path.exists(HIST_PATH_CHECK):
+    df_check = pd.read_excel(HIST_PATH_CHECK, usecols=["fecha"])
+    fecha_min_descarga = pd.to_datetime(df_check["fecha"]).max().strftime("%Y-%m-%d")
+    print(f"Última fecha en histórico    : {fecha_min_descarga}")
+else:
+    fecha_min_descarga = fecha_max_api  # primera vez
+
+# Fechas pendientes de descargar (entre histórico+1 y API max)
+fechas_pendientes = pd.date_range(
+    start=pd.to_datetime(fecha_min_descarga) + pd.Timedelta(days=1),
+    end=pd.to_datetime(fecha_max_api),
+    freq="D"
+).strftime("%Y-%m-%d").tolist()
+
+if not fechas_pendientes:
+    print("El histórico ya está al día. Nada nuevo que descargar.")
+else:
+    print(f"\nFechas pendientes ({len(fechas_pendientes)}): {fechas_pendientes[0]} → {fechas_pendientes[-1]}")
+------------------
+
+----- stderr -----
+WARNING:root:Requests made without an app_token will be subject to strict throttling limits.
+----- stdout -----
+Última fecha disponible en API: 2026-05-11
+------------------
+
+[31m---------------------------------------------------------------------------[39m
+[31mPermissionError[39m                           Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[2][39m[32m, line 13[39m
+[32m     11[39m [38;5;28;01mimport[39;00m[38;5;250m [39m[34;01mos[39;00m
+[32m     12[39m [38;5;28;01mif[39;00m os.path.exists(HIST_PATH_CHECK):
+[32m---> [39m[32m13[39m     df_check = [43mpd[49m[43m.[49m[43mread_excel[49m[43m([49m[43mHIST_PATH_CHECK[49m[43m,[49m[43m [49m[43musecols[49m[43m=[49m[43m[[49m[33;43m"[39;49m[33;43mfecha[39;49m[33;43m"[39;49m[43m][49m[43m)[49m
+[32m     14[39m     fecha_min_descarga = pd.to_datetime(df_check[[33m"[39m[33mfecha[39m[33m"[39m]).max().strftime([33m"[39m[33m%[39m[33mY-[39m[33m%[39m[33mm-[39m[38;5;132;01m%d[39;00m[33m"[39m)
+[32m     15[39m     [38;5;28mprint[39m([33mf[39m[33m"[39m[33mÚltima fecha en histórico    : [39m[38;5;132;01m{[39;00mfecha_min_descarga[38;5;132;01m}[39;00m[33m"[39m)
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\excel\_base.py:495[39m, in [36mread_excel[39m[34m(io, sheet_name, header, names, index_col, usecols, dtype, engine, converters, true_values, false_values, skiprows, nrows, na_values, keep_default_na, na_filter, verbose, parse_dates, date_parser, date_format, thousands, decimal, comment, skipfooter, storage_options, dtype_backend, engine_kwargs)[39m
+[32m    493[39m [38;5;28;01mif[39;00m [38;5;129;01mnot[39;00m [38;5;28misinstance[39m(io, ExcelFile):
+[32m    494[39m     should_close = [38;5;28;01mTrue[39;00m
+[32m--> [39m[32m495[39m     io = [43mExcelFile[49m[43m([49m
+[32m    496[39m [43m        [49m[43mio[49m[43m,[49m
+[32m    497[39m [43m        [49m[43mstorage_options[49m[43m=[49m[43mstorage_options[49m[43m,[49m
+[32m    498[39m [43m        [49m[43mengine[49m[43m=[49m[43mengine[49m[43m,[49m
+[32m    499[39m [43m        [49m[43mengine_kwargs[49m[43m=[49m[43mengine_kwargs[49m[43m,[49m
+[32m    500[39m [43m    [49m[43m)[49m
+[32m    501[39m [38;5;28;01melif[39;00m engine [38;5;129;01mand[39;00m engine != io.engine:
+[32m    502[39m     [38;5;28;01mraise[39;00m [38;5;167;01mValueError[39;00m(
+[32m    503[39m         [33m"[39m[33mEngine should not be specified when passing [39m[33m"[39m
+[32m    504[39m         [33m"[39m[33man ExcelFile - ExcelFile already has the engine set[39m[33m"[39m
+[32m    505[39m     )
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\excel\_base.py:1550[39m, in [36mExcelFile.__init__[39m[34m(self, path_or_buffer, engine, storage_options, engine_kwargs)[39m
+[32m   1548[39m     ext = [33m"[39m[33mxls[39m[33m"[39m
+[32m   1549[39m [38;5;28;01melse[39;00m:
+[32m-> [39m[32m1550[39m     ext = [43minspect_excel_format[49m[43m([49m
+[32m   1551[39m [43m        [49m[43mcontent_or_path[49m[43m=[49m[43mpath_or_buffer[49m[43m,[49m[43m [49m[43mstorage_options[49m[43m=[49m[43mstorage_options[49m
+[32m   1552[39m [43m    [49m[43m)[49m
+[32m   1553[39m     [38;5;28;01mif[39;00m ext [38;5;129;01mis[39;00m [38;5;28;01mNone[39;00m:
+[32m   1554[39m         [38;5;28;01mraise[39;00m [38;5;167;01mValueError[39;00m(
+[32m   1555[39m             [33m"[39m[33mExcel file format cannot be determined, you must specify [39m[33m"[39m
+[32m   1556[39m             [33m"[39m[33man engine manually.[39m[33m"[39m
+[32m   1557[39m         )
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\excel\_base.py:1402[39m, in [36minspect_excel_format[39m[34m(content_or_path, storage_options)[39m
+[32m   1399[39m [38;5;28;01mif[39;00m [38;5;28misinstance[39m(content_or_path, [38;5;28mbytes[39m):
+[32m   1400[39m     content_or_path = BytesIO(content_or_path)
+[32m-> [39m[32m1402[39m [38;5;28;01mwith[39;00m [43mget_handle[49m[43m([49m
+[32m   1403[39m [43m    [49m[43mcontent_or_path[49m[43m,[49m[43m [49m[33;43m"[39;49m[33;43mrb[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43mstorage_options[49m[43m=[49m[43mstorage_options[49m[43m,[49m[43m [49m[43mis_text[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m
+[32m   1404[39m [43m[49m[43m)[49m [38;5;28;01mas[39;00m handle:
+[32m   1405[39m     stream = handle.handle
+[32m   1406[39m     stream.seek([32m0[39m)
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\common.py:882[39m, in [36mget_handle[39m[34m(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)[39m
+[32m    873[39m         handle = [38;5;28mopen[39m(
+[32m    874[39m             handle,
+[32m    875[39m             ioargs.mode,
+[32m   (...)[39m[32m    878[39m             newline=[33m"[39m[33m"[39m,
+[32m    879[39m         )
+[32m    880[39m     [38;5;28;01melse[39;00m:
+[32m    881[39m         [38;5;66;03m# Binary mode[39;00m
+[32m--> [39m[32m882[39m         handle = [38;5;28;43mopen[39;49m[43m([49m[43mhandle[49m[43m,[49m[43m [49m[43mioargs[49m[43m.[49m[43mmode[49m[43m)[49m
+[32m    883[39m     handles.append(handle)
+[32m    885[39m [38;5;66;03m# Convert BytesIO or file objects passed with an encoding[39;00m
+
+[31mPermissionError[39m: [Errno 13] Permission denied: 'C:\\Users\\Usuario\\OneDrive - Global Green Growth Institute\\Documentos\\2025\\Outputs\\Output4\\Indicadores\\precipitacion diaria\\precipitacion_diaria.xlsx'
+
+[12/05/2026 16:32:56.64] ERROR en la ejecucion 
+[13/05/2026 16:32:21.70] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+^C[14/05/2026 16:32:22.75] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11790 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[14/05/2026 16:34:22.74] Ejecucion exitosa 
+[19/05/2026 17:02:21.37] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Scripts\jupyter-nbconvert.EXE\__main__.py", line 5, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\application.py", line 284, in launch_instance
+    super().launch_instance(argv=argv, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\traitlets\config\application.py", line 1075, in launch_instance
+    app.start()
+    ~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 420, in start
+    self.convert_notebooks()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 597, in convert_notebooks
+    self.convert_single_notebook(notebook_filename)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 563, in convert_single_notebook
+    output, resources = self.export_single_notebook(
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        notebook_filename, resources, input_buffer=input_buffer
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 487, in export_single_notebook
+    output, resources = self.exporter.from_filename(
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        notebook_filename, resources=resources
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 201, in from_filename
+    return self.from_file(f, resources=resources, **kw)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 220, in from_file
+    return self.from_notebook_node(
+           ~~~~~~~~~~~~~~~~~~~~~~~^
+        nbformat.read(file_stream, as_version=4), resources=resources, **kw
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\notebook.py", line 36, in from_notebook_node
+    nb_copy, resources = super().from_notebook_node(nb, resources, **kw)
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 154, in from_notebook_node
+    nb_copy, resources = self._preprocess(nb_copy, resources)
+                         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 353, in _preprocess
+    nbc, resc = preprocessor(nbc, resc)
+                ~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\base.py", line 48, in __call__
+    return self.preprocess(nb, resources)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\execute.py", line 103, in preprocess
+    self.preprocess_cell(cell, resources, index)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\execute.py", line 124, in preprocess_cell
+    cell = self.execute_cell(cell, index, store_history=True)
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\utils\__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbclient\client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbclient\client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+all_dias = []
+
+for fecha_mapa in fechas_pendientes if fechas_pendientes else [fecha_max_api]:
+    print(f"Descargando {fecha_mapa} ...", end=" ")
+    where = (
+        f"fechaobservacion >= '{fecha_mapa}T00:00:00' "
+        f"AND fechaobservacion <= '{fecha_mapa}T23:59:59'"
+    )
+    records, offset = [], 0
+    while True:
+        batch = client.get(DATASET_ID, where=where, limit=100_000, offset=offset)
+        if not batch:
+            break
+        records.extend(batch)
+        offset += 100_000
+
+    if not records:
+        print("sin datos.")
+        continue
+
+    df_api = pd.DataFrame.from_records(records)
+    for col in ("valorobservado", "latitud", "longitud"):
+        df_api[col] = pd.to_numeric(df_api[col], errors="coerce")
+    df_api = df_api.dropna(subset=["latitud", "longitud", "valorobservado"])
+    df_api = df_api[df_api["valorobservado"] >= 0]
+
+    STATION_COLS_API = [
+        "codigoestacion", "nombreestacion", "departamento",
+        "municipio", "zonahidrografica", "latitud", "longitud",
+    ]
+    df_dia = (
+        df_api.groupby(STATION_COLS_API, as_index=False)
+        .agg(
+            precip_acum_diaria = ("valorobservado", "sum"),
+            precip_max_10min   = ("valorobservado", "max"),
+            precip_min_10min   = ("valorobservado", "min"),
+            precip_media_10min = ("valorobservado", "mean"),
+            n_lecturas         = ("valorobservado", "count"),
+        )
+    )
+    df_dia["fecha"] = pd.to_datetime(fecha_mapa)
+    all_dias.append(df_dia)
+    print(f"{len(df_dia):,} estaciones.")
+
+client.close()
+
+if all_dias:
+    df_nuevo_total = pd.concat(all_dias, ignore_index=True)
+    print(f"\nTotal registros nuevos: {len(df_nuevo_total):,} ({len(all_dias)} día(s))")
+else:
+    df_nuevo_total = pd.DataFrame()
+    print("No hay datos nuevos.")
+------------------
+
+----- stdout -----
+Descargando 2026-05-14 ...
+----- stdout -----
+509 estaciones.
+Descargando 2026-05-15 ...
+----- stdout -----
+510 estaciones.
+Descargando 2026-05-16 ...
+------------------
+
+[31m---------------------------------------------------------------------------[39m
+[31mConnectionResetError[39m                      Traceback (most recent call last)
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\response.py:903[39m, in [36mHTTPResponse._error_catcher[39m[34m(self)[39m
+[32m    902[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m903[39m     [38;5;28;01myield[39;00m
+[32m    905[39m [38;5;28;01mexcept[39;00m SocketTimeout [38;5;28;01mas[39;00m e:
+[32m    906[39m     [38;5;66;03m# FIXME: Ideally we'd like to include the url in the ReadTimeoutError but[39;00m
+[32m    907[39m     [38;5;66;03m# there is yet no clean way to get at it from this context.[39;00m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\response.py:1421[39m, in [36mHTTPResponse.read_chunked[39m[34m(self, amt, decode_content)[39m
+[32m   1420[39m         [38;5;28;01mbreak[39;00m
+[32m-> [39m[32m1421[39m     chunk = [38;5;28;43mself[39;49m[43m.[49m[43m_handle_chunk[49m[43m([49m[43mamt[49m[43m)[49m
+[32m   1422[39m decoded = [38;5;28mself[39m._decode(
+[32m   1423[39m     chunk,
+[32m   1424[39m     decode_content=decode_content,
+[32m   1425[39m     flush_decoder=[38;5;28;01mFalse[39;00m,
+[32m   1426[39m     max_length=amt,
+[32m   1427[39m )
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\response.py:1363[39m, in [36mHTTPResponse._handle_chunk[39m[34m(self, amt)[39m
+[32m   1362[39m [38;5;28;01melse[39;00m:  [38;5;66;03m# amt > self.chunk_left[39;00m
+[32m-> [39m[32m1363[39m     returned_chunk = [38;5;28;43mself[39;49m[43m.[49m[43m_fp[49m[43m.[49m[43m_safe_read[49m[43m([49m[38;5;28;43mself[39;49m[43m.[49m[43mchunk_left[49m[43m)[49m  [38;5;66;03m# type: ignore[union-attr][39;00m
+[32m   1364[39m     [38;5;28mself[39m._fp._safe_read([32m2[39m)  [38;5;66;03m# type: ignore[union-attr] # Toss the CRLF at the end of the chunk.[39;00m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\http\client.py:648[39m, in [36mHTTPResponse._safe_read[39m[34m(self, amt)[39m
+[32m    647[39m cursize = [38;5;28mmin[39m(amt, _MIN_READ_BUF_SIZE)
+[32m--> [39m[32m648[39m data = [38;5;28;43mself[39;49m[43m.[49m[43mfp[49m[43m.[49m[43mread[49m[43m([49m[43mcursize[49m[43m)[49m
+[32m    649[39m [38;5;28;01mif[39;00m [38;5;28mlen[39m(data) >= amt:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\socket.py:725[39m, in [36mSocketIO.readinto[39m[34m(self, b)[39m
+[32m    724[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m725[39m     [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[43m.[49m[43m_sock[49m[43m.[49m[43mrecv_into[49m[43m([49m[43mb[49m[43m)[49m
+[32m    726[39m [38;5;28;01mexcept[39;00m timeout:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\ssl.py:1304[39m, in [36mSSLSocket.recv_into[39m[34m(self, buffer, nbytes, flags)[39m
+[32m   1301[39m         [38;5;28;01mraise[39;00m [38;5;167;01mValueError[39;00m(
+[32m   1302[39m           [33m"[39m[33mnon-zero flags not allowed in calls to recv_into() on [39m[38;5;132;01m%s[39;00m[33m"[39m %
+[32m   1303[39m           [38;5;28mself[39m.[34m__class__[39m)
+[32m-> [39m[32m1304[39m     [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[43m.[49m[43mread[49m[43m([49m[43mnbytes[49m[43m,[49m[43m [49m[43mbuffer[49m[43m)[49m
+[32m   1305[39m [38;5;28;01melse[39;00m:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\ssl.py:1138[39m, in [36mSSLSocket.read[39m[34m(self, len, buffer)[39m
+[32m   1137[39m [38;5;28;01mif[39;00m buffer [38;5;129;01mis[39;00m [38;5;129;01mnot[39;00m [38;5;28;01mNone[39;00m:
+[32m-> [39m[32m1138[39m     [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[43m.[49m[43m_sslobj[49m[43m.[49m[43mread[49m[43m([49m[38;5;28;43mlen[39;49m[43m,[49m[43m [49m[43mbuffer[49m[43m)[49m
+[32m   1139[39m [38;5;28;01melse[39;00m:
+
+[31mConnectionResetError[39m: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+
+The above exception was the direct cause of the following exception:
+
+[31mProtocolError[39m                             Traceback (most recent call last)
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\models.py:820[39m, in [36mResponse.iter_content.<locals>.generate[39m[34m()[39m
+[32m    819[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m820[39m     [38;5;28;01myield from[39;00m [38;5;28mself[39m.raw.stream(chunk_size, decode_content=[38;5;28;01mTrue[39;00m)
+[32m    821[39m [38;5;28;01mexcept[39;00m ProtocolError [38;5;28;01mas[39;00m e:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\response.py:1250[39m, in [36mHTTPResponse.stream[39m[34m(self, amt, decode_content)[39m
+[32m   1249[39m [38;5;28;01mif[39;00m [38;5;28mself[39m.chunked [38;5;129;01mand[39;00m [38;5;28mself[39m.supports_chunked_reads():
+[32m-> [39m[32m1250[39m     [38;5;28;01myield from[39;00m [38;5;28mself[39m.read_chunked(amt, decode_content=decode_content)
+[32m   1251[39m [38;5;28;01melse[39;00m:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\response.py:1397[39m, in [36mHTTPResponse.read_chunked[39m[34m(self, amt, decode_content)[39m
+[32m   1392[39m     [38;5;28;01mraise[39;00m BodyNotHttplibCompatible(
+[32m   1393[39m         [33m"[39m[33mBody should be http.client.HTTPResponse like. [39m[33m"[39m
+[32m   1394[39m         [33m"[39m[33mIt should have have an fp attribute which returns raw chunks.[39m[33m"[39m
+[32m   1395[39m     )
+[32m-> [39m[32m1397[39m [38;5;28;01mwith[39;00m [38;5;28mself[39m._error_catcher():
+[32m   1398[39m     [38;5;66;03m# Don't bother reading the body of a HEAD request.[39;00m
+[32m   1399[39m     [38;5;28;01mif[39;00m [38;5;28mself[39m._original_response [38;5;129;01mand[39;00m is_response_to_head([38;5;28mself[39m._original_response):
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\contextlib.py:162[39m, in [36m_GeneratorContextManager.__exit__[39m[34m(self, typ, value, traceback)[39m
+[32m    161[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m162[39m     [38;5;28;43mself[39;49m[43m.[49m[43mgen[49m[43m.[49m[43mthrow[49m[43m([49m[43mvalue[49m[43m)[49m
+[32m    163[39m [38;5;28;01mexcept[39;00m [38;5;167;01mStopIteration[39;00m [38;5;28;01mas[39;00m exc:
+[32m    164[39m     [38;5;66;03m# Suppress StopIteration *unless* it's the same exception that[39;00m
+[32m    165[39m     [38;5;66;03m# was passed to throw().  This prevents a StopIteration[39;00m
+[32m    166[39m     [38;5;66;03m# raised inside the "with" statement from being suppressed.[39;00m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\response.py:930[39m, in [36mHTTPResponse._error_catcher[39m[34m(self)[39m
+[32m    929[39m [38;5;28;01mexcept[39;00m (HTTPException, [38;5;167;01mOSError[39;00m) [38;5;28;01mas[39;00m e:
+[32m--> [39m[32m930[39m     [38;5;28;01mraise[39;00m ProtocolError([33mf[39m[33m"[39m[33mConnection broken: [39m[38;5;132;01m{[39;00me[38;5;132;01m!r}[39;00m[33m"[39m, e) [38;5;28;01mfrom[39;00m[38;5;250m [39m[34;01me[39;00m
+[32m    932[39m [38;5;66;03m# If no exception is thrown, we should avoid cleaning up[39;00m
+[32m    933[39m [38;5;66;03m# unnecessarily.[39;00m
+
+[31mProtocolError[39m: ("Connection broken: ConnectionResetError(10054, 'Se ha forzado la interrupción de una conexión existente por el host remoto', None, 10054, None)", ConnectionResetError(10054, 'Se ha forzado la interrupción de una conexión existente por el host remoto', None, 10054, None))
+
+During handling of the above exception, another exception occurred:
+
+[31mChunkedEncodingError[39m                      Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[3][39m[32m, line 11[39m
+[32m      9[39m records, offset = [], [32m0[39m
+[32m     10[39m [38;5;28;01mwhile[39;00m [38;5;28;01mTrue[39;00m:
+[32m---> [39m[32m11[39m     batch = [43mclient[49m[43m.[49m[43mget[49m[43m([49m[43mDATASET_ID[49m[43m,[49m[43m [49m[43mwhere[49m[43m=[49m[43mwhere[49m[43m,[49m[43m [49m[43mlimit[49m[43m=[49m[32;43m100_000[39;49m[43m,[49m[43m [49m[43moffset[49m[43m=[49m[43moffset[49m[43m)[49m
+[32m     12[39m     [38;5;28;01mif[39;00m [38;5;129;01mnot[39;00m batch:
+[32m     13[39m         [38;5;28;01mbreak[39;00m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\sodapy\socrata.py:412[39m, in [36mSocrata.get[39m[34m(self, dataset_identifier, content_type, **kwargs)[39m
+[32m    409[39m params.update(kwargs)
+[32m    410[39m params = utils.clear_empty_values(params)
+[32m--> [39m[32m412[39m response = [38;5;28;43mself[39;49m[43m.[49m[43m_perform_request[49m[43m([49m
+[32m    413[39m [43m    [49m[33;43m"[39;49m[33;43mget[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43mresource[49m[43m,[49m[43m [49m[43mheaders[49m[43m=[49m[43mheaders[49m[43m,[49m[43m [49m[43mparams[49m[43m=[49m[43mparams[49m
+[32m    414[39m [43m[49m[43m)[49m
+[32m    415[39m [38;5;28;01mreturn[39;00m response
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\sodapy\socrata.py:551[39m, in [36mSocrata._perform_request[39m[34m(self, request_type, resource, **kwargs)[39m
+[32m    548[39m [38;5;66;03m# set a timeout, just to be safe[39;00m
+[32m    549[39m kwargs[[33m"[39m[33mtimeout[39m[33m"[39m] = [38;5;28mself[39m.timeout
+[32m--> [39m[32m551[39m response = [38;5;28;43mgetattr[39;49m[43m([49m[38;5;28;43mself[39;49m[43m.[49m[43msession[49m[43m,[49m[43m [49m[43mrequest_type[49m[43m)[49m[43m([49m[43muri[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43mkwargs[49m[43m)[49m
+[32m    553[39m [38;5;66;03m# handle errors[39;00m
+[32m    554[39m [38;5;28;01mif[39;00m response.status_code [38;5;129;01mnot[39;00m [38;5;129;01min[39;00m ([32m200[39m, [32m202[39m):
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\sessions.py:602[39m, in [36mSession.get[39m[34m(self, url, **kwargs)[39m
+[32m    594[39m [38;5;250m[39m[33mr[39m[33;03m"""Sends a GET request. Returns :class:`Response` object.[39;00m
+[32m    595[39m 
+[32m    596[39m [33;03m:param url: URL for the new :class:`Request` object.[39;00m
+[32m    597[39m [33;03m:param \*\*kwargs: Optional arguments that ``request`` takes.[39;00m
+[32m    598[39m [33;03m:rtype: requests.Response[39;00m
+[32m    599[39m [33;03m"""[39;00m
+[32m    601[39m kwargs.setdefault([33m"[39m[33mallow_redirects[39m[33m"[39m, [38;5;28;01mTrue[39;00m)
+[32m--> [39m[32m602[39m [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[43m.[49m[43mrequest[49m[43m([49m[33;43m"[39;49m[33;43mGET[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43murl[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43mkwargs[49m[43m)[49m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\sessions.py:589[39m, in [36mSession.request[39m[34m(self, method, url, params, data, headers, cookies, files, auth, timeout, allow_redirects, proxies, hooks, stream, verify, cert, json)[39m
+[32m    584[39m send_kwargs = {
+[32m    585[39m     [33m"[39m[33mtimeout[39m[33m"[39m: timeout,
+[32m    586[39m     [33m"[39m[33mallow_redirects[39m[33m"[39m: allow_redirects,
+[32m    587[39m }
+[32m    588[39m send_kwargs.update(settings)
+[32m--> [39m[32m589[39m resp = [38;5;28;43mself[39;49m[43m.[49m[43msend[49m[43m([49m[43mprep[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43msend_kwargs[49m[43m)[49m
+[32m    591[39m [38;5;28;01mreturn[39;00m resp
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\sessions.py:746[39m, in [36mSession.send[39m[34m(self, request, **kwargs)[39m
+[32m    743[39m         [38;5;28;01mpass[39;00m
+[32m    745[39m [38;5;28;01mif[39;00m [38;5;129;01mnot[39;00m stream:
+[32m--> [39m[32m746[39m     [43mr[49m[43m.[49m[43mcontent[49m
+[32m    748[39m [38;5;28;01mreturn[39;00m r
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\models.py:902[39m, in [36mResponse.content[39m[34m(self)[39m
+[32m    900[39m         [38;5;28mself[39m._content = [38;5;28;01mNone[39;00m
+[32m    901[39m     [38;5;28;01melse[39;00m:
+[32m--> [39m[32m902[39m         [38;5;28mself[39m._content = [33;43mb[39;49m[33;43m"[39;49m[33;43m"[39;49m[43m.[49m[43mjoin[49m[43m([49m[38;5;28;43mself[39;49m[43m.[49m[43miter_content[49m[43m([49m[43mCONTENT_CHUNK_SIZE[49m[43m)[49m[43m)[49m [38;5;129;01mor[39;00m [33mb[39m[33m"[39m[33m"[39m
+[32m    904[39m [38;5;28mself[39m._content_consumed = [38;5;28;01mTrue[39;00m
+[32m    905[39m [38;5;66;03m# don't need to release the connection; that's been handled by urllib3[39;00m
+[32m    906[39m [38;5;66;03m# since we exhausted the data.[39;00m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\models.py:822[39m, in [36mResponse.iter_content.<locals>.generate[39m[34m()[39m
+[32m    820[39m     [38;5;28;01myield from[39;00m [38;5;28mself[39m.raw.stream(chunk_size, decode_content=[38;5;28;01mTrue[39;00m)
+[32m    821[39m [38;5;28;01mexcept[39;00m ProtocolError [38;5;28;01mas[39;00m e:
+[32m--> [39m[32m822[39m     [38;5;28;01mraise[39;00m ChunkedEncodingError(e)
+[32m    823[39m [38;5;28;01mexcept[39;00m DecodeError [38;5;28;01mas[39;00m e:
+[32m    824[39m     [38;5;28;01mraise[39;00m ContentDecodingError(e)
+
+[31mChunkedEncodingError[39m: ("Connection broken: ConnectionResetError(10054, 'Se ha forzado la interrupción de una conexión existente por el host remoto', None, 10054, None)", ConnectionResetError(10054, 'Se ha forzado la interrupción de una conexión existente por el host remoto', None, 10054, None))
+
+[19/05/2026 17:03:46.01] ERROR en la ejecucion 
+[21/05/2026  8:59:20.02] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11333 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[21/05/2026  9:01:41.21] Ejecucion exitosa 
+[21/05/2026 16:32:21.38] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11178 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[21/05/2026 16:33:05.21] Ejecucion exitosa 
+[22/05/2026 17:01:15.00] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[22/05/2026 17:02:37.54] Ejecucion exitosa 
+[25/05/2026 15:21:24.13] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11488 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[25/05/2026 15:22:54.63] Ejecucion exitosa 
+[25/05/2026 16:32:20.91] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11178 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[25/05/2026 16:33:14.36] Ejecucion exitosa 
+[26/05/2026 16:51:51.78] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[26/05/2026 16:52:44.42] Ejecucion exitosa 
+[27/05/2026 16:32:21.31] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Scripts\jupyter-nbconvert.EXE\__main__.py", line 5, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\application.py", line 284, in launch_instance
+    super().launch_instance(argv=argv, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\traitlets\config\application.py", line 1075, in launch_instance
+    app.start()
+    ~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 420, in start
+    self.convert_notebooks()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 597, in convert_notebooks
+    self.convert_single_notebook(notebook_filename)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 563, in convert_single_notebook
+    output, resources = self.export_single_notebook(
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        notebook_filename, resources, input_buffer=input_buffer
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 487, in export_single_notebook
+    output, resources = self.exporter.from_filename(
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        notebook_filename, resources=resources
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 201, in from_filename
+    return self.from_file(f, resources=resources, **kw)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 220, in from_file
+    return self.from_notebook_node(
+           ~~~~~~~~~~~~~~~~~~~~~~~^
+        nbformat.read(file_stream, as_version=4), resources=resources, **kw
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\notebook.py", line 36, in from_notebook_node
+    nb_copy, resources = super().from_notebook_node(nb, resources, **kw)
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 154, in from_notebook_node
+    nb_copy, resources = self._preprocess(nb_copy, resources)
+                         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 353, in _preprocess
+    nbc, resc = preprocessor(nbc, resc)
+                ~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\base.py", line 48, in __call__
+    return self.preprocess(nb, resources)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\execute.py", line 103, in preprocess
+    self.preprocess_cell(cell, resources, index)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\execute.py", line 124, in preprocess_cell
+    cell = self.execute_cell(cell, index, store_history=True)
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\utils\__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbclient\client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbclient\client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+DATASET_ID = "s54a-sgyg"
+client = Socrata("www.datos.gov.co", None)
+
+# Obtener fecha más reciente con ORDER BY en lugar de max() — más confiable
+latest = client.get(DATASET_ID, select="fechaobservacion", order="fechaobservacion DESC", limit=1)
+fecha_max_api = latest[0]["fechaobservacion"][:10]
+print(f"Última fecha disponible en API: {fecha_max_api}")
+
+# Última fecha ya guardada en el histórico
+HIST_PATH_CHECK = r"C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output4\Indicadores\precipitacion diaria\precipitacion_diaria.xlsx"
+import os
+if os.path.exists(HIST_PATH_CHECK):
+    df_check = pd.read_excel(HIST_PATH_CHECK, usecols=["fecha"])
+    fecha_min_descarga = pd.to_datetime(df_check["fecha"]).max().strftime("%Y-%m-%d")
+    print(f"Última fecha en histórico    : {fecha_min_descarga}")
+else:
+    fecha_min_descarga = fecha_max_api  # primera vez
+
+# Fechas pendientes de descargar (entre histórico+1 y API max)
+fechas_pendientes = pd.date_range(
+    start=pd.to_datetime(fecha_min_descarga) + pd.Timedelta(days=1),
+    end=pd.to_datetime(fecha_max_api),
+    freq="D"
+).strftime("%Y-%m-%d").tolist()
+
+if not fechas_pendientes:
+    print("El histórico ya está al día. Nada nuevo que descargar.")
+else:
+    print(f"\nFechas pendientes ({len(fechas_pendientes)}): {fechas_pendientes[0]} → {fechas_pendientes[-1]}")
+------------------
+
+----- stderr -----
+WARNING:root:Requests made without an app_token will be subject to strict throttling limits.
+------------------
+
+[31m---------------------------------------------------------------------------[39m
+[31mTimeoutError[39m                              Traceback (most recent call last)
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:534[39m, in [36mHTTPConnectionPool._make_request[39m[34m(self, conn, method, url, body, headers, retries, timeout, chunked, response_conn, preload_content, decode_content, enforce_content_length)[39m
+[32m    533[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m534[39m     response = [43mconn[49m[43m.[49m[43mgetresponse[49m[43m([49m[43m)[49m
+[32m    535[39m [38;5;28;01mexcept[39;00m (BaseSSLError, [38;5;167;01mOSError[39;00m) [38;5;28;01mas[39;00m e:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connection.py:571[39m, in [36mHTTPConnection.getresponse[39m[34m(self)[39m
+[32m    570[39m [38;5;66;03m# Get the response from http.client.HTTPConnection[39;00m
+[32m--> [39m[32m571[39m httplib_response = [38;5;28;43msuper[39;49m[43m([49m[43m)[49m[43m.[49m[43mgetresponse[49m[43m([49m[43m)[49m
+[32m    573[39m [38;5;28;01mtry[39;00m:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\http\client.py:1450[39m, in [36mHTTPConnection.getresponse[39m[34m(self)[39m
+[32m   1449[39m [38;5;28;01mtry[39;00m:
+[32m-> [39m[32m1450[39m     [43mresponse[49m[43m.[49m[43mbegin[49m[43m([49m[43m)[49m
+[32m   1451[39m [38;5;28;01mexcept[39;00m [38;5;167;01mConnectionError[39;00m:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\http\client.py:336[39m, in [36mHTTPResponse.begin[39m[34m(self)[39m
+[32m    335[39m [38;5;28;01mwhile[39;00m [38;5;28;01mTrue[39;00m:
+[32m--> [39m[32m336[39m     version, status, reason = [38;5;28;43mself[39;49m[43m.[49m[43m_read_status[49m[43m([49m[43m)[49m
+[32m    337[39m     [38;5;28;01mif[39;00m status != CONTINUE:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\http\client.py:297[39m, in [36mHTTPResponse._read_status[39m[34m(self)[39m
+[32m    296[39m [38;5;28;01mdef[39;00m[38;5;250m [39m[34m_read_status[39m([38;5;28mself[39m):
+[32m--> [39m[32m297[39m     line = [38;5;28mstr[39m([38;5;28;43mself[39;49m[43m.[49m[43mfp[49m[43m.[49m[43mreadline[49m[43m([49m[43m_MAXLINE[49m[43m [49m[43m+[49m[43m [49m[32;43m1[39;49m[43m)[49m, [33m"[39m[33miso-8859-1[39m[33m"[39m)
+[32m    298[39m     [38;5;28;01mif[39;00m [38;5;28mlen[39m(line) > _MAXLINE:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\socket.py:725[39m, in [36mSocketIO.readinto[39m[34m(self, b)[39m
+[32m    724[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m725[39m     [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[43m.[49m[43m_sock[49m[43m.[49m[43mrecv_into[49m[43m([49m[43mb[49m[43m)[49m
+[32m    726[39m [38;5;28;01mexcept[39;00m timeout:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\ssl.py:1304[39m, in [36mSSLSocket.recv_into[39m[34m(self, buffer, nbytes, flags)[39m
+[32m   1301[39m         [38;5;28;01mraise[39;00m [38;5;167;01mValueError[39;00m(
+[32m   1302[39m           [33m"[39m[33mnon-zero flags not allowed in calls to recv_into() on [39m[38;5;132;01m%s[39;00m[33m"[39m %
+[32m   1303[39m           [38;5;28mself[39m.[34m__class__[39m)
+[32m-> [39m[32m1304[39m     [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[43m.[49m[43mread[49m[43m([49m[43mnbytes[49m[43m,[49m[43m [49m[43mbuffer[49m[43m)[49m
+[32m   1305[39m [38;5;28;01melse[39;00m:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\ssl.py:1138[39m, in [36mSSLSocket.read[39m[34m(self, len, buffer)[39m
+[32m   1137[39m [38;5;28;01mif[39;00m buffer [38;5;129;01mis[39;00m [38;5;129;01mnot[39;00m [38;5;28;01mNone[39;00m:
+[32m-> [39m[32m1138[39m     [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[43m.[49m[43m_sslobj[49m[43m.[49m[43mread[49m[43m([49m[38;5;28;43mlen[39;49m[43m,[49m[43m [49m[43mbuffer[49m[43m)[49m
+[32m   1139[39m [38;5;28;01melse[39;00m:
+
+[31mTimeoutError[39m: The read operation timed out
+
+The above exception was the direct cause of the following exception:
+
+[31mReadTimeoutError[39m                          Traceback (most recent call last)
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\adapters.py:644[39m, in [36mHTTPAdapter.send[39m[34m(self, request, stream, timeout, verify, cert, proxies)[39m
+[32m    643[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m644[39m     resp = [43mconn[49m[43m.[49m[43murlopen[49m[43m([49m
+[32m    645[39m [43m        [49m[43mmethod[49m[43m=[49m[43mrequest[49m[43m.[49m[43mmethod[49m[43m,[49m
+[32m    646[39m [43m        [49m[43murl[49m[43m=[49m[43murl[49m[43m,[49m
+[32m    647[39m [43m        [49m[43mbody[49m[43m=[49m[43mrequest[49m[43m.[49m[43mbody[49m[43m,[49m
+[32m    648[39m [43m        [49m[43mheaders[49m[43m=[49m[43mrequest[49m[43m.[49m[43mheaders[49m[43m,[49m
+[32m    649[39m [43m        [49m[43mredirect[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m[43m,[49m
+[32m    650[39m [43m        [49m[43massert_same_host[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m[43m,[49m
+[32m    651[39m [43m        [49m[43mpreload_content[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m[43m,[49m
+[32m    652[39m [43m        [49m[43mdecode_content[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m[43m,[49m
+[32m    653[39m [43m        [49m[43mretries[49m[43m=[49m[38;5;28;43mself[39;49m[43m.[49m[43mmax_retries[49m[43m,[49m
+[32m    654[39m [43m        [49m[43mtimeout[49m[43m=[49m[43mtimeout[49m[43m,[49m
+[32m    655[39m [43m        [49m[43mchunked[49m[43m=[49m[43mchunked[49m[43m,[49m
+[32m    656[39m [43m    [49m[43m)[49m
+[32m    658[39m [38;5;28;01mexcept[39;00m (ProtocolError, [38;5;167;01mOSError[39;00m) [38;5;28;01mas[39;00m err:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:841[39m, in [36mHTTPConnectionPool.urlopen[39m[34m(self, method, url, body, headers, retries, redirect, assert_same_host, timeout, pool_timeout, release_conn, chunked, body_pos, preload_content, decode_content, **response_kw)[39m
+[32m    839[39m     new_e = ProtocolError([33m"[39m[33mConnection aborted.[39m[33m"[39m, new_e)
+[32m--> [39m[32m841[39m retries = [43mretries[49m[43m.[49m[43mincrement[49m[43m([49m
+[32m    842[39m [43m    [49m[43mmethod[49m[43m,[49m[43m [49m[43murl[49m[43m,[49m[43m [49m[43merror[49m[43m=[49m[43mnew_e[49m[43m,[49m[43m [49m[43m_pool[49m[43m=[49m[38;5;28;43mself[39;49m[43m,[49m[43m [49m[43m_stacktrace[49m[43m=[49m[43msys[49m[43m.[49m[43mexc_info[49m[43m([49m[43m)[49m[43m[[49m[32;43m2[39;49m[43m][49m
+[32m    843[39m [43m[49m[43m)[49m
+[32m    844[39m retries.sleep()
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\util\retry.py:490[39m, in [36mRetry.increment[39m[34m(self, method, url, response, error, _pool, _stacktrace)[39m
+[32m    489[39m [38;5;28;01mif[39;00m read [38;5;129;01mis[39;00m [38;5;28;01mFalse[39;00m [38;5;129;01mor[39;00m method [38;5;129;01mis[39;00m [38;5;28;01mNone[39;00m [38;5;129;01mor[39;00m [38;5;129;01mnot[39;00m [38;5;28mself[39m._is_method_retryable(method):
+[32m--> [39m[32m490[39m     [38;5;28;01mraise[39;00m [43mreraise[49m[43m([49m[38;5;28;43mtype[39;49m[43m([49m[43merror[49m[43m)[49m[43m,[49m[43m [49m[43merror[49m[43m,[49m[43m [49m[43m_stacktrace[49m[43m)[49m
+[32m    491[39m [38;5;28;01melif[39;00m read [38;5;129;01mis[39;00m [38;5;129;01mnot[39;00m [38;5;28;01mNone[39;00m:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\util\util.py:39[39m, in [36mreraise[39m[34m(tp, value, tb)[39m
+[32m     38[39m         [38;5;28;01mraise[39;00m value.with_traceback(tb)
+[32m---> [39m[32m39[39m     [38;5;28;01mraise[39;00m value
+[32m     40[39m [38;5;28;01mfinally[39;00m:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:787[39m, in [36mHTTPConnectionPool.urlopen[39m[34m(self, method, url, body, headers, retries, redirect, assert_same_host, timeout, pool_timeout, release_conn, chunked, body_pos, preload_content, decode_content, **response_kw)[39m
+[32m    786[39m [38;5;66;03m# Make the request on the HTTPConnection object[39;00m
+[32m--> [39m[32m787[39m response = [38;5;28;43mself[39;49m[43m.[49m[43m_make_request[49m[43m([49m
+[32m    788[39m [43m    [49m[43mconn[49m[43m,[49m
+[32m    789[39m [43m    [49m[43mmethod[49m[43m,[49m
+[32m    790[39m [43m    [49m[43murl[49m[43m,[49m
+[32m    791[39m [43m    [49m[43mtimeout[49m[43m=[49m[43mtimeout_obj[49m[43m,[49m
+[32m    792[39m [43m    [49m[43mbody[49m[43m=[49m[43mbody[49m[43m,[49m
+[32m    793[39m [43m    [49m[43mheaders[49m[43m=[49m[43mheaders[49m[43m,[49m
+[32m    794[39m [43m    [49m[43mchunked[49m[43m=[49m[43mchunked[49m[43m,[49m
+[32m    795[39m [43m    [49m[43mretries[49m[43m=[49m[43mretries[49m[43m,[49m
+[32m    796[39m [43m    [49m[43mresponse_conn[49m[43m=[49m[43mresponse_conn[49m[43m,[49m
+[32m    797[39m [43m    [49m[43mpreload_content[49m[43m=[49m[43mpreload_content[49m[43m,[49m
+[32m    798[39m [43m    [49m[43mdecode_content[49m[43m=[49m[43mdecode_content[49m[43m,[49m
+[32m    799[39m [43m    [49m[43m*[49m[43m*[49m[43mresponse_kw[49m[43m,[49m
+[32m    800[39m [43m[49m[43m)[49m
+[32m    802[39m [38;5;66;03m# Everything went great![39;00m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:536[39m, in [36mHTTPConnectionPool._make_request[39m[34m(self, conn, method, url, body, headers, retries, timeout, chunked, response_conn, preload_content, decode_content, enforce_content_length)[39m
+[32m    535[39m [38;5;28;01mexcept[39;00m (BaseSSLError, [38;5;167;01mOSError[39;00m) [38;5;28;01mas[39;00m e:
+[32m--> [39m[32m536[39m     [38;5;28;43mself[39;49m[43m.[49m[43m_raise_timeout[49m[43m([49m[43merr[49m[43m=[49m[43me[49m[43m,[49m[43m [49m[43murl[49m[43m=[49m[43murl[49m[43m,[49m[43m [49m[43mtimeout_value[49m[43m=[49m[43mread_timeout[49m[43m)[49m
+[32m    537[39m     [38;5;28;01mraise[39;00m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:367[39m, in [36mHTTPConnectionPool._raise_timeout[39m[34m(self, err, url, timeout_value)[39m
+[32m    366[39m [38;5;28;01mif[39;00m [38;5;28misinstance[39m(err, SocketTimeout):
+[32m--> [39m[32m367[39m     [38;5;28;01mraise[39;00m ReadTimeoutError(
+[32m    368[39m         [38;5;28mself[39m, url, [33mf[39m[33m"[39m[33mRead timed out. (read timeout=[39m[38;5;132;01m{[39;00mtimeout_value[38;5;132;01m}[39;00m[33m)[39m[33m"[39m
+[32m    369[39m     ) [38;5;28;01mfrom[39;00m[38;5;250m [39m[34;01merr[39;00m
+[32m    371[39m [38;5;66;03m# See the above comment about EAGAIN in Python 3.[39;00m
+
+[31mReadTimeoutError[39m: HTTPSConnectionPool(host='www.datos.gov.co', port=443): Read timed out. (read timeout=10)
+
+During handling of the above exception, another exception occurred:
+
+[31mReadTimeout[39m                               Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[2][39m[32m, line 5[39m
+[32m      2[39m client = Socrata([33m"[39m[33mwww.datos.gov.co[39m[33m"[39m, [38;5;28;01mNone[39;00m)
+[32m      4[39m [38;5;66;03m# Obtener fecha más reciente con ORDER BY en lugar de max() — más confiable[39;00m
+[32m----> [39m[32m5[39m latest = [43mclient[49m[43m.[49m[43mget[49m[43m([49m[43mDATASET_ID[49m[43m,[49m[43m [49m[43mselect[49m[43m=[49m[33;43m"[39;49m[33;43mfechaobservacion[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43morder[49m[43m=[49m[33;43m"[39;49m[33;43mfechaobservacion DESC[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43mlimit[49m[43m=[49m[32;43m1[39;49m[43m)[49m
+[32m      6[39m fecha_max_api = latest[[32m0[39m][[33m"[39m[33mfechaobservacion[39m[33m"[39m][:[32m10[39m]
+[32m      7[39m [38;5;28mprint[39m([33mf[39m[33m"[39m[33mÚltima fecha disponible en API: [39m[38;5;132;01m{[39;00mfecha_max_api[38;5;132;01m}[39;00m[33m"[39m)
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\sodapy\socrata.py:412[39m, in [36mSocrata.get[39m[34m(self, dataset_identifier, content_type, **kwargs)[39m
+[32m    409[39m params.update(kwargs)
+[32m    410[39m params = utils.clear_empty_values(params)
+[32m--> [39m[32m412[39m response = [38;5;28;43mself[39;49m[43m.[49m[43m_perform_request[49m[43m([49m
+[32m    413[39m [43m    [49m[33;43m"[39;49m[33;43mget[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43mresource[49m[43m,[49m[43m [49m[43mheaders[49m[43m=[49m[43mheaders[49m[43m,[49m[43m [49m[43mparams[49m[43m=[49m[43mparams[49m
+[32m    414[39m [43m[49m[43m)[49m
+[32m    415[39m [38;5;28;01mreturn[39;00m response
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\sodapy\socrata.py:551[39m, in [36mSocrata._perform_request[39m[34m(self, request_type, resource, **kwargs)[39m
+[32m    548[39m [38;5;66;03m# set a timeout, just to be safe[39;00m
+[32m    549[39m kwargs[[33m"[39m[33mtimeout[39m[33m"[39m] = [38;5;28mself[39m.timeout
+[32m--> [39m[32m551[39m response = [38;5;28;43mgetattr[39;49m[43m([49m[38;5;28;43mself[39;49m[43m.[49m[43msession[49m[43m,[49m[43m [49m[43mrequest_type[49m[43m)[49m[43m([49m[43muri[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43mkwargs[49m[43m)[49m
+[32m    553[39m [38;5;66;03m# handle errors[39;00m
+[32m    554[39m [38;5;28;01mif[39;00m response.status_code [38;5;129;01mnot[39;00m [38;5;129;01min[39;00m ([32m200[39m, [32m202[39m):
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\sessions.py:602[39m, in [36mSession.get[39m[34m(self, url, **kwargs)[39m
+[32m    594[39m [38;5;250m[39m[33mr[39m[33;03m"""Sends a GET request. Returns :class:`Response` object.[39;00m
+[32m    595[39m 
+[32m    596[39m [33;03m:param url: URL for the new :class:`Request` object.[39;00m
+[32m    597[39m [33;03m:param \*\*kwargs: Optional arguments that ``request`` takes.[39;00m
+[32m    598[39m [33;03m:rtype: requests.Response[39;00m
+[32m    599[39m [33;03m"""[39;00m
+[32m    601[39m kwargs.setdefault([33m"[39m[33mallow_redirects[39m[33m"[39m, [38;5;28;01mTrue[39;00m)
+[32m--> [39m[32m602[39m [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[43m.[49m[43mrequest[49m[43m([49m[33;43m"[39;49m[33;43mGET[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43murl[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43mkwargs[49m[43m)[49m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\sessions.py:589[39m, in [36mSession.request[39m[34m(self, method, url, params, data, headers, cookies, files, auth, timeout, allow_redirects, proxies, hooks, stream, verify, cert, json)[39m
+[32m    584[39m send_kwargs = {
+[32m    585[39m     [33m"[39m[33mtimeout[39m[33m"[39m: timeout,
+[32m    586[39m     [33m"[39m[33mallow_redirects[39m[33m"[39m: allow_redirects,
+[32m    587[39m }
+[32m    588[39m send_kwargs.update(settings)
+[32m--> [39m[32m589[39m resp = [38;5;28;43mself[39;49m[43m.[49m[43msend[49m[43m([49m[43mprep[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43msend_kwargs[49m[43m)[49m
+[32m    591[39m [38;5;28;01mreturn[39;00m resp
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\sessions.py:703[39m, in [36mSession.send[39m[34m(self, request, **kwargs)[39m
+[32m    700[39m start = preferred_clock()
+[32m    702[39m [38;5;66;03m# Send the request[39;00m
+[32m--> [39m[32m703[39m r = [43madapter[49m[43m.[49m[43msend[49m[43m([49m[43mrequest[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43mkwargs[49m[43m)[49m
+[32m    705[39m [38;5;66;03m# Total elapsed time of the request (approximately)[39;00m
+[32m    706[39m elapsed = preferred_clock() - start
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\adapters.py:690[39m, in [36mHTTPAdapter.send[39m[34m(self, request, stream, timeout, verify, cert, proxies)[39m
+[32m    688[39m     [38;5;28;01mraise[39;00m SSLError(e, request=request)
+[32m    689[39m [38;5;28;01melif[39;00m [38;5;28misinstance[39m(e, ReadTimeoutError):
+[32m--> [39m[32m690[39m     [38;5;28;01mraise[39;00m ReadTimeout(e, request=request)
+[32m    691[39m [38;5;28;01melif[39;00m [38;5;28misinstance[39m(e, _InvalidHeader):
+[32m    692[39m     [38;5;28;01mraise[39;00m InvalidHeader(e, request=request)
+
+[31mReadTimeout[39m: HTTPSConnectionPool(host='www.datos.gov.co', port=443): Read timed out. (read timeout=10)
+
+[27/05/2026 16:33:00.72] ERROR en la ejecucion 
+[29/05/2026  7:27:40.67] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11488 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[29/05/2026  7:29:19.06] Ejecucion exitosa 
+[29/05/2026 16:32:21.99] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11178 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[29/05/2026 16:33:21.40] Ejecucion exitosa 
+[01/06/2026 16:55:39.94] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11488 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[01/06/2026 16:57:30.40] Ejecucion exitosa 
+[02/06/2026 16:32:22.17] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[02/06/2026 16:33:46.55] Ejecucion exitosa 
+[03/06/2026 16:32:21.38] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Scripts\jupyter-nbconvert.EXE\__main__.py", line 5, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\application.py", line 284, in launch_instance
+    super().launch_instance(argv=argv, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\traitlets\config\application.py", line 1075, in launch_instance
+    app.start()
+    ~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 420, in start
+    self.convert_notebooks()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 597, in convert_notebooks
+    self.convert_single_notebook(notebook_filename)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 563, in convert_single_notebook
+    output, resources = self.export_single_notebook(
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        notebook_filename, resources, input_buffer=input_buffer
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 487, in export_single_notebook
+    output, resources = self.exporter.from_filename(
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        notebook_filename, resources=resources
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 201, in from_filename
+    return self.from_file(f, resources=resources, **kw)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 220, in from_file
+    return self.from_notebook_node(
+           ~~~~~~~~~~~~~~~~~~~~~~~^
+        nbformat.read(file_stream, as_version=4), resources=resources, **kw
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\notebook.py", line 36, in from_notebook_node
+    nb_copy, resources = super().from_notebook_node(nb, resources, **kw)
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 154, in from_notebook_node
+    nb_copy, resources = self._preprocess(nb_copy, resources)
+                         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 353, in _preprocess
+    nbc, resc = preprocessor(nbc, resc)
+                ~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\base.py", line 48, in __call__
+    return self.preprocess(nb, resources)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\execute.py", line 103, in preprocess
+    self.preprocess_cell(cell, resources, index)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\execute.py", line 124, in preprocess_cell
+    cell = self.execute_cell(cell, index, store_history=True)
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\utils\__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbclient\client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbclient\client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+DATASET_ID = "s54a-sgyg"
+client = Socrata("www.datos.gov.co", None)
+
+# Obtener fecha más reciente con ORDER BY en lugar de max() — más confiable
+latest = client.get(DATASET_ID, select="fechaobservacion", order="fechaobservacion DESC", limit=1)
+fecha_max_api = latest[0]["fechaobservacion"][:10]
+print(f"Última fecha disponible en API: {fecha_max_api}")
+
+# Última fecha ya guardada en el histórico
+HIST_PATH_CHECK = r"C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output4\Indicadores\precipitacion diaria\precipitacion_diaria.xlsx"
+import os
+if os.path.exists(HIST_PATH_CHECK):
+    df_check = pd.read_excel(HIST_PATH_CHECK, usecols=["fecha"])
+    fecha_min_descarga = pd.to_datetime(df_check["fecha"]).max().strftime("%Y-%m-%d")
+    print(f"Última fecha en histórico    : {fecha_min_descarga}")
+else:
+    fecha_min_descarga = fecha_max_api  # primera vez
+
+# Fechas pendientes de descargar (entre histórico+1 y API max)
+fechas_pendientes = pd.date_range(
+    start=pd.to_datetime(fecha_min_descarga) + pd.Timedelta(days=1),
+    end=pd.to_datetime(fecha_max_api),
+    freq="D"
+).strftime("%Y-%m-%d").tolist()
+
+if not fechas_pendientes:
+    print("El histórico ya está al día. Nada nuevo que descargar.")
+else:
+    print(f"\nFechas pendientes ({len(fechas_pendientes)}): {fechas_pendientes[0]} → {fechas_pendientes[-1]}")
+------------------
+
+----- stderr -----
+WARNING:root:Requests made without an app_token will be subject to strict throttling limits.
+------------------
+
+[31m---------------------------------------------------------------------------[39m
+[31mgaierror[39m                                  Traceback (most recent call last)
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connection.py:204[39m, in [36mHTTPConnection._new_conn[39m[34m(self)[39m
+[32m    203[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m204[39m     sock = [43mconnection[49m[43m.[49m[43mcreate_connection[49m[43m([49m
+[32m    205[39m [43m        [49m[43m([49m[38;5;28;43mself[39;49m[43m.[49m[43m_dns_host[49m[43m,[49m[43m [49m[38;5;28;43mself[39;49m[43m.[49m[43mport[49m[43m)[49m[43m,[49m
+[32m    206[39m [43m        [49m[38;5;28;43mself[39;49m[43m.[49m[43mtimeout[49m[43m,[49m
+[32m    207[39m [43m        [49m[43msource_address[49m[43m=[49m[38;5;28;43mself[39;49m[43m.[49m[43msource_address[49m[43m,[49m
+[32m    208[39m [43m        [49m[43msocket_options[49m[43m=[49m[38;5;28;43mself[39;49m[43m.[49m[43msocket_options[49m[43m,[49m
+[32m    209[39m [43m    [49m[43m)[49m
+[32m    210[39m [38;5;28;01mexcept[39;00m socket.gaierror [38;5;28;01mas[39;00m e:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\util\connection.py:60[39m, in [36mcreate_connection[39m[34m(address, timeout, source_address, socket_options)[39m
+[32m     58[39m     [38;5;28;01mraise[39;00m LocationParseError([33mf[39m[33m"[39m[33m'[39m[38;5;132;01m{[39;00mhost[38;5;132;01m}[39;00m[33m'[39m[33m, label empty or too long[39m[33m"[39m) [38;5;28;01mfrom[39;00m[38;5;250m [39m[38;5;28;01mNone[39;00m
+[32m---> [39m[32m60[39m [38;5;28;01mfor[39;00m res [38;5;129;01min[39;00m [43msocket[49m[43m.[49m[43mgetaddrinfo[49m[43m([49m[43mhost[49m[43m,[49m[43m [49m[43mport[49m[43m,[49m[43m [49m[43mfamily[49m[43m,[49m[43m [49m[43msocket[49m[43m.[49m[43mSOCK_STREAM[49m[43m)[49m:
+[32m     61[39m     af, socktype, proto, canonname, sa = res
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\socket.py:983[39m, in [36mgetaddrinfo[39m[34m(host, port, family, type, proto, flags)[39m
+[32m    982[39m addrlist = []
+[32m--> [39m[32m983[39m [38;5;28;01mfor[39;00m res [38;5;129;01min[39;00m [43m_socket[49m[43m.[49m[43mgetaddrinfo[49m[43m([49m[43mhost[49m[43m,[49m[43m [49m[43mport[49m[43m,[49m[43m [49m[43mfamily[49m[43m,[49m[43m [49m[38;5;28;43mtype[39;49m[43m,[49m[43m [49m[43mproto[49m[43m,[49m[43m [49m[43mflags[49m[43m)[49m:
+[32m    984[39m     af, socktype, proto, canonname, sa = res
+
+[31mgaierror[39m: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+[31mNameResolutionError[39m                       Traceback (most recent call last)
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:787[39m, in [36mHTTPConnectionPool.urlopen[39m[34m(self, method, url, body, headers, retries, redirect, assert_same_host, timeout, pool_timeout, release_conn, chunked, body_pos, preload_content, decode_content, **response_kw)[39m
+[32m    786[39m [38;5;66;03m# Make the request on the HTTPConnection object[39;00m
+[32m--> [39m[32m787[39m response = [38;5;28;43mself[39;49m[43m.[49m[43m_make_request[49m[43m([49m
+[32m    788[39m [43m    [49m[43mconn[49m[43m,[49m
+[32m    789[39m [43m    [49m[43mmethod[49m[43m,[49m
+[32m    790[39m [43m    [49m[43murl[49m[43m,[49m
+[32m    791[39m [43m    [49m[43mtimeout[49m[43m=[49m[43mtimeout_obj[49m[43m,[49m
+[32m    792[39m [43m    [49m[43mbody[49m[43m=[49m[43mbody[49m[43m,[49m
+[32m    793[39m [43m    [49m[43mheaders[49m[43m=[49m[43mheaders[49m[43m,[49m
+[32m    794[39m [43m    [49m[43mchunked[49m[43m=[49m[43mchunked[49m[43m,[49m
+[32m    795[39m [43m    [49m[43mretries[49m[43m=[49m[43mretries[49m[43m,[49m
+[32m    796[39m [43m    [49m[43mresponse_conn[49m[43m=[49m[43mresponse_conn[49m[43m,[49m
+[32m    797[39m [43m    [49m[43mpreload_content[49m[43m=[49m[43mpreload_content[49m[43m,[49m
+[32m    798[39m [43m    [49m[43mdecode_content[49m[43m=[49m[43mdecode_content[49m[43m,[49m
+[32m    799[39m [43m    [49m[43m*[49m[43m*[49m[43mresponse_kw[49m[43m,[49m
+[32m    800[39m [43m[49m[43m)[49m
+[32m    802[39m [38;5;66;03m# Everything went great![39;00m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:488[39m, in [36mHTTPConnectionPool._make_request[39m[34m(self, conn, method, url, body, headers, retries, timeout, chunked, response_conn, preload_content, decode_content, enforce_content_length)[39m
+[32m    487[39m         new_e = _wrap_proxy_error(new_e, conn.proxy.scheme)
+[32m--> [39m[32m488[39m     [38;5;28;01mraise[39;00m new_e
+[32m    490[39m [38;5;66;03m# conn.request() calls http.client.*.request, not the method in[39;00m
+[32m    491[39m [38;5;66;03m# urllib3.request. It also calls makefile (recv) on the socket.[39;00m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:464[39m, in [36mHTTPConnectionPool._make_request[39m[34m(self, conn, method, url, body, headers, retries, timeout, chunked, response_conn, preload_content, decode_content, enforce_content_length)[39m
+[32m    463[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m464[39m     [38;5;28;43mself[39;49m[43m.[49m[43m_validate_conn[49m[43m([49m[43mconn[49m[43m)[49m
+[32m    465[39m [38;5;28;01mexcept[39;00m (SocketTimeout, BaseSSLError) [38;5;28;01mas[39;00m e:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:1093[39m, in [36mHTTPSConnectionPool._validate_conn[39m[34m(self, conn)[39m
+[32m   1092[39m [38;5;28;01mif[39;00m conn.is_closed:
+[32m-> [39m[32m1093[39m     [43mconn[49m[43m.[49m[43mconnect[49m[43m([49m[43m)[49m
+[32m   1095[39m [38;5;66;03m# TODO revise this, see https://github.com/urllib3/urllib3/issues/2791[39;00m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connection.py:759[39m, in [36mHTTPSConnection.connect[39m[34m(self)[39m
+[32m    758[39m sock: socket.socket | ssl.SSLSocket
+[32m--> [39m[32m759[39m [38;5;28mself[39m.sock = sock = [38;5;28;43mself[39;49m[43m.[49m[43m_new_conn[49m[43m([49m[43m)[49m
+[32m    760[39m server_hostname: [38;5;28mstr[39m = [38;5;28mself[39m.host
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connection.py:211[39m, in [36mHTTPConnection._new_conn[39m[34m(self)[39m
+[32m    210[39m [38;5;28;01mexcept[39;00m socket.gaierror [38;5;28;01mas[39;00m e:
+[32m--> [39m[32m211[39m     [38;5;28;01mraise[39;00m NameResolutionError([38;5;28mself[39m.host, [38;5;28mself[39m, e) [38;5;28;01mfrom[39;00m[38;5;250m [39m[34;01me[39;00m
+[32m    212[39m [38;5;28;01mexcept[39;00m SocketTimeout [38;5;28;01mas[39;00m e:
+
+[31mNameResolutionError[39m: HTTPSConnection(host='www.datos.gov.co', port=443): Failed to resolve 'www.datos.gov.co' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+[31mMaxRetryError[39m                             Traceback (most recent call last)
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\adapters.py:644[39m, in [36mHTTPAdapter.send[39m[34m(self, request, stream, timeout, verify, cert, proxies)[39m
+[32m    643[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m644[39m     resp = [43mconn[49m[43m.[49m[43murlopen[49m[43m([49m
+[32m    645[39m [43m        [49m[43mmethod[49m[43m=[49m[43mrequest[49m[43m.[49m[43mmethod[49m[43m,[49m
+[32m    646[39m [43m        [49m[43murl[49m[43m=[49m[43murl[49m[43m,[49m
+[32m    647[39m [43m        [49m[43mbody[49m[43m=[49m[43mrequest[49m[43m.[49m[43mbody[49m[43m,[49m
+[32m    648[39m [43m        [49m[43mheaders[49m[43m=[49m[43mrequest[49m[43m.[49m[43mheaders[49m[43m,[49m
+[32m    649[39m [43m        [49m[43mredirect[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m[43m,[49m
+[32m    650[39m [43m        [49m[43massert_same_host[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m[43m,[49m
+[32m    651[39m [43m        [49m[43mpreload_content[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m[43m,[49m
+[32m    652[39m [43m        [49m[43mdecode_content[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m[43m,[49m
+[32m    653[39m [43m        [49m[43mretries[49m[43m=[49m[38;5;28;43mself[39;49m[43m.[49m[43mmax_retries[49m[43m,[49m
+[32m    654[39m [43m        [49m[43mtimeout[49m[43m=[49m[43mtimeout[49m[43m,[49m
+[32m    655[39m [43m        [49m[43mchunked[49m[43m=[49m[43mchunked[49m[43m,[49m
+[32m    656[39m [43m    [49m[43m)[49m
+[32m    658[39m [38;5;28;01mexcept[39;00m (ProtocolError, [38;5;167;01mOSError[39;00m) [38;5;28;01mas[39;00m err:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:841[39m, in [36mHTTPConnectionPool.urlopen[39m[34m(self, method, url, body, headers, retries, redirect, assert_same_host, timeout, pool_timeout, release_conn, chunked, body_pos, preload_content, decode_content, **response_kw)[39m
+[32m    839[39m     new_e = ProtocolError([33m"[39m[33mConnection aborted.[39m[33m"[39m, new_e)
+[32m--> [39m[32m841[39m retries = [43mretries[49m[43m.[49m[43mincrement[49m[43m([49m
+[32m    842[39m [43m    [49m[43mmethod[49m[43m,[49m[43m [49m[43murl[49m[43m,[49m[43m [49m[43merror[49m[43m=[49m[43mnew_e[49m[43m,[49m[43m [49m[43m_pool[49m[43m=[49m[38;5;28;43mself[39;49m[43m,[49m[43m [49m[43m_stacktrace[49m[43m=[49m[43msys[49m[43m.[49m[43mexc_info[49m[43m([49m[43m)[49m[43m[[49m[32;43m2[39;49m[43m][49m
+[32m    843[39m [43m[49m[43m)[49m
+[32m    844[39m retries.sleep()
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\util\retry.py:535[39m, in [36mRetry.increment[39m[34m(self, method, url, response, error, _pool, _stacktrace)[39m
+[32m    534[39m     reason = error [38;5;129;01mor[39;00m ResponseError(cause)
+[32m--> [39m[32m535[39m     [38;5;28;01mraise[39;00m MaxRetryError(_pool, url, reason) [38;5;28;01mfrom[39;00m[38;5;250m [39m[34;01mreason[39;00m  [38;5;66;03m# type: ignore[arg-type][39;00m
+[32m    537[39m log.debug([33m"[39m[33mIncremented Retry for (url=[39m[33m'[39m[38;5;132;01m%s[39;00m[33m'[39m[33m): [39m[38;5;132;01m%r[39;00m[33m"[39m, url, new_retry)
+
+[31mMaxRetryError[39m: HTTPSConnectionPool(host='www.datos.gov.co', port=443): Max retries exceeded with url: /resource/s54a-sgyg.json?%24select=fechaobservacion&%24order=fechaobservacion+DESC&%24limit=1 (Caused by NameResolutionError("HTTPSConnection(host='www.datos.gov.co', port=443): Failed to resolve 'www.datos.gov.co' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+[31mConnectionError[39m                           Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[2][39m[32m, line 5[39m
+[32m      2[39m client = Socrata([33m"[39m[33mwww.datos.gov.co[39m[33m"[39m, [38;5;28;01mNone[39;00m)
+[32m      4[39m [38;5;66;03m# Obtener fecha más reciente con ORDER BY en lugar de max() — más confiable[39;00m
+[32m----> [39m[32m5[39m latest = [43mclient[49m[43m.[49m[43mget[49m[43m([49m[43mDATASET_ID[49m[43m,[49m[43m [49m[43mselect[49m[43m=[49m[33;43m"[39;49m[33;43mfechaobservacion[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43morder[49m[43m=[49m[33;43m"[39;49m[33;43mfechaobservacion DESC[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43mlimit[49m[43m=[49m[32;43m1[39;49m[43m)[49m
+[32m      6[39m fecha_max_api = latest[[32m0[39m][[33m"[39m[33mfechaobservacion[39m[33m"[39m][:[32m10[39m]
+[32m      7[39m [38;5;28mprint[39m([33mf[39m[33m"[39m[33mÚltima fecha disponible en API: [39m[38;5;132;01m{[39;00mfecha_max_api[38;5;132;01m}[39;00m[33m"[39m)
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\sodapy\socrata.py:412[39m, in [36mSocrata.get[39m[34m(self, dataset_identifier, content_type, **kwargs)[39m
+[32m    409[39m params.update(kwargs)
+[32m    410[39m params = utils.clear_empty_values(params)
+[32m--> [39m[32m412[39m response = [38;5;28;43mself[39;49m[43m.[49m[43m_perform_request[49m[43m([49m
+[32m    413[39m [43m    [49m[33;43m"[39;49m[33;43mget[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43mresource[49m[43m,[49m[43m [49m[43mheaders[49m[43m=[49m[43mheaders[49m[43m,[49m[43m [49m[43mparams[49m[43m=[49m[43mparams[49m
+[32m    414[39m [43m[49m[43m)[49m
+[32m    415[39m [38;5;28;01mreturn[39;00m response
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\sodapy\socrata.py:551[39m, in [36mSocrata._perform_request[39m[34m(self, request_type, resource, **kwargs)[39m
+[32m    548[39m [38;5;66;03m# set a timeout, just to be safe[39;00m
+[32m    549[39m kwargs[[33m"[39m[33mtimeout[39m[33m"[39m] = [38;5;28mself[39m.timeout
+[32m--> [39m[32m551[39m response = [38;5;28;43mgetattr[39;49m[43m([49m[38;5;28;43mself[39;49m[43m.[49m[43msession[49m[43m,[49m[43m [49m[43mrequest_type[49m[43m)[49m[43m([49m[43muri[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43mkwargs[49m[43m)[49m
+[32m    553[39m [38;5;66;03m# handle errors[39;00m
+[32m    554[39m [38;5;28;01mif[39;00m response.status_code [38;5;129;01mnot[39;00m [38;5;129;01min[39;00m ([32m200[39m, [32m202[39m):
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\sessions.py:602[39m, in [36mSession.get[39m[34m(self, url, **kwargs)[39m
+[32m    594[39m [38;5;250m[39m[33mr[39m[33;03m"""Sends a GET request. Returns :class:`Response` object.[39;00m
+[32m    595[39m 
+[32m    596[39m [33;03m:param url: URL for the new :class:`Request` object.[39;00m
+[32m    597[39m [33;03m:param \*\*kwargs: Optional arguments that ``request`` takes.[39;00m
+[32m    598[39m [33;03m:rtype: requests.Response[39;00m
+[32m    599[39m [33;03m"""[39;00m
+[32m    601[39m kwargs.setdefault([33m"[39m[33mallow_redirects[39m[33m"[39m, [38;5;28;01mTrue[39;00m)
+[32m--> [39m[32m602[39m [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[43m.[49m[43mrequest[49m[43m([49m[33;43m"[39;49m[33;43mGET[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43murl[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43mkwargs[49m[43m)[49m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\sessions.py:589[39m, in [36mSession.request[39m[34m(self, method, url, params, data, headers, cookies, files, auth, timeout, allow_redirects, proxies, hooks, stream, verify, cert, json)[39m
+[32m    584[39m send_kwargs = {
+[32m    585[39m     [33m"[39m[33mtimeout[39m[33m"[39m: timeout,
+[32m    586[39m     [33m"[39m[33mallow_redirects[39m[33m"[39m: allow_redirects,
+[32m    587[39m }
+[32m    588[39m send_kwargs.update(settings)
+[32m--> [39m[32m589[39m resp = [38;5;28;43mself[39;49m[43m.[49m[43msend[49m[43m([49m[43mprep[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43msend_kwargs[49m[43m)[49m
+[32m    591[39m [38;5;28;01mreturn[39;00m resp
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\sessions.py:703[39m, in [36mSession.send[39m[34m(self, request, **kwargs)[39m
+[32m    700[39m start = preferred_clock()
+[32m    702[39m [38;5;66;03m# Send the request[39;00m
+[32m--> [39m[32m703[39m r = [43madapter[49m[43m.[49m[43msend[49m[43m([49m[43mrequest[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43mkwargs[49m[43m)[49m
+[32m    705[39m [38;5;66;03m# Total elapsed time of the request (approximately)[39;00m
+[32m    706[39m elapsed = preferred_clock() - start
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\adapters.py:677[39m, in [36mHTTPAdapter.send[39m[34m(self, request, stream, timeout, verify, cert, proxies)[39m
+[32m    673[39m     [38;5;28;01mif[39;00m [38;5;28misinstance[39m(e.reason, _SSLError):
+[32m    674[39m         [38;5;66;03m# This branch is for urllib3 v1.22 and later.[39;00m
+[32m    675[39m         [38;5;28;01mraise[39;00m SSLError(e, request=request)
+[32m--> [39m[32m677[39m     [38;5;28;01mraise[39;00m [38;5;167;01mConnectionError[39;00m(e, request=request)
+[32m    679[39m [38;5;28;01mexcept[39;00m ClosedPoolError [38;5;28;01mas[39;00m e:
+[32m    680[39m     [38;5;28;01mraise[39;00m [38;5;167;01mConnectionError[39;00m(e, request=request)
+
+[31mConnectionError[39m: HTTPSConnectionPool(host='www.datos.gov.co', port=443): Max retries exceeded with url: /resource/s54a-sgyg.json?%24select=fechaobservacion&%24order=fechaobservacion+DESC&%24limit=1 (Caused by NameResolutionError("HTTPSConnection(host='www.datos.gov.co', port=443): Failed to resolve 'www.datos.gov.co' ([Errno 11001] getaddrinfo failed)"))
+
+[03/06/2026 16:32:40.04] ERROR en la ejecucion 
+[04/06/2026 16:32:21.02] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11333 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[04/06/2026 16:33:55.10] Ejecucion exitosa 
+[08/06/2026  9:06:22.19] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11639 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[08/06/2026  9:08:21.48] Ejecucion exitosa 
+[08/06/2026 17:01:51.60] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11178 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[08/06/2026 17:02:39.19] Ejecucion exitosa 
+[09/06/2026 19:43:11.30] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[09/06/2026 19:44:20.35] Ejecucion exitosa 
+[10/06/2026 23:23:56.53] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[10/06/2026 23:24:56.24] Ejecucion exitosa 
+[11/06/2026 16:32:21.85] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[11/06/2026 16:33:38.23] Ejecucion exitosa 
+[13/06/2026  9:15:47.94] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] ERROR | Error occurred while starting new kernel client for kernel 3fef8e84-a8b7-4ebe-88f1-40502744aaa1: Kernel didn't respond in 60 seconds
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Scripts\jupyter-nbconvert.EXE\__main__.py", line 5, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\application.py", line 284, in launch_instance
+    super().launch_instance(argv=argv, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\traitlets\config\application.py", line 1075, in launch_instance
+    app.start()
+    ~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 420, in start
+    self.convert_notebooks()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 597, in convert_notebooks
+    self.convert_single_notebook(notebook_filename)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 563, in convert_single_notebook
+    output, resources = self.export_single_notebook(
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        notebook_filename, resources, input_buffer=input_buffer
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 487, in export_single_notebook
+    output, resources = self.exporter.from_filename(
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        notebook_filename, resources=resources
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 201, in from_filename
+    return self.from_file(f, resources=resources, **kw)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 220, in from_file
+    return self.from_notebook_node(
+           ~~~~~~~~~~~~~~~~~~~~~~~^
+        nbformat.read(file_stream, as_version=4), resources=resources, **kw
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\notebook.py", line 36, in from_notebook_node
+    nb_copy, resources = super().from_notebook_node(nb, resources, **kw)
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 154, in from_notebook_node
+    nb_copy, resources = self._preprocess(nb_copy, resources)
+                         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 353, in _preprocess
+    nbc, resc = preprocessor(nbc, resc)
+                ~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\base.py", line 48, in __call__
+    return self.preprocess(nb, resources)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\execute.py", line 97, in preprocess
+    with self.setup_kernel():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbclient\client.py", line 603, in setup_kernel
+    self.start_new_kernel_client()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\utils\__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbclient\client.py", line 566, in async_start_new_kernel_client
+    await ensure_async(self.kc.wait_for_ready(timeout=self.startup_timeout))
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\utils\__init__.py", line 214, in ensure_async
+    result = await obj
+             ^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_client\client.py", line 208, in _async_wait_for_ready
+    raise RuntimeError("Kernel didn't respond in %d seconds" % timeout)
+RuntimeError: Kernel didn't respond in 60 seconds
+[13/06/2026  9:17:32.59] ERROR en la ejecucion 
+[16/06/2026  9:00:45.53] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+^C[16/06/2026 17:07:01.40] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11790 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[16/06/2026 17:08:50.19] Ejecucion exitosa 
+[17/06/2026 16:32:21.16] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[17/06/2026 16:33:52.02] Ejecucion exitosa 
+[18/06/2026 16:32:21.77] Iniciando ejecucion 
+^C[19/06/2026 16:32:21.02] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11333 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[19/06/2026 16:33:23.45] Ejecucion exitosa 
+[22/06/2026  9:05:26.41] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11488 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[22/06/2026  9:06:45.01] Ejecucion exitosa 
+[22/06/2026 18:49:45.09] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11178 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[22/06/2026 18:52:11.80] Ejecucion exitosa 
+[23/06/2026 16:32:21.51] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[23/06/2026 16:34:17.44] Ejecucion exitosa 
+[24/06/2026 16:32:20.74] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[24/06/2026 16:33:18.33] Ejecucion exitosa 
+[25/06/2026 16:32:20.65] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[25/06/2026 16:33:39.35] Ejecucion exitosa 
+[26/06/2026 16:32:21.62] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[26/06/2026 16:34:13.61] Ejecucion exitosa 
+[30/06/2026 16:32:21.83] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11639 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[01/07/2026 16:32:21.71] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[01/07/2026 16:34:02.16] Ejecucion exitosa 
+[02/07/2026 19:19:31.57] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Scripts\jupyter-nbconvert.EXE\__main__.py", line 5, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\application.py", line 284, in launch_instance
+    super().launch_instance(argv=argv, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\traitlets\config\application.py", line 1075, in launch_instance
+    app.start()
+    ~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 420, in start
+    self.convert_notebooks()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 597, in convert_notebooks
+    self.convert_single_notebook(notebook_filename)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 563, in convert_single_notebook
+    output, resources = self.export_single_notebook(
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        notebook_filename, resources, input_buffer=input_buffer
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 487, in export_single_notebook
+    output, resources = self.exporter.from_filename(
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        notebook_filename, resources=resources
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 201, in from_filename
+    return self.from_file(f, resources=resources, **kw)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 220, in from_file
+    return self.from_notebook_node(
+           ~~~~~~~~~~~~~~~~~~~~~~~^
+        nbformat.read(file_stream, as_version=4), resources=resources, **kw
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\notebook.py", line 36, in from_notebook_node
+    nb_copy, resources = super().from_notebook_node(nb, resources, **kw)
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 154, in from_notebook_node
+    nb_copy, resources = self._preprocess(nb_copy, resources)
+                         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 353, in _preprocess
+    nbc, resc = preprocessor(nbc, resc)
+                ~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\base.py", line 48, in __call__
+    return self.preprocess(nb, resources)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\execute.py", line 103, in preprocess
+    self.preprocess_cell(cell, resources, index)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\execute.py", line 124, in preprocess_cell
+    cell = self.execute_cell(cell, index, store_history=True)
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\utils\__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbclient\client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbclient\client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+DATASET_ID = "s54a-sgyg"
+client = Socrata("www.datos.gov.co", None)
+
+# Obtener fecha más reciente con ORDER BY en lugar de max() — más confiable
+latest = client.get(DATASET_ID, select="fechaobservacion", order="fechaobservacion DESC", limit=1)
+fecha_max_api = latest[0]["fechaobservacion"][:10]
+print(f"Última fecha disponible en API: {fecha_max_api}")
+
+# Última fecha ya guardada en el histórico
+HIST_PATH_CHECK = r"C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output4\Indicadores\precipitacion diaria\precipitacion_diaria.xlsx"
+import os
+if os.path.exists(HIST_PATH_CHECK):
+    df_check = pd.read_excel(HIST_PATH_CHECK, usecols=["fecha"])
+    fecha_min_descarga = pd.to_datetime(df_check["fecha"]).max().strftime("%Y-%m-%d")
+    print(f"Última fecha en histórico    : {fecha_min_descarga}")
+else:
+    fecha_min_descarga = fecha_max_api  # primera vez
+
+# Fechas pendientes de descargar (entre histórico+1 y API max)
+fechas_pendientes = pd.date_range(
+    start=pd.to_datetime(fecha_min_descarga) + pd.Timedelta(days=1),
+    end=pd.to_datetime(fecha_max_api),
+    freq="D"
+).strftime("%Y-%m-%d").tolist()
+
+if not fechas_pendientes:
+    print("El histórico ya está al día. Nada nuevo que descargar.")
+else:
+    print(f"\nFechas pendientes ({len(fechas_pendientes)}): {fechas_pendientes[0]} → {fechas_pendientes[-1]}")
+------------------
+
+----- stderr -----
+WARNING:root:Requests made without an app_token will be subject to strict throttling limits.
+------------------
+
+[31m---------------------------------------------------------------------------[39m
+[31mgaierror[39m                                  Traceback (most recent call last)
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connection.py:204[39m, in [36mHTTPConnection._new_conn[39m[34m(self)[39m
+[32m    203[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m204[39m     sock = [43mconnection[49m[43m.[49m[43mcreate_connection[49m[43m([49m
+[32m    205[39m [43m        [49m[43m([49m[38;5;28;43mself[39;49m[43m.[49m[43m_dns_host[49m[43m,[49m[43m [49m[38;5;28;43mself[39;49m[43m.[49m[43mport[49m[43m)[49m[43m,[49m
+[32m    206[39m [43m        [49m[38;5;28;43mself[39;49m[43m.[49m[43mtimeout[49m[43m,[49m
+[32m    207[39m [43m        [49m[43msource_address[49m[43m=[49m[38;5;28;43mself[39;49m[43m.[49m[43msource_address[49m[43m,[49m
+[32m    208[39m [43m        [49m[43msocket_options[49m[43m=[49m[38;5;28;43mself[39;49m[43m.[49m[43msocket_options[49m[43m,[49m
+[32m    209[39m [43m    [49m[43m)[49m
+[32m    210[39m [38;5;28;01mexcept[39;00m socket.gaierror [38;5;28;01mas[39;00m e:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\util\connection.py:60[39m, in [36mcreate_connection[39m[34m(address, timeout, source_address, socket_options)[39m
+[32m     58[39m     [38;5;28;01mraise[39;00m LocationParseError([33mf[39m[33m"[39m[33m'[39m[38;5;132;01m{[39;00mhost[38;5;132;01m}[39;00m[33m'[39m[33m, label empty or too long[39m[33m"[39m) [38;5;28;01mfrom[39;00m[38;5;250m [39m[38;5;28;01mNone[39;00m
+[32m---> [39m[32m60[39m [38;5;28;01mfor[39;00m res [38;5;129;01min[39;00m [43msocket[49m[43m.[49m[43mgetaddrinfo[49m[43m([49m[43mhost[49m[43m,[49m[43m [49m[43mport[49m[43m,[49m[43m [49m[43mfamily[49m[43m,[49m[43m [49m[43msocket[49m[43m.[49m[43mSOCK_STREAM[49m[43m)[49m:
+[32m     61[39m     af, socktype, proto, canonname, sa = res
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\socket.py:983[39m, in [36mgetaddrinfo[39m[34m(host, port, family, type, proto, flags)[39m
+[32m    982[39m addrlist = []
+[32m--> [39m[32m983[39m [38;5;28;01mfor[39;00m res [38;5;129;01min[39;00m [43m_socket[49m[43m.[49m[43mgetaddrinfo[49m[43m([49m[43mhost[49m[43m,[49m[43m [49m[43mport[49m[43m,[49m[43m [49m[43mfamily[49m[43m,[49m[43m [49m[38;5;28;43mtype[39;49m[43m,[49m[43m [49m[43mproto[49m[43m,[49m[43m [49m[43mflags[49m[43m)[49m:
+[32m    984[39m     af, socktype, proto, canonname, sa = res
+
+[31mgaierror[39m: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+[31mNameResolutionError[39m                       Traceback (most recent call last)
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:787[39m, in [36mHTTPConnectionPool.urlopen[39m[34m(self, method, url, body, headers, retries, redirect, assert_same_host, timeout, pool_timeout, release_conn, chunked, body_pos, preload_content, decode_content, **response_kw)[39m
+[32m    786[39m [38;5;66;03m# Make the request on the HTTPConnection object[39;00m
+[32m--> [39m[32m787[39m response = [38;5;28;43mself[39;49m[43m.[49m[43m_make_request[49m[43m([49m
+[32m    788[39m [43m    [49m[43mconn[49m[43m,[49m
+[32m    789[39m [43m    [49m[43mmethod[49m[43m,[49m
+[32m    790[39m [43m    [49m[43murl[49m[43m,[49m
+[32m    791[39m [43m    [49m[43mtimeout[49m[43m=[49m[43mtimeout_obj[49m[43m,[49m
+[32m    792[39m [43m    [49m[43mbody[49m[43m=[49m[43mbody[49m[43m,[49m
+[32m    793[39m [43m    [49m[43mheaders[49m[43m=[49m[43mheaders[49m[43m,[49m
+[32m    794[39m [43m    [49m[43mchunked[49m[43m=[49m[43mchunked[49m[43m,[49m
+[32m    795[39m [43m    [49m[43mretries[49m[43m=[49m[43mretries[49m[43m,[49m
+[32m    796[39m [43m    [49m[43mresponse_conn[49m[43m=[49m[43mresponse_conn[49m[43m,[49m
+[32m    797[39m [43m    [49m[43mpreload_content[49m[43m=[49m[43mpreload_content[49m[43m,[49m
+[32m    798[39m [43m    [49m[43mdecode_content[49m[43m=[49m[43mdecode_content[49m[43m,[49m
+[32m    799[39m [43m    [49m[43m*[49m[43m*[49m[43mresponse_kw[49m[43m,[49m
+[32m    800[39m [43m[49m[43m)[49m
+[32m    802[39m [38;5;66;03m# Everything went great![39;00m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:488[39m, in [36mHTTPConnectionPool._make_request[39m[34m(self, conn, method, url, body, headers, retries, timeout, chunked, response_conn, preload_content, decode_content, enforce_content_length)[39m
+[32m    487[39m         new_e = _wrap_proxy_error(new_e, conn.proxy.scheme)
+[32m--> [39m[32m488[39m     [38;5;28;01mraise[39;00m new_e
+[32m    490[39m [38;5;66;03m# conn.request() calls http.client.*.request, not the method in[39;00m
+[32m    491[39m [38;5;66;03m# urllib3.request. It also calls makefile (recv) on the socket.[39;00m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:464[39m, in [36mHTTPConnectionPool._make_request[39m[34m(self, conn, method, url, body, headers, retries, timeout, chunked, response_conn, preload_content, decode_content, enforce_content_length)[39m
+[32m    463[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m464[39m     [38;5;28;43mself[39;49m[43m.[49m[43m_validate_conn[49m[43m([49m[43mconn[49m[43m)[49m
+[32m    465[39m [38;5;28;01mexcept[39;00m (SocketTimeout, BaseSSLError) [38;5;28;01mas[39;00m e:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:1093[39m, in [36mHTTPSConnectionPool._validate_conn[39m[34m(self, conn)[39m
+[32m   1092[39m [38;5;28;01mif[39;00m conn.is_closed:
+[32m-> [39m[32m1093[39m     [43mconn[49m[43m.[49m[43mconnect[49m[43m([49m[43m)[49m
+[32m   1095[39m [38;5;66;03m# TODO revise this, see https://github.com/urllib3/urllib3/issues/2791[39;00m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connection.py:759[39m, in [36mHTTPSConnection.connect[39m[34m(self)[39m
+[32m    758[39m sock: socket.socket | ssl.SSLSocket
+[32m--> [39m[32m759[39m [38;5;28mself[39m.sock = sock = [38;5;28;43mself[39;49m[43m.[49m[43m_new_conn[49m[43m([49m[43m)[49m
+[32m    760[39m server_hostname: [38;5;28mstr[39m = [38;5;28mself[39m.host
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connection.py:211[39m, in [36mHTTPConnection._new_conn[39m[34m(self)[39m
+[32m    210[39m [38;5;28;01mexcept[39;00m socket.gaierror [38;5;28;01mas[39;00m e:
+[32m--> [39m[32m211[39m     [38;5;28;01mraise[39;00m NameResolutionError([38;5;28mself[39m.host, [38;5;28mself[39m, e) [38;5;28;01mfrom[39;00m[38;5;250m [39m[34;01me[39;00m
+[32m    212[39m [38;5;28;01mexcept[39;00m SocketTimeout [38;5;28;01mas[39;00m e:
+
+[31mNameResolutionError[39m: HTTPSConnection(host='www.datos.gov.co', port=443): Failed to resolve 'www.datos.gov.co' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+[31mMaxRetryError[39m                             Traceback (most recent call last)
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\adapters.py:644[39m, in [36mHTTPAdapter.send[39m[34m(self, request, stream, timeout, verify, cert, proxies)[39m
+[32m    643[39m [38;5;28;01mtry[39;00m:
+[32m--> [39m[32m644[39m     resp = [43mconn[49m[43m.[49m[43murlopen[49m[43m([49m
+[32m    645[39m [43m        [49m[43mmethod[49m[43m=[49m[43mrequest[49m[43m.[49m[43mmethod[49m[43m,[49m
+[32m    646[39m [43m        [49m[43murl[49m[43m=[49m[43murl[49m[43m,[49m
+[32m    647[39m [43m        [49m[43mbody[49m[43m=[49m[43mrequest[49m[43m.[49m[43mbody[49m[43m,[49m
+[32m    648[39m [43m        [49m[43mheaders[49m[43m=[49m[43mrequest[49m[43m.[49m[43mheaders[49m[43m,[49m
+[32m    649[39m [43m        [49m[43mredirect[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m[43m,[49m
+[32m    650[39m [43m        [49m[43massert_same_host[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m[43m,[49m
+[32m    651[39m [43m        [49m[43mpreload_content[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m[43m,[49m
+[32m    652[39m [43m        [49m[43mdecode_content[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m[43m,[49m
+[32m    653[39m [43m        [49m[43mretries[49m[43m=[49m[38;5;28;43mself[39;49m[43m.[49m[43mmax_retries[49m[43m,[49m
+[32m    654[39m [43m        [49m[43mtimeout[49m[43m=[49m[43mtimeout[49m[43m,[49m
+[32m    655[39m [43m        [49m[43mchunked[49m[43m=[49m[43mchunked[49m[43m,[49m
+[32m    656[39m [43m    [49m[43m)[49m
+[32m    658[39m [38;5;28;01mexcept[39;00m (ProtocolError, [38;5;167;01mOSError[39;00m) [38;5;28;01mas[39;00m err:
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py:841[39m, in [36mHTTPConnectionPool.urlopen[39m[34m(self, method, url, body, headers, retries, redirect, assert_same_host, timeout, pool_timeout, release_conn, chunked, body_pos, preload_content, decode_content, **response_kw)[39m
+[32m    839[39m     new_e = ProtocolError([33m"[39m[33mConnection aborted.[39m[33m"[39m, new_e)
+[32m--> [39m[32m841[39m retries = [43mretries[49m[43m.[49m[43mincrement[49m[43m([49m
+[32m    842[39m [43m    [49m[43mmethod[49m[43m,[49m[43m [49m[43murl[49m[43m,[49m[43m [49m[43merror[49m[43m=[49m[43mnew_e[49m[43m,[49m[43m [49m[43m_pool[49m[43m=[49m[38;5;28;43mself[39;49m[43m,[49m[43m [49m[43m_stacktrace[49m[43m=[49m[43msys[49m[43m.[49m[43mexc_info[49m[43m([49m[43m)[49m[43m[[49m[32;43m2[39;49m[43m][49m
+[32m    843[39m [43m[49m[43m)[49m
+[32m    844[39m retries.sleep()
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\util\retry.py:535[39m, in [36mRetry.increment[39m[34m(self, method, url, response, error, _pool, _stacktrace)[39m
+[32m    534[39m     reason = error [38;5;129;01mor[39;00m ResponseError(cause)
+[32m--> [39m[32m535[39m     [38;5;28;01mraise[39;00m MaxRetryError(_pool, url, reason) [38;5;28;01mfrom[39;00m[38;5;250m [39m[34;01mreason[39;00m  [38;5;66;03m# type: ignore[arg-type][39;00m
+[32m    537[39m log.debug([33m"[39m[33mIncremented Retry for (url=[39m[33m'[39m[38;5;132;01m%s[39;00m[33m'[39m[33m): [39m[38;5;132;01m%r[39;00m[33m"[39m, url, new_retry)
+
+[31mMaxRetryError[39m: HTTPSConnectionPool(host='www.datos.gov.co', port=443): Max retries exceeded with url: /resource/s54a-sgyg.json?%24select=fechaobservacion&%24order=fechaobservacion+DESC&%24limit=1 (Caused by NameResolutionError("HTTPSConnection(host='www.datos.gov.co', port=443): Failed to resolve 'www.datos.gov.co' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+[31mConnectionError[39m                           Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[2][39m[32m, line 5[39m
+[32m      2[39m client = Socrata([33m"[39m[33mwww.datos.gov.co[39m[33m"[39m, [38;5;28;01mNone[39;00m)
+[32m      4[39m [38;5;66;03m# Obtener fecha más reciente con ORDER BY en lugar de max() — más confiable[39;00m
+[32m----> [39m[32m5[39m latest = [43mclient[49m[43m.[49m[43mget[49m[43m([49m[43mDATASET_ID[49m[43m,[49m[43m [49m[43mselect[49m[43m=[49m[33;43m"[39;49m[33;43mfechaobservacion[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43morder[49m[43m=[49m[33;43m"[39;49m[33;43mfechaobservacion DESC[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43mlimit[49m[43m=[49m[32;43m1[39;49m[43m)[49m
+[32m      6[39m fecha_max_api = latest[[32m0[39m][[33m"[39m[33mfechaobservacion[39m[33m"[39m][:[32m10[39m]
+[32m      7[39m [38;5;28mprint[39m([33mf[39m[33m"[39m[33mÚltima fecha disponible en API: [39m[38;5;132;01m{[39;00mfecha_max_api[38;5;132;01m}[39;00m[33m"[39m)
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\sodapy\socrata.py:412[39m, in [36mSocrata.get[39m[34m(self, dataset_identifier, content_type, **kwargs)[39m
+[32m    409[39m params.update(kwargs)
+[32m    410[39m params = utils.clear_empty_values(params)
+[32m--> [39m[32m412[39m response = [38;5;28;43mself[39;49m[43m.[49m[43m_perform_request[49m[43m([49m
+[32m    413[39m [43m    [49m[33;43m"[39;49m[33;43mget[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43mresource[49m[43m,[49m[43m [49m[43mheaders[49m[43m=[49m[43mheaders[49m[43m,[49m[43m [49m[43mparams[49m[43m=[49m[43mparams[49m
+[32m    414[39m [43m[49m[43m)[49m
+[32m    415[39m [38;5;28;01mreturn[39;00m response
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\sodapy\socrata.py:551[39m, in [36mSocrata._perform_request[39m[34m(self, request_type, resource, **kwargs)[39m
+[32m    548[39m [38;5;66;03m# set a timeout, just to be safe[39;00m
+[32m    549[39m kwargs[[33m"[39m[33mtimeout[39m[33m"[39m] = [38;5;28mself[39m.timeout
+[32m--> [39m[32m551[39m response = [38;5;28;43mgetattr[39;49m[43m([49m[38;5;28;43mself[39;49m[43m.[49m[43msession[49m[43m,[49m[43m [49m[43mrequest_type[49m[43m)[49m[43m([49m[43muri[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43mkwargs[49m[43m)[49m
+[32m    553[39m [38;5;66;03m# handle errors[39;00m
+[32m    554[39m [38;5;28;01mif[39;00m response.status_code [38;5;129;01mnot[39;00m [38;5;129;01min[39;00m ([32m200[39m, [32m202[39m):
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\sessions.py:602[39m, in [36mSession.get[39m[34m(self, url, **kwargs)[39m
+[32m    594[39m [38;5;250m[39m[33mr[39m[33;03m"""Sends a GET request. Returns :class:`Response` object.[39;00m
+[32m    595[39m 
+[32m    596[39m [33;03m:param url: URL for the new :class:`Request` object.[39;00m
+[32m    597[39m [33;03m:param \*\*kwargs: Optional arguments that ``request`` takes.[39;00m
+[32m    598[39m [33;03m:rtype: requests.Response[39;00m
+[32m    599[39m [33;03m"""[39;00m
+[32m    601[39m kwargs.setdefault([33m"[39m[33mallow_redirects[39m[33m"[39m, [38;5;28;01mTrue[39;00m)
+[32m--> [39m[32m602[39m [38;5;28;01mreturn[39;00m [38;5;28;43mself[39;49m[43m.[49m[43mrequest[49m[43m([49m[33;43m"[39;49m[33;43mGET[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43murl[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43mkwargs[49m[43m)[49m
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\sessions.py:589[39m, in [36mSession.request[39m[34m(self, method, url, params, data, headers, cookies, files, auth, timeout, allow_redirects, proxies, hooks, stream, verify, cert, json)[39m
+[32m    584[39m send_kwargs = {
+[32m    585[39m     [33m"[39m[33mtimeout[39m[33m"[39m: timeout,
+[32m    586[39m     [33m"[39m[33mallow_redirects[39m[33m"[39m: allow_redirects,
+[32m    587[39m }
+[32m    588[39m send_kwargs.update(settings)
+[32m--> [39m[32m589[39m resp = [38;5;28;43mself[39;49m[43m.[49m[43msend[49m[43m([49m[43mprep[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43msend_kwargs[49m[43m)[49m
+[32m    591[39m [38;5;28;01mreturn[39;00m resp
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\sessions.py:703[39m, in [36mSession.send[39m[34m(self, request, **kwargs)[39m
+[32m    700[39m start = preferred_clock()
+[32m    702[39m [38;5;66;03m# Send the request[39;00m
+[32m--> [39m[32m703[39m r = [43madapter[49m[43m.[49m[43msend[49m[43m([49m[43mrequest[49m[43m,[49m[43m [49m[43m*[49m[43m*[49m[43mkwargs[49m[43m)[49m
+[32m    705[39m [38;5;66;03m# Total elapsed time of the request (approximately)[39;00m
+[32m    706[39m elapsed = preferred_clock() - start
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\adapters.py:677[39m, in [36mHTTPAdapter.send[39m[34m(self, request, stream, timeout, verify, cert, proxies)[39m
+[32m    673[39m     [38;5;28;01mif[39;00m [38;5;28misinstance[39m(e.reason, _SSLError):
+[32m    674[39m         [38;5;66;03m# This branch is for urllib3 v1.22 and later.[39;00m
+[32m    675[39m         [38;5;28;01mraise[39;00m SSLError(e, request=request)
+[32m--> [39m[32m677[39m     [38;5;28;01mraise[39;00m [38;5;167;01mConnectionError[39;00m(e, request=request)
+[32m    679[39m [38;5;28;01mexcept[39;00m ClosedPoolError [38;5;28;01mas[39;00m e:
+[32m    680[39m     [38;5;28;01mraise[39;00m [38;5;167;01mConnectionError[39;00m(e, request=request)
+
+[31mConnectionError[39m: HTTPSConnectionPool(host='www.datos.gov.co', port=443): Max retries exceeded with url: /resource/s54a-sgyg.json?%24select=fechaobservacion&%24order=fechaobservacion+DESC&%24limit=1 (Caused by NameResolutionError("HTTPSConnection(host='www.datos.gov.co', port=443): Failed to resolve 'www.datos.gov.co' ([Errno 11001] getaddrinfo failed)"))
+
+[02/07/2026 19:19:58.84] ERROR en la ejecucion 
+[05/07/2026 16:38:13.08] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11639 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[05/07/2026 16:40:07.49] Ejecucion exitosa 
+[06/07/2026 19:08:09.80] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11179 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[06/07/2026 19:08:45.24] Ejecucion exitosa 
+[07/07/2026 18:55:23.77] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11179 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[07/07/2026 18:56:47.51] Ejecucion exitosa 
+[08/07/2026 16:32:21.46] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[08/07/2026 16:34:00.39] Ejecucion exitosa 
+[09/07/2026 16:32:21.83] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[09/07/2026 16:34:11.56] Ejecucion exitosa 
+[10/07/2026 16:32:21.14] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[10/07/2026 16:34:10.36] Ejecucion exitosa 
+[13/07/2026 22:00:55.49] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11488 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[13/07/2026 22:03:24.21] Ejecucion exitosa 
+[14/07/2026 16:32:22.11] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[14/07/2026 16:34:13.60] Ejecucion exitosa 
+[15/07/2026 16:32:21.71] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[15/07/2026 16:33:05.29] Ejecucion exitosa 
+[16/07/2026 16:32:21.44] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[16/07/2026 16:33:14.31] Ejecucion exitosa 
+[17/07/2026 16:32:21.48] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[17/07/2026 16:33:34.99] Ejecucion exitosa 
+[20/07/2026 16:44:07.62] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11488 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[20/07/2026 16:45:55.21] Ejecucion exitosa 
+[21/07/2026 16:32:21.66] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[21/07/2026 16:34:06.63] Ejecucion exitosa 
+[22/07/2026 18:02:41.37] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[22/07/2026 18:03:35.62] Ejecucion exitosa 
+[23/07/2026 16:32:21.55] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[23/07/2026 16:33:06.14] Ejecucion exitosa 
+[28/07/2026  8:17:49.37] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11333 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[28/07/2026  8:19:43.78] Ejecucion exitosa 
+[28/07/2026 16:32:21.31] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+Assertion failed: Connection reset by peer [10054] (C:\Users\runneradmin\AppData\Local\Temp\tmpm74nglni\build\_deps\bundled_libzmq-src\src\signaler.cpp:345)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Scripts\jupyter-nbconvert.EXE\__main__.py", line 5, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\application.py", line 284, in launch_instance
+    super().launch_instance(argv=argv, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\traitlets\config\application.py", line 1075, in launch_instance
+    app.start()
+    ~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 420, in start
+    self.convert_notebooks()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 597, in convert_notebooks
+    self.convert_single_notebook(notebook_filename)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 563, in convert_single_notebook
+    output, resources = self.export_single_notebook(
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        notebook_filename, resources, input_buffer=input_buffer
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\nbconvertapp.py", line 487, in export_single_notebook
+    output, resources = self.exporter.from_filename(
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        notebook_filename, resources=resources
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 201, in from_filename
+    return self.from_file(f, resources=resources, **kw)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 220, in from_file
+    return self.from_notebook_node(
+           ~~~~~~~~~~~~~~~~~~~~~~~^
+        nbformat.read(file_stream, as_version=4), resources=resources, **kw
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\notebook.py", line 36, in from_notebook_node
+    nb_copy, resources = super().from_notebook_node(nb, resources, **kw)
+                         ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 154, in from_notebook_node
+    nb_copy, resources = self._preprocess(nb_copy, resources)
+                         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\exporters\exporter.py", line 353, in _preprocess
+    nbc, resc = preprocessor(nbc, resc)
+                ~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\base.py", line 48, in __call__
+    return self.preprocess(nb, resources)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\execute.py", line 103, in preprocess
+    self.preprocess_cell(cell, resources, index)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbconvert\preprocessors\execute.py", line 124, in preprocess_cell
+    cell = self.execute_cell(cell, index, store_history=True)
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_core\utils\__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbclient\client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\nbclient\client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+DATASET_ID = "s54a-sgyg"
+client = Socrata("www.datos.gov.co", None)
+
+# Obtener fecha más reciente con ORDER BY en lugar de max() — más confiable
+latest = client.get(DATASET_ID, select="fechaobservacion", order="fechaobservacion DESC", limit=1)
+fecha_max_api = latest[0]["fechaobservacion"][:10]
+print(f"Última fecha disponible en API: {fecha_max_api}")
+
+# Última fecha ya guardada en el histórico
+HIST_PATH_CHECK = r"C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output4\Indicadores\precipitacion diaria\precipitacion_diaria.xlsx"
+import os
+if os.path.exists(HIST_PATH_CHECK):
+    df_check = pd.read_excel(HIST_PATH_CHECK, usecols=["fecha"])
+    fecha_min_descarga = pd.to_datetime(df_check["fecha"]).max().strftime("%Y-%m-%d")
+    print(f"Última fecha en histórico    : {fecha_min_descarga}")
+else:
+    fecha_min_descarga = fecha_max_api  # primera vez
+
+# Fechas pendientes de descargar (entre histórico+1 y API max)
+fechas_pendientes = pd.date_range(
+    start=pd.to_datetime(fecha_min_descarga) + pd.Timedelta(days=1),
+    end=pd.to_datetime(fecha_max_api),
+    freq="D"
+).strftime("%Y-%m-%d").tolist()
+
+if not fechas_pendientes:
+    print("El histórico ya está al día. Nada nuevo que descargar.")
+else:
+    print(f"\nFechas pendientes ({len(fechas_pendientes)}): {fechas_pendientes[0]} → {fechas_pendientes[-1]}")
+------------------
+
+----- stderr -----
+WARNING:root:Requests made without an app_token will be subject to strict throttling limits.
+----- stdout -----
+Última fecha disponible en API: 2026-07-24
+------------------
+
+[31m---------------------------------------------------------------------------[39m
+[31mPermissionError[39m                           Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[2][39m[32m, line 13[39m
+[32m     11[39m [38;5;28;01mimport[39;00m[38;5;250m [39m[34;01mos[39;00m
+[32m     12[39m [38;5;28;01mif[39;00m os.path.exists(HIST_PATH_CHECK):
+[32m---> [39m[32m13[39m     df_check = [43mpd[49m[43m.[49m[43mread_excel[49m[43m([49m[43mHIST_PATH_CHECK[49m[43m,[49m[43m [49m[43musecols[49m[43m=[49m[43m[[49m[33;43m"[39;49m[33;43mfecha[39;49m[33;43m"[39;49m[43m][49m[43m)[49m
+[32m     14[39m     fecha_min_descarga = pd.to_datetime(df_check[[33m"[39m[33mfecha[39m[33m"[39m]).max().strftime([33m"[39m[33m%[39m[33mY-[39m[33m%[39m[33mm-[39m[38;5;132;01m%d[39;00m[33m"[39m)
+[32m     15[39m     [38;5;28mprint[39m([33mf[39m[33m"[39m[33mÚltima fecha en histórico    : [39m[38;5;132;01m{[39;00mfecha_min_descarga[38;5;132;01m}[39;00m[33m"[39m)
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\excel\_base.py:495[39m, in [36mread_excel[39m[34m(io, sheet_name, header, names, index_col, usecols, dtype, engine, converters, true_values, false_values, skiprows, nrows, na_values, keep_default_na, na_filter, verbose, parse_dates, date_parser, date_format, thousands, decimal, comment, skipfooter, storage_options, dtype_backend, engine_kwargs)[39m
+[32m    493[39m [38;5;28;01mif[39;00m [38;5;129;01mnot[39;00m [38;5;28misinstance[39m(io, ExcelFile):
+[32m    494[39m     should_close = [38;5;28;01mTrue[39;00m
+[32m--> [39m[32m495[39m     io = [43mExcelFile[49m[43m([49m
+[32m    496[39m [43m        [49m[43mio[49m[43m,[49m
+[32m    497[39m [43m        [49m[43mstorage_options[49m[43m=[49m[43mstorage_options[49m[43m,[49m
+[32m    498[39m [43m        [49m[43mengine[49m[43m=[49m[43mengine[49m[43m,[49m
+[32m    499[39m [43m        [49m[43mengine_kwargs[49m[43m=[49m[43mengine_kwargs[49m[43m,[49m
+[32m    500[39m [43m    [49m[43m)[49m
+[32m    501[39m [38;5;28;01melif[39;00m engine [38;5;129;01mand[39;00m engine != io.engine:
+[32m    502[39m     [38;5;28;01mraise[39;00m [38;5;167;01mValueError[39;00m(
+[32m    503[39m         [33m"[39m[33mEngine should not be specified when passing [39m[33m"[39m
+[32m    504[39m         [33m"[39m[33man ExcelFile - ExcelFile already has the engine set[39m[33m"[39m
+[32m    505[39m     )
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\excel\_base.py:1550[39m, in [36mExcelFile.__init__[39m[34m(self, path_or_buffer, engine, storage_options, engine_kwargs)[39m
+[32m   1548[39m     ext = [33m"[39m[33mxls[39m[33m"[39m
+[32m   1549[39m [38;5;28;01melse[39;00m:
+[32m-> [39m[32m1550[39m     ext = [43minspect_excel_format[49m[43m([49m
+[32m   1551[39m [43m        [49m[43mcontent_or_path[49m[43m=[49m[43mpath_or_buffer[49m[43m,[49m[43m [49m[43mstorage_options[49m[43m=[49m[43mstorage_options[49m
+[32m   1552[39m [43m    [49m[43m)[49m
+[32m   1553[39m     [38;5;28;01mif[39;00m ext [38;5;129;01mis[39;00m [38;5;28;01mNone[39;00m:
+[32m   1554[39m         [38;5;28;01mraise[39;00m [38;5;167;01mValueError[39;00m(
+[32m   1555[39m             [33m"[39m[33mExcel file format cannot be determined, you must specify [39m[33m"[39m
+[32m   1556[39m             [33m"[39m[33man engine manually.[39m[33m"[39m
+[32m   1557[39m         )
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\excel\_base.py:1402[39m, in [36minspect_excel_format[39m[34m(content_or_path, storage_options)[39m
+[32m   1399[39m [38;5;28;01mif[39;00m [38;5;28misinstance[39m(content_or_path, [38;5;28mbytes[39m):
+[32m   1400[39m     content_or_path = BytesIO(content_or_path)
+[32m-> [39m[32m1402[39m [38;5;28;01mwith[39;00m [43mget_handle[49m[43m([49m
+[32m   1403[39m [43m    [49m[43mcontent_or_path[49m[43m,[49m[43m [49m[33;43m"[39;49m[33;43mrb[39;49m[33;43m"[39;49m[43m,[49m[43m [49m[43mstorage_options[49m[43m=[49m[43mstorage_options[49m[43m,[49m[43m [49m[43mis_text[49m[43m=[49m[38;5;28;43;01mFalse[39;49;00m
+[32m   1404[39m [43m[49m[43m)[49m [38;5;28;01mas[39;00m handle:
+[32m   1405[39m     stream = handle.handle
+[32m   1406[39m     stream.seek([32m0[39m)
+
+[36mFile [39m[32m~\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\common.py:882[39m, in [36mget_handle[39m[34m(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)[39m
+[32m    873[39m         handle = [38;5;28mopen[39m(
+[32m    874[39m             handle,
+[32m    875[39m             ioargs.mode,
+[32m   (...)[39m[32m    878[39m             newline=[33m"[39m[33m"[39m,
+[32m    879[39m         )
+[32m    880[39m     [38;5;28;01melse[39;00m:
+[32m    881[39m         [38;5;66;03m# Binary mode[39;00m
+[32m--> [39m[32m882[39m         handle = [38;5;28;43mopen[39;49m[43m([49m[43mhandle[49m[43m,[49m[43m [49m[43mioargs[49m[43m.[49m[43mmode[49m[43m)[49m
+[32m    883[39m     handles.append(handle)
+[32m    885[39m [38;5;66;03m# Convert BytesIO or file objects passed with an encoding[39;00m
+
+[31mPermissionError[39m: [Errno 13] Permission denied: 'C:\\Users\\Usuario\\OneDrive - Global Green Growth Institute\\Documentos\\2025\\Outputs\\Output4\\Indicadores\\precipitacion diaria\\precipitacion_diaria.xlsx'
+
+[28/07/2026 16:32:52.46] ERROR en la ejecucion 
+[29/07/2026 16:32:22.29] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11178 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[29/07/2026 16:34:17.15] Ejecucion exitosa 
