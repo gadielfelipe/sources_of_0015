@@ -831,6 +831,7 @@
     };
 
     let _municipiosGeo = null; // GeoJSON cache compartido entre instancias de MapPanel
+    let _municipiosGeoHist = null; // GeoJSON de alerta histórica (mapa "Lluvias", radio 50 km)
 
     const AMENAZA_MM_COLORS = {
       'MUY_BAJA': '#218a21',
@@ -1240,6 +1241,50 @@
           ${floodSection}
           <p style="color:#8a9ab0;font-size:11px;margin-top:4px;">Estaciones: ${m.n_estaciones}</p>
           ${fechaLabel}
+        </div>`;
+    }
+
+    // Popup del mapa "Lluvias" cuando se colorea con el GeoJSON histórico
+    // (alerta_historica_municipal.geojson, radio máx. 50 km) en vez del
+    // dataset diario — no existe precipitación "de hoy" en esta capa.
+    function buildPopupHist(m) {
+      const badge     = ALERTA_BADGE[m.alerta_lluvias] ?? ALERTA_BADGE['BAJA'];
+      const sinDatos  = m.alerta_lluvias === 'SIN_DATOS';
+      const condLabel = { EXCESO: 'Exceso', DEFICIT: 'Déficit', NORMAL: 'Normal', sin_datos: 'Sin datos' }[m.condicion_lluvia_6m] ?? m.condicion_lluvia_6m;
+
+      const sequiaSection = m.sequia_categoria && m.sequia_categoria !== 'NORMAL' ? `
+          <hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
+          <p style="font-size:12px;font-weight:600;color:#e67e22;margin-bottom:2px;">🌵 Sequía recurrente</p>
+          <p><b>Categoría:</b> <span style="color:#e67e22;font-weight:600;">${m.sequia_categoria}</span></p>` : '';
+
+      const tieneAlertaEfectiva = m.alerta_lluvias === 'ALTA' || m.alerta_lluvias === 'CRÍTICA';
+      const floodSection = m.municipio_afectado === 1
+        ? tieneAlertaEfectiva
+          ? `<hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
+             <p style="font-size:12px;font-weight:700;color:#4fa89b;margin-bottom:2px;">🌊 Municipio históricamente afectado por inundaciones</p>
+             <p style="font-size:11px;color:#e03131;font-weight:600;">⚠ Alto riesgo: alerta activa + antecedente de inundación</p>`
+          : `<hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
+             <p style="font-size:12px;font-weight:600;color:#4fa89b;margin-bottom:2px;">🌊 Municipio históricamente afectado por inundaciones</p>`
+        : '';
+
+      const sinDatosNote = sinDatos
+        ? `<p style="color:#8a9ab0;font-size:11px;margin-top:4px;">Sin estación IDEAM dentro de 50&nbsp;km.</p>`
+        : `<p style="color:#8a9ab0;font-size:11px;margin-top:4px;">Estación asignada a ${Number(m.distancia_km_estacion_asignada ?? 0).toFixed(1)} km &middot; ${m.n_estaciones} estación(es) en el municipio.</p>`;
+
+      return `
+        <div style="font-family:'Lora',Georgia,serif;font-size:13px;min-width:220px;color:#f5f0e8;">
+          <div style="color:#c8a96e;font-size:14px;font-weight:700;margin-bottom:2px;">${m.NOM_MPIO}</div>
+          <div style="color:#8a9ab0;font-size:12px;margin-bottom:6px;">${m.NOM_DPTO}</div>
+          <hr style="margin:4px 0;border-color:rgba(200,169,110,0.15);">
+          <p style="font-size:12px;font-weight:600;color:#8a9ab0;margin-bottom:2px;">📊 Alerta histórica — lluvias (radio 50 km)</p>
+          <p><b>Nivel:</b> ${badge}</p>
+          ${!sinDatos ? `
+          <p><b>Frec. extremos hist.:</b> ${(Number(m.frecuencia_extremos ?? 0) * 100).toFixed(1)}%</p>
+          <p><b>Frec. extremos 2 años:</b> ${(Number(m.frecuencia_reciente ?? 0) * 100).toFixed(1)}%</p>
+          <p><b>Condición últimos 6 meses:</b> ${condLabel}</p>` : ''}
+          ${sequiaSection}
+          ${floodSection}
+          ${sinDatosNote}
         </div>`;
     }
 
@@ -1660,7 +1705,11 @@
       const geoLayerRef = useRef(null);
       const pulseRef    = useRef(null);
       const initialized = useRef(false);
-      const [geoReady, setGeoReady] = useState(!!_municipiosGeo);
+      // mode='lluvias' usa el GeoJSON histórico (radio 50 km, generado por
+      // datos precipitacion historicos.ipynb); mode='sequias' sigue usando
+      // el GeoJSON diario compartido con el resto de paneles.
+      const isHist = mode === 'lluvias';
+      const [geoReady, setGeoReady] = useState(!!(isHist ? _municipiosGeoHist : _municipiosGeo));
 
       // ── Init mapa (una sola vez) ─────────────────────────────────────────
       useEffect(() => {
@@ -1689,7 +1738,16 @@
         leafletMap.current = map;
 
         // Cargar GeoJSON (usa caché si ya fue cargado)
-        if (_municipiosGeo) {
+        if (isHist) {
+          if (_municipiosGeoHist) {
+            setGeoReady(true);
+          } else {
+            fetch('data/alerta_historica_municipal.geojson')
+              .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+              .then(geo => { _municipiosGeoHist = geo; setGeoReady(true); })
+              .catch(err => console.error('Error cargando GeoJSON histórico:', err));
+          }
+        } else if (_municipiosGeo) {
           setGeoReady(true);
         } else {
           fetch('data/municipios_alertas.geojson')
@@ -1714,19 +1772,34 @@
 
       // ── Dibujar coropleta ────────────────────────────────────────────────
       useEffect(() => {
-        if (!geoReady || !leafletMap.current || !_municipiosGeo) return;
+        const geoSource = isHist ? _municipiosGeoHist : _municipiosGeo;
+        if (!geoReady || !leafletMap.current || !geoSource) return;
 
         // Detener pulso anterior
         if (pulseRef.current) { clearInterval(pulseRef.current); pulseRef.current = null; }
 
-        // Lookup rápido: COD_MPIO → fila de datos
+        // Lookup rápido: COD_MPIO → fila de datos (no aplica en modo histórico,
+        // donde el GeoJSON ya trae embebido alerta_lluvias por municipio)
         const lookup = {};
-        data.forEach(m => { lookup[String(m.COD_MPIO)] = m; });
+        if (!isHist) data.forEach(m => { lookup[String(m.COD_MPIO)] = m; });
 
         // Remover capa anterior
         if (geoLayerRef.current) { geoLayerRef.current.remove(); geoLayerRef.current = null; }
 
         function getStyle(feature) {
+          if (isHist) {
+            const alerta   = feature.properties.alerta_lluvias ?? 'SIN_DATOS';
+            const isAlert  = alerta === 'ALTA' || alerta === 'CRÍTICA';
+            return {
+              pane:        'choroPane',
+              fillColor:   ALERTA_POLY_COLORS[alerta] ?? '#d8d4ce',
+              fillOpacity: alerta === 'SIN_DATOS' ? 0.30 : alerta === 'BAJA' ? 0.52 : 0.78,
+              color:       alerta === 'CRÍTICA' ? '#7b0000' : isAlert ? '#c03020' : '#bbb',
+              weight:      isAlert ? 1.5 : 0.4,
+              opacity:     1,
+            };
+          }
+
           const cod    = String(feature.properties.COD_MPIO ?? '').replace(/\.0$/, '');
           const row    = lookup[cod] ?? feature.properties;
           const alerta = row.alerta_compuesta ?? 'SIN_DATOS';
@@ -1755,9 +1828,13 @@
           };
         }
 
-        const layer = L.geoJSON(_municipiosGeo, {
+        const layer = L.geoJSON(geoSource, {
           style: getStyle,
           onEachFeature(feature, lyr) {
+            if (isHist) {
+              lyr.bindPopup(buildPopupHist(feature.properties), { maxWidth: 260 });
+              return;
+            }
             const cod = String(feature.properties.COD_MPIO ?? '').replace(/\.0$/, '');
             const row = { ...feature.properties, ...(lookup[cod] ?? {}) };
             // Asegurar numéricos para el popup
@@ -1775,6 +1852,11 @@
         // ── Titilación en municipios con alerta ALTA / CRÍTICA ────────────
         const alertLayers = [];
         layer.eachLayer(lyr => {
+          if (isHist) {
+            const alerta = lyr.feature.properties.alerta_lluvias ?? '';
+            if (alerta === 'ALTA' || alerta === 'CRÍTICA') alertLayers.push({ lyr, alerta, sequia: '' });
+            return;
+          }
           const cod    = String(lyr.feature.properties.COD_MPIO ?? '').replace(/\.0$/, '');
           const row    = lookup[cod] ?? lyr.feature.properties;
           const alerta = row.alerta_compuesta ?? lyr.feature.properties.alerta_compuesta ?? '';
