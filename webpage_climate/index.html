@@ -768,6 +768,7 @@
   <div id="root"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/esri-leaflet@3.0.12/dist/esri-leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -1980,38 +1981,58 @@
       };
       const cfg = CONFIGS[indicador] ?? CONFIGS.lluvias;
 
+      function processCarteraRows(data) {
+        if (!data.length) { setCarteraError('El archivo está vacío.'); return; }
+        const keys      = Object.keys(data[0]);
+        const codCol    = keys.find(k => /cod/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /cod/i.test(k)) ?? keys[0];
+        const carteraCol = keys.find(k => /cartera/i.test(k));
+        const nameCol    = keys.find(k => /nom/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /nombre|name/i.test(k));
+        if (!carteraCol) { setCarteraError('No se encontró columna "cartera_total". Verifique el formato.'); return; }
+        let totalCartera = 0, cartaRiesgo = 0, nTotal = 0, nRiesgo = 0;
+        const merged = [];
+        data.forEach(r => {
+          const cod    = (r[codCol] ?? '').toString().trim();
+          const val    = parseFloat((r[carteraCol] ?? '').toString().replace(/[^0-9.-]/g,'')) || 0;
+          const nombre = nameCol ? (r[nameCol] ?? cod) : cod;
+          const alerta = alertaLookup[cod] ?? alertaLookup[cod.padStart(5,'0')] ?? 'Sin datos';
+          const enRiesgo = alertTargets.includes(alerta);
+          totalCartera += val; nTotal++;
+          if (enRiesgo) { cartaRiesgo += val; nRiesgo++; }
+          merged.push({ cod, nombre, cartera_total: val, alerta_indicador: alerta, enRiesgo });
+        });
+        const indicator = totalCartera > 0 ? (cartaRiesgo / totalCartera * 100).toFixed(2) : '0.00';
+        setCarteraData(merged);
+        setCarteraResult({ totalCartera, cartaRiesgo, indicator, nTotal, nRiesgo });
+      }
+
       function handleFile(e) {
         const file = e.target.files[0];
         if (!file) return;
         setCarteraError(null); setCarteraData(null); setCarteraResult(null);
-        Papa.parse(file, {
-          header: true, skipEmptyLines: true,
-          complete: ({ data, errors }) => {
-            if (errors.length) console.warn('Cartera warnings:', errors);
-            if (!data.length) { setCarteraError('El archivo está vacío.'); return; }
-            const keys      = Object.keys(data[0]);
-            const codCol    = keys.find(k => /cod/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /cod/i.test(k)) ?? keys[0];
-            const carteraCol = keys.find(k => /cartera/i.test(k));
-            const nameCol    = keys.find(k => /nom/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /nombre|name/i.test(k));
-            if (!carteraCol) { setCarteraError('No se encontró columna "cartera_total". Verifique el formato.'); return; }
-            let totalCartera = 0, cartaRiesgo = 0, nTotal = 0, nRiesgo = 0;
-            const merged = [];
-            data.forEach(r => {
-              const cod    = (r[codCol] ?? '').toString().trim();
-              const val    = parseFloat((r[carteraCol] ?? '').toString().replace(/[^0-9.-]/g,'')) || 0;
-              const nombre = nameCol ? (r[nameCol] ?? cod) : cod;
-              const alerta = alertaLookup[cod] ?? alertaLookup[cod.padStart(5,'0')] ?? 'Sin datos';
-              const enRiesgo = alertTargets.includes(alerta);
-              totalCartera += val; nTotal++;
-              if (enRiesgo) { cartaRiesgo += val; nRiesgo++; }
-              merged.push({ cod, nombre, cartera_total: val, alerta_indicador: alerta, enRiesgo });
-            });
-            const indicator = totalCartera > 0 ? (cartaRiesgo / totalCartera * 100).toFixed(2) : '0.00';
-            setCarteraData(merged);
-            setCarteraResult({ totalCartera, cartaRiesgo, indicator, nTotal, nRiesgo });
-          },
-          error: err => setCarteraError('Error al leer el archivo: ' + err.message),
-        });
+
+        if (/\.xlsx?$/i.test(file.name)) {
+          const reader = new FileReader();
+          reader.onload = evt => {
+            try {
+              const wb    = XLSX.read(evt.target.result, { type: 'array' });
+              const sheet = wb.Sheets[wb.SheetNames[0]];
+              processCarteraRows(XLSX.utils.sheet_to_json(sheet, { defval: '' }));
+            } catch (err) {
+              setCarteraError('Error al leer el archivo Excel: ' + err.message);
+            }
+          };
+          reader.onerror = () => setCarteraError('Error al leer el archivo.');
+          reader.readAsArrayBuffer(file);
+        } else {
+          Papa.parse(file, {
+            header: true, skipEmptyLines: true,
+            complete: ({ data, errors }) => {
+              if (errors.length) console.warn('Cartera warnings:', errors);
+              processCarteraRows(data);
+            },
+            error: err => setCarteraError('Error al leer el archivo: ' + err.message),
+          });
+        }
         e.target.value = '';
       }
 
