@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git push *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Read(//c/Users/Usuario/**)",
+      "Bash(python3 -c \"import netCDF4; print\\('netCDF4:', netCDF4.__version__\\)\")",
+      "Bash(python3 -c \"import scipy; print\\('scipy:', scipy.__version__\\)\")",
+      "Bash(xargs grep *)",
+      "Bash(Get-Item \"c:\\\\Users\\\\Usuario\\\\OneDrive - Global Green Growth Institute\\\\Documentos\\\\2025\\\\Outputs\\\\Output1\\\\Stress Test\\\\3.Data\\\\Scripts Python\\\\scripts_python\\\\territorios.ipynb\")",
+      "Bash(Select-Object Length, LastWriteTime)",
+      "PowerShell($path = \"c:\\\\Users\\\\Usuario\\\\OneDrive - Global Green Growth Institute\\\\Documentos\\\\2025\\\\Outputs\\\\Output1\\\\Stress Test\\\\3.Data\\\\Scripts Python\\\\scripts_python\\\\territorios.ipynb\"; \\(Get-Item $path\\).Length; \\(Get-Content $path -Raw\\)[0..500] -join '')",
+      "WebFetch(domain:data-agenciadetierras.opendata.arcgis.com)",
+      "WebFetch(domain:opendata.arcgis.com)",
+      "WebFetch(domain:utility.arcgis.com)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\Usuario\\\\OneDrive - Global Green Growth Institute\\\\Documentos\\\\2025\\\\Outputs\\\\Output1\\\\Stress Test\\\\3.Data\\\\Scripts Python\\\\webpage_climate\" -Recurse -ErrorAction SilentlyContinue)",
+      "Bash(Select-Object FullName)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Usuario\\\\OneDrive - Global Green Growth Institute\\\\Documentos\\\\2025\\\\Outputs\\\\Output1\\\\Stress Test\\\\3.Data\\\\Scripts Python\" -Recurse -Filter \"__pycache__\" | ForEach-Object { Remove-Item $_.FullName -Recurse -Force; Write-Host \"Eliminado: $\\($_.FullName\\)\" })",
+      "Bash(C:\\\\Users\\\\Usuario\\\\AppData\\\\Local\\\\Python\\\\pythoncore-3.14-64\\\\python.exe scripts_python/Modelos/Api/actualizar_dashboard.py)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\Usuario\\.claude\\projects\\c--Users-Usuario-OneDrive---Global-Green-Growth-Institute-Documentos-2025-Outputs-Output1-Stress-Test-3-Data-Scripts-Python\\memory"
+    ]
+  }
+}
