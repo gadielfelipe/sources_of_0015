@@ -26,7 +26,7 @@ TAREAS = [
     {
         "nombre": "Precipitacion diaria – cruce municipal + datos_municipios.csv",
         "tipo": "notebook",
-        "ruta": BASE / "scripts_python" / "datos precipitacion diarios.ipynb",
+        "ruta": BASE / "scripts_python" / "Modelos" / "datos precipitacion diarios.ipynb",
     },
     {
         "nombre": "Puntos de calor – Incendios (incendios_ultimo_dia.csv)",
@@ -113,7 +113,7 @@ def commit_datos(fecha: str, tareas_ok: bool) -> None:
         "webpage_climate/data/datos_municipios.csv",
         "webpage_climate/data/amenazas_municipal.csv",
         "scripts_python/Incendios.ipynb",
-        "scripts_python/datos precipitacion diarios.ipynb",
+        "scripts_python/Modelos/datos precipitacion diarios.ipynb",
     ]
 
     subprocess.run(["git", "add"] + archivos, cwd=BASE, check=False)
