@@ -3859,3 +3859,196 @@ C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:7
   self._get_loop()
 [NbConvertApp] Writing 13132 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
 [13/08/2026 17:34:20.40] Ejecucion exitosa 
+[14/08/2026 16:32:21.19] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+ERROR:tornado.general:Uncaught exception in ZMQStream callback
+Traceback (most recent call last):
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\eventloop\zmqstream.py", line 565, in _log_error
+    f.result()
+    ~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 348, in dispatch_control
+    await self.process_control(msg)
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 385, in process_control
+    self._publish_status_and_flush("idle", "control", self.control_stream)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 661, in _publish_status_and_flush
+    self._publish_status(status, channel, parent)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 651, in _publish_status
+    self.session.send(
+    ~~~~~~~~~~~~~~~~~^
+        self.iopub_socket,
+        ^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        ident=self._topic("status"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_client\session.py", line 867, in send
+    stream.send_multipart(to_send, copy=copy)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 418, in send_multipart
+    return self.io_thread.send_multipart(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 348, in send_multipart
+    self.schedule(lambda: self._really_send(*args, **kwargs))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 341, in schedule
+    f()
+    ~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 348, in <lambda>
+    self.schedule(lambda: self._really_send(*args, **kwargs))
+                          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 359, in _really_send
+    self.socket.send_multipart(msg, *args, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\sugar\socket.py", line 749, in send_multipart
+    self.send(msg, zmq.SNDMORE | flags, copy=copy, track=track)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\sugar\socket.py", line 698, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 1152, in zmq.backend.cython._zmq.Socket.send
+    def send(self, data, flags=0, copy: bint = True, track: bint = False):
+    ^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 1194, in zmq.backend.cython._zmq.Socket.send
+    _check_closed(self)
+    ^^^
+  File "zmq/backend/cython/_zmq.py", line 1339, in zmq.backend.cython._zmq._check_closed
+    raise ZMQError(ENOTSOCK)
+    ^^^
+zmq.error.ZMQError: not a socket
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\eventloop\zmqstream.py", line 565, in _log_error
+    f.result()
+    ~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 348, in dispatch_control
+    await self.process_control(msg)
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 385, in process_control
+    self._publish_status_and_flush("idle", "control", self.control_stream)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 661, in _publish_status_and_flush
+    self._publish_status(status, channel, parent)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\kernelbase.py", line 651, in _publish_status
+    self.session.send(
+    ~~~~~~~~~~~~~~~~~^
+        self.iopub_socket,
+        ^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        ident=self._topic("status"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\jupyter_client\session.py", line 867, in send
+    stream.send_multipart(to_send, copy=copy)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 418, in send_multipart
+    return self.io_thread.send_multipart(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 348, in send_multipart
+    self.schedule(lambda: self._really_send(*args, **kwargs))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 341, in schedule
+    f()
+    ~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 348, in <lambda>
+    self.schedule(lambda: self._really_send(*args, **kwargs))
+                          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 359, in _really_send
+    self.socket.send_multipart(msg, *args, **kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\sugar\socket.py", line 749, in send_multipart
+    self.send(msg, zmq.SNDMORE | flags, copy=copy, track=track)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\sugar\socket.py", line 698, in send
+    return super().send(data, flags=flags, copy=copy, track=track)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 1152, in zmq.backend.cython._zmq.Socket.send
+    def send(self, data, flags=0, copy: bint = True, track: bint = False):
+    ^^^^^^^
+  File "zmq/backend/cython/_zmq.py", line 1194, in zmq.backend.cython._zmq.Socket.send
+    _check_closed(self)
+    ^^^
+  File "zmq/backend/cython/_zmq.py", line 1339, in zmq.backend.cython._zmq._check_closed
+    raise ZMQError(ENOTSOCK)
+    ^^^
+zmq.error.ZMQError: not a socket
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\logging\__init__.py", line 1154, in emit
+    stream.write(msg + self.terminator)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 760, in write
+    self._schedule_flush()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 656, in _schedule_flush
+    self.pub_thread.schedule(_schedule_in_thread)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 341, in schedule
+    f()
+    ~^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\iostream.py", line 654, in _schedule_in_thread
+    self._io_loop.call_later(self.flush_interval, self._flush)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\tornado\ioloop.py", line 617, in call_later
+    return self.call_at(self.time() + delay, callback, *args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\tornado\platform\asyncio.py", line 222, in call_at
+    return self.asyncio_loop.call_later(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        max(0, when - self.time()),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self._run_callback,
+        ^^^^^^^^^^^^^^^^^^^
+        functools.partial(callback, *args, **kwargs),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 793, in call_later
+    timer = self.call_at(self.time() + delay, callback, *args,
+                         context=context)
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 806, in call_at
+    self._check_closed()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 550, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+Call stack:
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\ipykernel\thread.py", line 24, in run
+    self.io_loop.start()
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\tornado\platform\asyncio.py", line 211, in start
+    self.asyncio_loop.run_forever()
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 677, in run_forever
+    self._run_once()
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 2046, in _run_once
+    handle._run()
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\events.py", line 94, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\eventloop\zmqstream.py", line 567, in _log_error
+    gen_log.error(
+Message: 'Uncaught exception in ZMQStream callback'
+Arguments: ()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[14/08/2026 16:33:07.48] Ejecucion exitosa 
+[17/08/2026 16:32:21.01] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11488 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[17/08/2026 16:33:13.68] Ejecucion exitosa 
+[18/08/2026 16:32:21.14] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[18/08/2026 16:33:10.92] Ejecucion exitosa 

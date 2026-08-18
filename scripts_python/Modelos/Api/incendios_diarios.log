@@ -1,0 +1,68 @@
+2026-04-06 16:19:58  INFO  GET https://puntosdecalor.ideam.gov.co/download-result/  |  fecha=2026-04-05
+2026-04-06 16:19:58  INFO  Descargados 291 puntos de calor para 2026-04-05.
+2026-04-06 16:19:59  WARNING  Fecha 2026-04-05 ya existe en el archivo. No se agregan duplicados.
+2026-04-06 19:21:01  INFO  GET https://puntosdecalor.ideam.gov.co/download-result/  |  fecha=2026-04-05
+2026-04-06 19:21:01  INFO  Descargados 291 puntos de calor para 2026-04-05.
+2026-04-06 19:21:02  ERROR  Error: [Errno 13] Permission denied: 'C:\\Users\\Usuario\\OneDrive - Global Green Growth Institute\\Documentos\\2025\\Outputs\\Output4\\Indicadores\\Incendios\\incendios diarios.xlsx'
+Traceback (most recent call last):
+  File "C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\incendios_diarios.py", line 96, in <module>
+    guardar(df)
+    ~~~~~~~^^^^
+  File "C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\incendios_diarios.py", line 67, in guardar
+    df_existing = pd.read_excel(OUTPUT_FILE, engine="openpyxl")
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\excel\_base.py", line 495, in read_excel
+    io = ExcelFile(
+        io,
+    ...<2 lines>...
+        engine_kwargs=engine_kwargs,
+    )
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\excel\_base.py", line 1567, in __init__
+    self._reader = self._engines[engine](
+                   ~~~~~~~~~~~~~~~~~~~~~^
+        self._io,
+        ^^^^^^^^^
+        storage_options=storage_options,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        engine_kwargs=engine_kwargs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\excel\_openpyxl.py", line 553, in __init__
+    super().__init__(
+    ~~~~~~~~~~~~~~~~^
+        filepath_or_buffer,
+        ^^^^^^^^^^^^^^^^^^^
+        storage_options=storage_options,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        engine_kwargs=engine_kwargs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\excel\_base.py", line 563, in __init__
+    self.handles = get_handle(
+                   ~~~~~~~~~~^
+        filepath_or_buffer, "rb", storage_options=storage_options, is_text=False
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\common.py", line 882, in get_handle
+    handle = open(handle, ioargs.mode)
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\Usuario\\OneDrive - Global Green Growth Institute\\Documentos\\2025\\Outputs\\Output4\\Indicadores\\Incendios\\incendios diarios.xlsx'
+2026-04-06 19:22:50  INFO  GET https://puntosdecalor.ideam.gov.co/download-result/  |  fecha=2026-04-05
+2026-04-06 19:22:51  INFO  Descargados 291 puntos de calor para 2026-04-05.
+2026-04-06 19:22:51  WARNING  Fecha 2026-04-05 ya existe en el archivo. No se agregan duplicados.
+2026-04-06 19:26:35  INFO  GET https://puntosdecalor.ideam.gov.co/download-result/  |  fecha=2026-04-05
+2026-04-06 19:26:35  INFO  Descargados 291 puntos de calor para 2026-04-05.
+2026-04-06 19:26:36  WARNING  Fecha 2026-04-05 ya existe en el archivo. No se agregan duplicados.
+2026-04-06 19:30:49  INFO  GET https://puntosdecalor.ideam.gov.co/download-result/  |  fecha=2026-04-05
+2026-04-06 19:30:50  INFO  Descargados 291 puntos de calor para 2026-04-05.
+2026-04-06 19:30:50  WARNING  Fecha 2026-04-05 ya existe en el archivo. No se agregan duplicados.
+2026-04-06 20:17:19  INFO  GET https://puntosdecalor.ideam.gov.co/download-result/  |  fecha=2026-04-05
+2026-04-06 20:17:20  INFO  Descargados 291 puntos de calor para 2026-04-05.
+2026-04-06 20:17:20  WARNING  Fecha 2026-04-05 ya existe en el archivo. No se agregan duplicados.
+2026-04-21 11:11:27  INFO  GET https://puntosdecalor.ideam.gov.co/download-result/  |  fecha=2026-04-20
+2026-04-21 11:11:28  INFO  Descargados 1,016 puntos de calor para 2026-04-20.
+2026-04-21 11:11:28  INFO  Archivo guardado: C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output4\Indicadores\Incendios\incendios diarios.xlsx  (1,307 filas totales)
+2026-05-19 23:08:28  INFO  GET https://puntosdecalor.ideam.gov.co/download-result/  |  fecha=2026-05-18
+2026-05-19 23:08:29  INFO  Descargados 182 puntos de calor para 2026-05-18.
+2026-05-19 23:08:29  INFO  Archivo guardado: C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output4\Indicadores\Incendios\incendios diarios.xlsx  (1,489 filas totales)

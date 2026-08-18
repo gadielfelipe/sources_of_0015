@@ -1,0 +1,129 @@
+2026-04-06 19:20:30  INFO      ============================================================
+2026-04-06 19:20:30  INFO      INICIO ACTUALIZACION DASHBOARD  2026-04-06 19:20:30
+2026-04-06 19:20:30  INFO      ============================================================
+2026-04-06 19:20:30  INFO      INICIO  – Precipitacion diaria (datos_municipios.csv)
+2026-04-06 19:21:00  INFO      OK      – Precipitacion diaria (datos_municipios.csv)  (29s)
+2026-04-06 19:21:00  INFO      INICIO  – Puntos de calor – Incendios (incendios_ultimo_dia.csv)
+2026-04-06 19:21:02  ERROR     ERROR   – Puntos de calor – Incendios (incendios_ultimo_dia.csv)  (2s)
+_
+    super().__init__(
+    ~~~~~~~~~~~~~~~~^
+        filepath_or_buffer,
+        ^^^^^^^^^^^^^^^^^^^
+        storage_options=storage_options,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        engine_kwargs=engine_kwargs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\excel\_base.py", line 563, in __init__
+    self.handles = get_handle(
+                   ~~~~~~~~~~^
+        filepath_or_buffer, "rb", storage_options=storage_options, is_text=False
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Usuario\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pandas\io\common.py", line 882, in get_handle
+    handle = open(handle, ioargs.mode)
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\Usuario\\OneDrive - Global Green Growth Institute\\Documentos\\2025\\Outputs\\Output4\\Indicadores\\Incendios\\incendios diarios.xlsx'
+
+2026-04-06 19:21:02  INFO      INICIO  – Incendios – cruce municipal + exportar CSV web
+2026-04-06 19:21:13  ERROR     ERROR   – Incendios – cruce municipal + exportar CSV web  (11s)
+m, in [36mget_handle[39m[34m(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)[39m
+[32m    873[39m         handle = [38;5;28mopen[39m(
+[32m    874[39m             handle,
+[32m    875[39m             ioargs.mode,
+[32m   (...)[39m[32m    878[39m             newline=[33m"[39m[33m"[39m,
+[32m    879[39m         )
+[32m    880[39m     [38;5;28;01melse[39;00m:
+[32m    881[39m         [38;5;66;03m# Binary mode[39;00m
+[32m--> [39m[32m882[39m         handle = [38;5;28;43mopen[39;49m[43m([49m[43mhandle[49m[43m,[49m[43m [49m[43mioargs[49m[43m.[49m[43mmode[49m[43m)[49m
+[32m    883[39m     handles.append(handle)
+[32m    885[39m [38;5;66;03m# Convert BytesIO or file objects passed with an encoding[39;00m
+
+[31mPermissionError[39m: [Errno 13] Permission denied: 'C:\\Users\\Usuario\\OneDrive - Global Green Growth Institute\\Documentos\\2025\\Outputs\\Output4\\Indicadores\\Incendios\\incendios diarios.xlsx'
+
+
+2026-04-06 19:21:13  INFO      INICIO  – Amenazas deslizamientos (amenazas_municipal.csv)
+2026-04-06 19:21:35  INFO      OK      – Amenazas deslizamientos (amenazas_municipal.csv)  (21s)
+2026-04-06 19:21:35  INFO      FIN  2/4 OK  64s
+2026-04-06 19:21:35  INFO      ============================================================
+2026-04-06 19:25:46  INFO      ============================================================
+2026-04-06 19:25:46  INFO      INICIO ACTUALIZACION DASHBOARD  2026-04-06 19:25:46
+2026-04-06 19:25:46  INFO      ============================================================
+2026-04-06 19:25:46  INFO      INICIO  – Precipitacion diaria (datos_municipios.csv)
+2026-04-06 19:26:33  INFO      OK      – Precipitacion diaria (datos_municipios.csv)  (46s)
+2026-04-06 19:26:33  INFO      INICIO  – Puntos de calor – Incendios (incendios_ultimo_dia.csv)
+2026-04-06 19:26:36  INFO      OK      – Puntos de calor – Incendios (incendios_ultimo_dia.csv)  (2s)
+2026-04-06 19:26:36  INFO      INICIO  – Incendios – cruce municipal + exportar CSV web
+2026-04-06 19:26:50  INFO      OK      – Incendios – cruce municipal + exportar CSV web  (14s)
+2026-04-06 19:26:50  INFO      INICIO  – Amenazas deslizamientos (amenazas_municipal.csv)
+2026-04-06 19:27:09  INFO      OK      – Amenazas deslizamientos (amenazas_municipal.csv)  (18s)
+2026-04-06 19:27:09  INFO      FIN  4/4 OK  82s
+2026-04-06 19:27:09  INFO      ============================================================
+2026-04-06 19:30:01  INFO      ============================================================
+2026-04-06 19:30:01  INFO      INICIO ACTUALIZACION DASHBOARD  2026-04-06 19:30:01
+2026-04-06 19:30:01  INFO      ============================================================
+2026-04-06 19:30:01  INFO      INICIO  – Precipitacion diaria (datos_municipios.csv)
+2026-04-06 19:30:48  INFO      OK      – Precipitacion diaria (datos_municipios.csv)  (46s)
+2026-04-06 19:30:48  INFO      INICIO  – Puntos de calor – Incendios (incendios_ultimo_dia.csv)
+2026-04-06 19:30:50  INFO      OK      – Puntos de calor – Incendios (incendios_ultimo_dia.csv)  (2s)
+2026-04-06 19:30:50  INFO      INICIO  – Incendios – cruce municipal + exportar CSV web
+2026-04-06 19:31:00  INFO      OK      – Incendios – cruce municipal + exportar CSV web  (10s)
+2026-04-06 19:31:00  INFO      INICIO  – Amenazas deslizamientos (amenazas_municipal.csv)
+2026-04-06 19:31:16  INFO      OK      – Amenazas deslizamientos (amenazas_municipal.csv)  (15s)
+2026-04-06 19:31:17  INFO      Git commit OK  – [main fcb1fcd] auto: actualizacion diaria 2026-04-06
+ 3 files changed, 2004 insertions(+), 1280 deletions(-)
+2026-04-06 19:31:17  INFO      FIN  4/4 OK  74s
+2026-04-06 19:31:17  INFO      ============================================================
+2026-04-06 20:15:49  INFO      ============================================================
+2026-04-06 20:15:49  INFO      INICIO ACTUALIZACION DASHBOARD  2026-04-06 20:15:49
+2026-04-06 20:15:49  INFO      ============================================================
+2026-04-06 20:15:49  INFO      INICIO  – Precipitacion diaria – descarga a Excel histórico
+2026-04-06 20:16:38  INFO      OK      – Precipitacion diaria – descarga a Excel histórico  (49s)
+2026-04-06 20:16:38  INFO      INICIO  – Precipitacion diaria – cruce municipal + datos_municipios.csv
+2026-04-06 20:17:18  INFO      OK      – Precipitacion diaria – cruce municipal + datos_municipios.csv  (39s)
+2026-04-06 20:17:18  INFO      INICIO  – Puntos de calor – Incendios (incendios_ultimo_dia.csv)
+2026-04-06 20:17:20  INFO      OK      – Puntos de calor – Incendios (incendios_ultimo_dia.csv)  (2s)
+2026-04-06 20:17:20  INFO      INICIO  – Incendios – cruce municipal + exportar CSV web
+2026-04-06 20:17:33  INFO      OK      – Incendios – cruce municipal + exportar CSV web  (12s)
+2026-04-06 20:17:33  INFO      INICIO  – Amenazas deslizamientos (amenazas_municipal.csv)
+2026-04-06 20:17:56  INFO      OK      – Amenazas deslizamientos (amenazas_municipal.csv)  (22s)
+2026-04-06 20:17:57  INFO      Git commit OK  – [main 9e7a9f0] auto: actualizacion diaria 2026-04-06
+ 3 files changed, 1621 insertions(+), 1276 deletions(-)
+2026-04-06 20:17:57  INFO      FIN  5/5 OK  127s
+2026-04-06 20:17:57  INFO      ============================================================
+2026-04-21 11:09:52  INFO      ============================================================
+2026-04-21 11:09:52  INFO      INICIO ACTUALIZACION DASHBOARD  2026-04-21 11:09:52
+2026-04-21 11:09:52  INFO      ============================================================
+2026-04-21 11:09:52  INFO      INICIO  – Precipitacion diaria – descarga a Excel histórico
+2026-04-21 11:10:29  INFO      OK      – Precipitacion diaria – descarga a Excel histórico  (37s)
+2026-04-21 11:10:29  INFO      INICIO  – Precipitacion diaria – cruce municipal + datos_municipios.csv
+2026-04-21 11:11:27  INFO      OK      – Precipitacion diaria – cruce municipal + datos_municipios.csv  (57s)
+2026-04-21 11:11:27  INFO      INICIO  – Puntos de calor – Incendios (incendios_ultimo_dia.csv)
+2026-04-21 11:11:28  INFO      OK      – Puntos de calor – Incendios (incendios_ultimo_dia.csv)  (1s)
+2026-04-21 11:11:28  INFO      INICIO  – Incendios – cruce municipal + exportar CSV web
+2026-04-21 11:11:40  INFO      OK      – Incendios – cruce municipal + exportar CSV web  (11s)
+2026-04-21 11:11:40  INFO      INICIO  – Amenazas deslizamientos (amenazas_municipal.csv)
+2026-04-21 11:11:51  INFO      OK      – Amenazas deslizamientos (amenazas_municipal.csv)  (11s)
+2026-04-21 11:11:52  INFO      Git commit OK  – [main c55ff0e] auto: actualizacion diaria 2026-04-21
+ 4 files changed, 2610 insertions(+), 1280 deletions(-)
+2026-04-21 11:11:52  INFO      FIN  5/5 OK  119s
+2026-04-21 11:11:52  INFO      ============================================================
+2026-05-19 23:07:00  INFO      ============================================================
+2026-05-19 23:07:00  INFO      INICIO ACTUALIZACION DASHBOARD  2026-05-19 23:07:00
+2026-05-19 23:07:00  INFO      ============================================================
+2026-05-19 23:07:00  INFO      INICIO  – Precipitacion diaria – descarga a Excel histórico
+2026-05-19 23:08:07  INFO      OK      – Precipitacion diaria – descarga a Excel histórico  (66s)
+2026-05-19 23:08:07  INFO      INICIO  – Precipitacion diaria – cruce municipal + datos_municipios.csv
+2026-05-19 23:08:28  INFO      OK      – Precipitacion diaria – cruce municipal + datos_municipios.csv  (21s)
+2026-05-19 23:08:28  INFO      INICIO  – Puntos de calor – Incendios (incendios_ultimo_dia.csv)
+2026-05-19 23:08:29  INFO      OK      – Puntos de calor – Incendios (incendios_ultimo_dia.csv)  (1s)
+2026-05-19 23:08:29  INFO      INICIO  – Incendios – cruce municipal + exportar CSV web
+2026-05-19 23:08:35  INFO      OK      – Incendios – cruce municipal + exportar CSV web  (6s)
+2026-05-19 23:08:35  INFO      INICIO  – Amenazas deslizamientos (amenazas_municipal.csv)
+2026-05-19 23:08:47  INFO      OK      – Amenazas deslizamientos (amenazas_municipal.csv)  (11s)
+2026-05-19 23:08:47  INFO      Git commit OK  – [main df6c339] auto: actualizacion diaria 2026-05-19
+ 4 files changed, 1105 insertions(+), 1967 deletions(-)
+2026-05-19 23:08:47  INFO      FIN  5/5 OK  107s
+2026-05-19 23:08:47  INFO      ============================================================
