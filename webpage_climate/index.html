@@ -803,6 +803,7 @@
       'NORMAL':   '#adb5bd',
       'LEVE':     '#ffe066',
       'MODERADA': '#f0b429',
+      'ALTA':     '#f0813d',
       'SEVERA':   '#e8590c',
       'EXTREMA':  '#7b0000',
     };
@@ -811,9 +812,16 @@
       { label: 'Normal',   color: '#adb5bd' },
       { label: 'Leve',     color: '#ffe066' },
       { label: 'Moderada', color: '#f0b429' },
+      { label: 'Alta',     color: '#f0813d' },
       { label: 'Severa',   color: '#e8590c' },
       { label: 'Extrema',  color: '#7b0000' },
     ];
+
+    // Categorías de sequía que cuentan como "en alerta" en KPIs, mapa,
+    // filtros y en el cálculo de exposición de cartera. ALTA es el escalón
+    // intermedio entre MODERADA y SEVERA (ver categorizar_sequia en
+    // datos precipitacion historicos.ipynb).
+    const SEQUIA_EN_ALERTA = ['ALTA', 'SEVERA', 'EXTREMA'];
 
     // ── Choropleth fill colors (polygon map) ──────────────────────────────
     const ALERTA_POLY_COLORS = {
@@ -827,6 +835,7 @@
       'NORMAL':   '#c8e6b0',
       'LEVE':     '#ffe680',
       'MODERADA': '#ffb74d',
+      'ALTA':     '#ff9d4d',
       'SEVERA':   '#e07030',
       'EXTREMA':  '#c01010',
     };
@@ -933,7 +942,7 @@
     function computeKpisSequia(data) {
       if (!data.length) return { total: 0, enAlertaSequia: 0, pctSevera: '0.0', topMpio: '', topFrecuencia: 0 };
       const total          = data.length;
-      const enAlertaSequia = data.filter(d => ['SEVERA','EXTREMA'].includes(d.sequia_categoria)).length;
+      const enAlertaSequia = data.filter(d => SEQUIA_EN_ALERTA.includes(d.sequia_categoria)).length;
       const pctSevera      = ((enAlertaSequia / total) * 100).toFixed(1);
       const top            = data.reduce((a, b) => (b.frecuencia_reciente > a.frecuencia_reciente ? b : a));
       return { total, enAlertaSequia, pctSevera, topMpio: top.NOM_MPIO, topFrecuencia: top.frecuencia_reciente };
@@ -959,7 +968,7 @@
       if (!data.length) return { total: 0, enAlerta: 0, enAlertaSequia: 0, promedio: '0.00', maximo: 0, maxMpio: '' };
       const total          = data.length;
       const enAlerta       = data.filter(d => d.alerta >= 2).length;   // ALTA + CRÍTICA
-      const enAlertaSequia = data.filter(d => d.sequia_categoria === 'SEVERA').length;
+      const enAlertaSequia = data.filter(d => SEQUIA_EN_ALERTA.includes(d.sequia_categoria)).length;
       const sum            = data.reduce((acc, d) => acc + d.precip_acum_mm, 0);
       const promedio       = (sum / total).toFixed(2);
       const maxRow         = data.reduce((a, b) => b.precip_acum_mm > a.precip_acum_mm ? b : a);
@@ -1130,10 +1139,10 @@
           metodologia: '&#8226; <b>BAJA:</b> precipitaci&#243;n dentro de rangos hist&#243;ricos normales.<br>&#8226; <b>MODERADA:</b> eventos en percentil 90 con baja frecuencia reciente.<br>&#8226; <b>ALTA:</b> precipitaci&#243;n acumulada supera percentil 90 o frecuencia de extremos elevada en los &#250;ltimos 2 a&#241;os.<br>&#8226; <b>CR&#205;TICA:</b> alerta ALTA + antecedente hist&#243;rico de inundaciones registrado por IDEAM.',
         },
         sequias: {
-          desc: 'Mide la proporci&#243;n de cartera en municipios con d&#233;ficit h&#237;drico severo (sequ&#237;a recurrente), evaluado mediante el &#205;ndice de Precipitaci&#243;n Estandarizado (SPI) y la frecuencia hist&#243;rica de per&#237;odos secos.',
-          formula: 'Exposici&#243;n (%) = (Cartera en mpios. con sequ&#237;a SEVERA) / (Cartera total) &times; 100',
+          desc: 'Mide la proporci&#243;n de cartera en municipios con d&#233;ficit h&#237;drico alto o severo (sequ&#237;a recurrente), evaluado mediante el &#205;ndice de Precipitaci&#243;n Estandarizado (SPI) y la frecuencia hist&#243;rica de per&#237;odos secos.',
+          formula: 'Exposici&#243;n (%) = (Cartera en mpios. con sequ&#237;a ALTA, SEVERA o EXTREMA) / (Cartera total) &times; 100',
           source: 'IDEAM &#8211; dataset de precipitaci&#243;n diaria (datos.gov.co). C&#225;lculo de SPI a escala mensual y acumulado anual por municipio. Clasificaci&#243;n de sequ&#237;a basada en umbrales SPI est&#225;ndar (WMO).',
-          metodologia: '&#8226; <b>Sin sequ&#237;a:</b> SPI &gt; &#8722;1.0, precipitaci&#243;n dentro de rangos normales.<br>&#8226; <b>MODERADA:</b> SPI entre &#8722;1.0 y &#8722;1.5, d&#233;ficit leve recurrente.<br>&#8226; <b>SEVERA:</b> SPI &lt; &#8722;1.5 o m&#225;s de 6 meses consecutivos por debajo del percentil 25.<br>&#8226; <b>EXTREMA:</b> SPI &lt; &#8722;2.0, condici&#243;n cr&#237;tica hist&#243;ricamente atribuida a sequ&#237;a prolongada.',
+          metodologia: '&#8226; <b>Sin sequ&#237;a:</b> SPI &gt; &#8722;1.0, precipitaci&#243;n dentro de rangos normales.<br>&#8226; <b>MODERADA:</b> SPI entre &#8722;1.0 y &#8722;1.5, d&#233;ficit leve recurrente.<br>&#8226; <b>ALTA:</b> alta frecuencia hist&#243;rica de rachas secas con tendencia creciente o aceleraci&#243;n reciente (una de las dos se&#241;ales).<br>&#8226; <b>SEVERA:</b> SPI &lt; &#8722;1.5, o alta frecuencia hist&#243;rica de rachas secas con tendencia creciente Y aceleraci&#243;n reciente a la vez.<br>&#8226; <b>EXTREMA:</b> SPI &lt; &#8722;2.0, condici&#243;n cr&#237;tica hist&#243;ricamente atribuida a sequ&#237;a prolongada.',
         },
         deslizamientos: {
           desc: 'Mide la proporci&#243;n de cartera en municipios con amenaza ALTA por movimientos en masa, cruzada con alertas de precipitaci&#243;n activas, lo que eleva significativamente el riesgo de deslizamientos e inestabilidad de taludes.',
@@ -1244,6 +1253,7 @@
     const SEQUIA_BADGE = {
       'EXTREMA':  '<span style="color:#7b0000;font-weight:700;">⚠ EXTREMA</span>',
       'SEVERA':   '<span style="color:#e8590c;font-weight:600;">⚠ SEVERA</span>',
+      'ALTA':     '<span style="color:#f0813d;font-weight:600;">⚠ ALTA</span>',
       'MODERADA': '<span style="color:#f0b429;font-weight:600;">MODERADA</span>',
       'LEVE':     '<span style="color:#c8a96e;">LEVE</span>',
       'NORMAL':   '<span style="color:#4fa89b;">✓ NORMAL</span>',
@@ -1871,7 +1881,7 @@
           if (isHist) {
             if (mode === 'sequias') {
               const sequia  = feature.properties.sequia_categoria ?? 'NORMAL';
-              const isAlert = sequia === 'SEVERA' || sequia === 'EXTREMA';
+              const isAlert = SEQUIA_EN_ALERTA.includes(sequia);
               return {
                 pane:        'choroPane',
                 fillColor:   SEQUIA_POLY_COLORS[sequia] ?? '#d8d4ce',
@@ -1935,7 +1945,7 @@
           if (isHist) {
             if (mode === 'sequias') {
               const sequia = lyr.feature.properties.sequia_categoria ?? '';
-              if (sequia === 'SEVERA' || sequia === 'EXTREMA') alertLayers.push({ lyr, alerta: '', sequia });
+              if (SEQUIA_EN_ALERTA.includes(sequia)) alertLayers.push({ lyr, alerta: '', sequia });
               return;
             }
             const alerta = lyr.feature.properties.alerta_lluvias ?? '';
@@ -1947,7 +1957,7 @@
           const alerta = row.alerta_compuesta ?? lyr.feature.properties.alerta_compuesta ?? '';
           const sequia = row.sequia_categoria ?? lyr.feature.properties.sequia_categoria ?? '';
           const pulse  = mode === 'sequias'
-            ? (sequia === 'SEVERA'  || sequia === 'EXTREMA')
+            ? SEQUIA_EN_ALERTA.includes(sequia)
             : (alerta === 'ALTA'   || alerta === 'CRÍTICA');
           if (pulse) alertLayers.push({ lyr, alerta, sequia });
         });
@@ -1992,7 +2002,7 @@
 
       const CONFIGS = {
         lluvias:        { indicador:'lluvias',        title: 'Reporte Cartera – Alerta Lluvias',        indicadorLabel: 'Precipitación / Lluvias',    alertColor: '#e03131', csv: 'cartera_lluvias.csv'        },
-        sequias:        { indicador:'sequias',        title: 'Reporte Cartera – Sequía Severa',    indicadorLabel: 'Sequía recurrente (SPI)',    alertColor: '#e8590c', csv: 'cartera_sequias.csv'        },
+        sequias:        { indicador:'sequias',        title: 'Reporte Cartera – Sequía Alta/Severa',    indicadorLabel: 'Sequía recurrente (SPI)',    alertColor: '#e8590c', csv: 'cartera_sequias.csv'        },
         deslizamientos: { indicador:'deslizamientos', title: 'Reporte Cartera – Deslizamientos ALTA',   indicadorLabel: 'Movimientos en masa (SGC)',       alertColor: '#2d6b3c', csv: 'cartera_deslizamientos.csv' },
       };
       const cfg = CONFIGS[indicador] ?? CONFIGS.lluvias;
@@ -2116,8 +2126,8 @@
     // ─── Section Table Boxes ──────────────────────────────────────────────────
 
     function SequiasTableBox({ data }) {
-      const catOrder = { EXTREMA:4, SEVERA:3, MODERADA:2, LEVE:1, NORMAL:0 };
-      const catColor  = { EXTREMA:'#7b0000', SEVERA:'#e8590c', MODERADA:'#f0b429', LEVE:'#ffe066', NORMAL:'#adb5bd' };
+      const catOrder = { EXTREMA:5, SEVERA:4, ALTA:3, MODERADA:2, LEVE:1, NORMAL:0 };
+      const catColor  = { EXTREMA:'#7b0000', SEVERA:'#e8590c', ALTA:'#f0813d', MODERADA:'#f0b429', LEVE:'#ffe066', NORMAL:'#adb5bd' };
       const sorted = useMemo(
         () => [...data].sort((a, b) => (catOrder[b.sequia_categoria]??0) - (catOrder[a.sequia_categoria]??0)),
         [data]
@@ -2532,7 +2542,7 @@
     function OverviewKpiStrip({ allData, alertaHistRows, amenazasData, apData }) {
       const nMpios      = alertaHistRows.length;                                   // cobertura completa (radio 50 km)
       const nLluvias    = allData.filter(d => d.alerta >= 2).length;               // ALTA + CRÍTICA (dato diario)
-      const nSequias    = alertaHistRows.filter(d => ['SEVERA','EXTREMA'].includes(d.sequia_categoria)).length;
+      const nSequias    = alertaHistRows.filter(d => SEQUIA_EN_ALERTA.includes(d.sequia_categoria)).length;
       const nDesliz     = Object.values(amenazasData).filter(d => d.alerta_deslizamiento === 'ALTA').length;
       const nAreas      = apData.filter(r => (r.tiene_area_protegida ?? r['﻿tiene_area_protegida'] ?? '0') === '1').length;
       return (
@@ -2817,12 +2827,12 @@
       const filtered = useMemo(() =>
         data
           .filter(d => deptFilter === 'ALL' || d.NOM_DPTO === deptFilter)
-          .filter(d => !severeOnly || ['SEVERA','EXTREMA'].includes(d.sequia_categoria)),
+          .filter(d => !severeOnly || SEQUIA_EN_ALERTA.includes(d.sequia_categoria)),
         [data, deptFilter, severeOnly]
       );
 
       const enAlertaSequia = useMemo(
-        () => filtered.filter(d => ['SEVERA','EXTREMA'].includes(d.sequia_categoria)).length,
+        () => filtered.filter(d => SEQUIA_EN_ALERTA.includes(d.sequia_categoria)).length,
         [filtered]
       );
       const kpisSeq = useMemo(() => computeKpisSequia(filtered), [filtered]);
@@ -2864,7 +2874,7 @@
             <div className="dashboard-main">
               <div className="kpi-grid reveal">
                 <KpiCard label="Municipios filtrados"          value={filtered.length}           icon={ICONS.municipios} />
-                <KpiCard label="Sequ&#237;a severa / extrema"  value={enAlertaSequia}            icon={ICONS.sequia}     accent="red" />
+                <KpiCard label="Sequ&#237;a alta / severa / extrema"  value={enAlertaSequia}     icon={ICONS.sequia}     accent="red" />
                 <KpiCard label="D&#233;ficit severo/extremo"   value={`${kpisSeq.pctSevera}%`}   icon={ICONS.sequia}     accent="gold" />
                 <KpiCard label="Municipio m&#225;s cr&#237;tico" value={kpisSeq.topMpio || '—'}  icon={ICONS.alerta}     accent="red" sub={`${(kpisSeq.topFrecuencia * 100).toFixed(1)}% frec. reciente`} />
               </div>
@@ -2880,15 +2890,15 @@
                     onDeptChange={setDeptFilter}
                     onAlertToggle={() => setSevereOnly(v => !v)}
                     onDownload={() => downloadSequiasCSV(filtered, dataFecha)}
-                    alertLabel="Solo sequía severa / extrema"
+                    alertLabel="Solo sequía alta / severa / extrema"
                   />
                   <StatsBox filteredCount={filtered.length} total={data.length} />
                   <SequiasTableBox data={filtered} />
                   <CarteraBoxSection
                     indicador="sequias"
                     alertaLookup={sequiaAlertaLookup}
-                    alertTargets={['SEVERA','EXTREMA']}
-                    alertLabel="Sequía SEVERA o EXTREMA"
+                    alertTargets={SEQUIA_EN_ALERTA}
+                    alertLabel="Sequía ALTA, SEVERA o EXTREMA"
                     dataFecha={dataFecha}
                   />
                 </div>
