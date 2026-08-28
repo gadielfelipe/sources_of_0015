@@ -928,8 +928,14 @@
           ratio_anio_corrido:             parseFloat(r.ratio_anio_corrido)  || 0,
           ratio_ultimos_6m:               parseFloat(r.ratio_ultimos_6m)    || 0,
           condicion_lluvia_6m:            (r.condicion_lluvia_6m ?? 'sin_datos').trim(),
+          ratio_volumen_3m:               parseFloat(r.ratio_volumen_3m)    || 0,
+          condicion_lluvia_3m:            (r.condicion_lluvia_3m ?? 'sin_datos').trim(),
           sequia_categoria:               (r.sequia_categoria ?? 'NORMAL').trim(),
           sequia_nivel:                   parseFloat(r.sequia_nivel)        || 0,
+          freq_sequia_hist:               parseFloat(r.freq_sequia_hist)    || 0,
+          freq_sequia_rec_3m:             parseFloat(r.freq_sequia_rec_3m)  || 0,
+          racha_activa_dias:              parseFloat(r.racha_activa_dias)   || 0,
+          tendencia_sequia:               (r.tendencia_sequia ?? 'sin_datos').trim(),
           n_estaciones:                   parseInt(r.n_estaciones, 10)      || 0,
           distancia_km_estacion_asignada: parseFloat(r.distancia_km_estacion_asignada) || 0,
           municipio_afectado:             parseInt(r.municipio_afectado, 10) || 0,
@@ -944,8 +950,8 @@
       const total          = data.length;
       const enAlertaSequia = data.filter(d => SEQUIA_EN_ALERTA.includes(d.sequia_categoria)).length;
       const pctSevera      = ((enAlertaSequia / total) * 100).toFixed(1);
-      const top            = data.reduce((a, b) => (b.frecuencia_reciente > a.frecuencia_reciente ? b : a));
-      return { total, enAlertaSequia, pctSevera, topMpio: top.NOM_MPIO, topFrecuencia: top.frecuencia_reciente };
+      const top            = data.reduce((a, b) => ((b.freq_sequia_rec_3m ?? 0) > (a.freq_sequia_rec_3m ?? 0) ? b : a));
+      return { total, enAlertaSequia, pctSevera, topMpio: top.NOM_MPIO, topFrecuencia: top.freq_sequia_rec_3m ?? 0 };
     }
 
     // KPIs de la sección Lluvias sobre el universo completo de municipios
@@ -977,9 +983,13 @@
 
     // ─── CSV Download Helper ──────────────────────────────────────────────────
 
-    function downloadCSV(data, filename) {
+    function downloadCSV(data, filename, customHeaders) {
       if (!data.length) return;
-      const headers = ['COD_MPIO','NOM_MPIO','NOM_DPTO','precip_acum_mm','precip_max_10min',
+      // Sin customHeaders (uso genérico, p.ej. "Municipios filtrados" en la
+      // portada) se exportan ambos indicadores juntos. Las secciones
+      // Lluvias/Sequías pasan su propia lista para no mezclar métricas del
+      // otro indicador en su descarga.
+      const headers = customHeaders ?? ['COD_MPIO','NOM_MPIO','NOM_DPTO','precip_acum_mm','precip_max_10min',
                        'alerta_compuesta','frecuencia_extremos','frecuencia_reciente',
                        'ratio_reciente','tendencia','sequia_categoria','n_estaciones','fecha'];
       const rows = data.map(r =>
@@ -1324,12 +1334,9 @@
       const badge       = ALERTA_BADGE[m.alerta_lluvias] ?? ALERTA_BADGE['BAJA'];
       const sequiaBadge = SEQUIA_BADGE[m.sequia_categoria] ?? SEQUIA_BADGE['NORMAL'];
       const sinDatos  = m.alerta_lluvias === 'SIN_DATOS';
-      const condLabel = { EXCESO: 'Exceso', DEFICIT: 'Déficit', NORMAL: 'Normal', sin_datos: 'Sin datos' }[m.condicion_lluvia_6m] ?? m.condicion_lluvia_6m;
-
-      const sequiaSection = m.sequia_categoria && m.sequia_categoria !== 'NORMAL' ? `
-          <hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">
-          <p style="font-size:12px;font-weight:600;color:#e67e22;margin-bottom:2px;">🌵 Sequía recurrente</p>
-          <p><b>Categoría:</b> <span style="color:#e67e22;font-weight:600;">${m.sequia_categoria}</span></p>` : '';
+      const condLabelMap = { EXCESO: 'Exceso', DEFICIT: 'Déficit', NORMAL: 'Normal', sin_datos: 'Sin datos' };
+      const cond6mLabel = condLabelMap[m.condicion_lluvia_6m] ?? m.condicion_lluvia_6m;
+      const cond3mLabel = condLabelMap[m.condicion_lluvia_3m] ?? m.condicion_lluvia_3m;
 
       const tieneAlertaEfectiva = m.alerta_lluvias === 'ALTA' || m.alerta_lluvias === 'CRÍTICA';
       const floodSection = m.municipio_afectado === 1
@@ -1345,6 +1352,13 @@
         ? `<p style="color:#8a9ab0;font-size:11px;margin-top:4px;">Sin estación IDEAM dentro de 50&nbsp;km.</p>`
         : `<p style="color:#8a9ab0;font-size:11px;margin-top:4px;">Estación asignada a ${Number(m.distancia_km_estacion_asignada ?? 0).toFixed(1)} km &middot; ${m.n_estaciones} estación(es) en el municipio.</p>`;
 
+      // Las dos vistas ("sequias" y "lluvias") muestran cada una SOLO sus
+      // propios indicadores. Antes el popup de sequía mostraba de prestado
+      // "Frec. extremos" y "Condición últimos 6 meses", que en realidad son
+      // métricas de LLUVIA (frecuencia de días extremos), no de sequía —
+      // por eso podían leerse como contradictorias (p.ej. sequía SEVERA con
+      // "Condición: Exceso"). El antecedente de inundaciones tampoco aplica
+      // a la vista de sequía: es información asociada a exceso de lluvia.
       if (mode === 'sequias') {
         return `
           <div style="font-family:'Lora',Georgia,serif;font-size:13px;min-width:220px;color:#f5f0e8;">
@@ -1354,10 +1368,10 @@
             <p style="font-size:12px;font-weight:600;color:#8a9ab0;margin-bottom:2px;">🌵 Alerta histórica — sequía (radio 50 km)</p>
             <p><b>Categoría:</b> ${sequiaBadge}</p>
             ${!sinDatos ? `
-            <p><b>Frec. extremos hist.:</b> ${(Number(m.frecuencia_extremos ?? 0) * 100).toFixed(1)}%</p>
-            <p><b>Frec. extremos 2 años:</b> ${(Number(m.frecuencia_reciente ?? 0) * 100).toFixed(1)}%</p>
-            <p><b>Condición últimos 6 meses:</b> ${condLabel}</p>` : ''}
-            ${floodSection}
+            <p><b>Frec. rachas secas extremas (hist.):</b> ${(Number(m.freq_sequia_hist ?? 0) * 100).toFixed(1)}%</p>
+            <p><b>Frec. rachas secas extremas (3 meses):</b> ${(Number(m.freq_sequia_rec_3m ?? 0) * 100).toFixed(1)}%</p>
+            <p><b>Racha seca activa:</b> ${Number(m.racha_activa_dias ?? 0) > 0 ? `${m.racha_activa_dias} días` : 'ninguna'}</p>
+            <p><b>Tendencia:</b> ${TENDENCIA_LABEL[m.tendencia_sequia] ?? m.tendencia_sequia}</p>` : ''}
             ${sinDatosNote}
           </div>`;
       }
@@ -1372,8 +1386,8 @@
           ${!sinDatos ? `
           <p><b>Frec. extremos hist.:</b> ${(Number(m.frecuencia_extremos ?? 0) * 100).toFixed(1)}%</p>
           <p><b>Frec. extremos 2 años:</b> ${(Number(m.frecuencia_reciente ?? 0) * 100).toFixed(1)}%</p>
-          <p><b>Condición últimos 6 meses:</b> ${condLabel}</p>` : ''}
-          ${sequiaSection}
+          <p><b>Volumen últimos 3 meses vs. normal:</b> ${cond3mLabel}</p>
+          <p><b>Condición últimos 6 meses:</b> ${cond6mLabel}</p>` : ''}
           ${floodSection}
           ${sinDatosNote}
         </div>`;
@@ -2142,7 +2156,7 @@
                   <th>Municipio</th>
                   <th className="hide-sm">Dpto.</th>
                   <th className="center">Categor&iacute;a</th>
-                  <th className="right">Frec. 2a</th>
+                  <th className="right">Frec. 3m</th>
                 </tr>
               </thead>
               <tbody>
@@ -2153,7 +2167,7 @@
                     <td className="td-center" style={{color: catColor[d.sequia_categoria]??'#adb5bd', fontWeight: d.sequia_categoria!=='NORMAL'?600:400}}>
                       {d.sequia_categoria}
                     </td>
-                    <td className="td-right">{((d.frecuencia_reciente ?? 0) * 100).toFixed(1)}%</td>
+                    <td className="td-right">{((d.freq_sequia_rec_3m ?? 0) * 100).toFixed(1)}%</td>
                   </tr>
                 ))}
               </tbody>
@@ -2751,7 +2765,13 @@
                       alertOnly={alertOnly}
                       onDeptChange={setDeptFilter}
                       onAlertToggle={() => setAlertOnly(v => !v)}
-                      onDownload={() => downloadCSV(filtered, `lluvias_${dataFecha ?? 'export'}.csv`)}
+                      onDownload={() => downloadCSV(
+                        filtered,
+                        `lluvias_${dataFecha ?? 'export'}.csv`,
+                        ['COD_MPIO','NOM_MPIO','NOM_DPTO','precip_acum_mm','precip_max_10min',
+                         'alerta_compuesta','frecuencia_extremos','frecuencia_reciente',
+                         'ratio_reciente','tendencia','n_estaciones','fecha']
+                      )}
                       alertLabel="Solo municipios en alerta lluvias"
                     />
                     <StatsBox filteredCount={filtered.length} total={merged.length} />
@@ -2844,10 +2864,11 @@
       }, [data]);
 
       function downloadSequiasCSV(rows, fecha) {
-        const headers = ['COD_MPIO','NOM_MPIO','NOM_DPTO','sequia_categoria','frecuencia_extremos','frecuencia_reciente','condicion_lluvia_6m'];
+        const headers = ['COD_MPIO','NOM_MPIO','NOM_DPTO','sequia_categoria','freq_sequia_hist','freq_sequia_rec_3m','racha_activa_dias','tendencia_sequia'];
         const lines = rows.map(r =>
           [r.COD_MPIO, `"${r.NOM_MPIO}"`, `"${r.NOM_DPTO}"`, r.sequia_categoria,
-           (r.frecuencia_extremos * 100).toFixed(1), (r.frecuencia_reciente * 100).toFixed(1), r.condicion_lluvia_6m].join(',')
+           ((r.freq_sequia_hist ?? 0) * 100).toFixed(1), ((r.freq_sequia_rec_3m ?? 0) * 100).toFixed(1),
+           r.racha_activa_dias ?? 0, r.tendencia_sequia ?? 'sin_datos'].join(',')
         );
         const csv  = '﻿' + [headers.join(','), ...lines].join('\r\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
