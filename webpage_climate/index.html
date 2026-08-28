@@ -945,12 +945,24 @@
 
     // KPIs de la sección Sequías a partir del dataset histórico (sin datos
     // de precipitación diaria — solo frecuencia/categoría de sequía).
+    const SEQUIA_CAT_ORDER = { EXTREMA: 5, SEVERA: 4, ALTA: 3, MODERADA: 2, LEVE: 1, NORMAL: 0 };
+
     function computeKpisSequia(data) {
       if (!data.length) return { total: 0, enAlertaSequia: 0, pctSevera: '0.0', topMpio: '', topFrecuencia: 0 };
       const total          = data.length;
       const enAlertaSequia = data.filter(d => SEQUIA_EN_ALERTA.includes(d.sequia_categoria)).length;
       const pctSevera      = ((enAlertaSequia / total) * 100).toFixed(1);
-      const top            = data.reduce((a, b) => ((b.freq_sequia_rec_3m ?? 0) > (a.freq_sequia_rec_3m ?? 0) ? b : a));
+      // "Más crítico" = mayor categoría de severidad primero; la frecuencia
+      // de 3 meses solo desempata dentro de la misma categoría. Antes se
+      // ordenaba solo por frecuencia, así que si esa columna aún no existe
+      // en los datos (todo en 0) el reduce() terminaba "eligiendo" el
+      // primer municipio del arreglo aunque estuviera en NORMAL.
+      const top = data.reduce((a, b) => {
+        const catA = SEQUIA_CAT_ORDER[a.sequia_categoria] ?? 0;
+        const catB = SEQUIA_CAT_ORDER[b.sequia_categoria] ?? 0;
+        if (catB !== catA) return catB > catA ? b : a;
+        return (b.freq_sequia_rec_3m ?? 0) > (a.freq_sequia_rec_3m ?? 0) ? b : a;
+      });
       return { total, enAlertaSequia, pctSevera, topMpio: top.NOM_MPIO, topFrecuencia: top.freq_sequia_rec_3m ?? 0 };
     }
 
