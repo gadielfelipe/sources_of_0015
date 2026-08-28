@@ -1371,7 +1371,7 @@
             <p><b>Frec. rachas secas extremas (hist.):</b> ${(Number(m.freq_sequia_hist ?? 0) * 100).toFixed(1)}%</p>
             <p><b>Frec. rachas secas extremas (3 meses):</b> ${(Number(m.freq_sequia_rec_3m ?? 0) * 100).toFixed(1)}%</p>
             <p><b>Racha seca activa:</b> ${Number(m.racha_activa_dias ?? 0) > 0 ? `${m.racha_activa_dias} días` : 'ninguna'}</p>
-            <p><b>Tendencia:</b> ${TENDENCIA_LABEL[m.tendencia_sequia] ?? m.tendencia_sequia}</p>` : ''}
+            <p><b>Tendencia:</b> ${TENDENCIA_LABEL[m.tendencia_sequia] ?? TENDENCIA_LABEL['sin_datos']}</p>` : ''}
             ${sinDatosNote}
           </div>`;
       }
