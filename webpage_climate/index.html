@@ -1076,13 +1076,22 @@
   th{background:#1a5276;color:white;padding:8px 10px;text-align:left}
   td{padding:6px 10px;border-bottom:1px solid #eee}
   tr:hover td{background:#f5faff}
+  .disclaimer-box{background:#fff8e1;border:1px solid #e0c14d;border-left:4px solid #b7930a;padding:10px 16px;border-radius:6px;margin-bottom:18px;font-size:11px;color:#6b5a10;line-height:1.5}
   @media print{body{padding:10px}.no-print{display:none}}
 </style></head><body>
 <h1>Reporte: Exposici&#243;n de Cartera &#8211; Alerta de Lluvias (ALTA)</h1>
 <div class="meta">
-  Herramienta: ERIS &#8211; GGGI Colombia &nbsp;|&nbsp;
+  Herramienta: ERIS &nbsp;|&nbsp;
   Fecha de datos: <b>${dataFecha ?? 'N/A'}</b> &nbsp;|&nbsp;
   Generado: <b>${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'})}</b>
+</div>
+<div class="disclaimer-box">
+  <b>Aviso:</b> los resultados de este informe son de car&#225;cter <b>preliminar</b> y tienen fines exclusivamente
+  informativos y de referencia. No constituyen una evaluaci&#243;n definitiva, garant&#237;a, dictamen t&#233;cnico
+  ni asesor&#237;a profesional, y no deben interpretarse como datos absolutos ni concluyentes para la toma de
+  decisiones financieras, legales o de inversi&#243;n. Los c&#225;lculos se basan en fuentes p&#250;blicas y en
+  m&#233;todos estad&#237;sticos sujetos a actualizaci&#243;n, por lo que pueden contener imprecisiones o quedar
+  desactualizados. El uso de esta informaci&#243;n es responsabilidad exclusiva de quien la consulta.
 </div>
 
 <h2>1. Descripci&#243;n del indicador</h2>
@@ -1109,7 +1118,7 @@
   <b>Datos de cartera:</b> archivo cargado por el usuario en formato Excel/CSV con columna <code>cartera_total</code>
   y campo de c&#243;digo municipal DIVIPOLA (<code>COD_MPIO</code>).<br>
   <b>Cruce geogr&#225;fico:</b> se realiza a nivel municipal (c&#243;digo DIVIPOLA de 5 d&#237;gitos). La herramienta
-  est&#225; disponible en <b>ERIS &#8211; Herramienta Circular 0015, GGGI Colombia</b>.
+  est&#225; disponible en <b>ERIS &#8211; Herramienta Circular 0015</b>.
 </div>
 
 <h2>4. Metodolog&#237;a de alertas</h2>
@@ -1217,14 +1226,23 @@
   th{background:#1a5276;color:white;padding:8px 10px;text-align:left}
   td{padding:6px 10px;border-bottom:1px solid #eee}
   tr:hover td{background:#f5faff}
+  .disclaimer-box{background:#fff8e1;border:1px solid #e0c14d;border-left:4px solid #b7930a;padding:10px 16px;border-radius:6px;margin-bottom:18px;font-size:11px;color:#6b5a10;line-height:1.5}
   @media print{body{padding:10px}.no-print{display:none}}
 </style></head><body>
 <h1>${title}</h1>
 <div class="meta">
-  Herramienta: ERIS &#8211; GGGI Colombia &nbsp;|&nbsp;
+  Herramienta: ERIS &nbsp;|&nbsp;
   Indicador: <b>${indicadorLabel}</b> &nbsp;|&nbsp;
   Fecha de datos: <b>${dataFecha ?? 'N/A'}</b> &nbsp;|&nbsp;
   Generado: <b>${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'})}</b>
+</div>
+<div class="disclaimer-box">
+  <b>Aviso:</b> los resultados de este informe son de car&#225;cter <b>preliminar</b> y tienen fines exclusivamente
+  informativos y de referencia. No constituyen una evaluaci&#243;n definitiva, garant&#237;a, dictamen t&#233;cnico
+  ni asesor&#237;a profesional, y no deben interpretarse como datos absolutos ni concluyentes para la toma de
+  decisiones financieras, legales o de inversi&#243;n. Los c&#225;lculos se basan en fuentes p&#250;blicas y en
+  m&#233;todos estad&#237;sticos sujetos a actualizaci&#243;n, por lo que pueden contener imprecisiones o quedar
+  desactualizados. El uso de esta informaci&#243;n es responsabilidad exclusiva de quien la consulta.
 </div>
 
 <h2>1. Descripci&#243;n del indicador</h2>
@@ -1241,7 +1259,7 @@
   ${meta.source}<br><br>
   <b>Datos de cartera:</b> archivo cargado por el usuario con columna <code>cartera_total</code>
   y c&#243;digo municipal DIVIPOLA. Cruce geogr&#225;fico a nivel municipal (5 d&#237;gitos).<br>
-  <b>Plataforma:</b> ERIS &#8211; Herramienta Circular 0015, GGGI Colombia.
+  <b>Plataforma:</b> ERIS &#8211; Herramienta Circular 0015.
 </div>
 
 <h2>4. Metodolog&#237;a de alertas</h2>
