@@ -1020,6 +1020,21 @@
 
     // ─── Cartera Report Helper ────────────────────────────────────────────────
 
+    // Los nombres de municipio (NOM_MPIO) vienen en MAYÚSCULAS desde el dato
+    // fuente DIVIPOLA. Se usan así en el mapa/tablas para que resalten sobre
+    // el fondo oscuro, pero en el PDF (fondo blanco, formato de informe) se
+    // ven mejor en formato título. Respeta en minúscula los conectores
+    // típicos de topónimos en español (excepto si son la primera palabra).
+    const ES_CONECTORES = new Set(['de', 'del', 'la', 'las', 'los', 'y', 'el', 'en']);
+    function titleCaseMunicipio(str) {
+      if (!str) return str;
+      return str
+        .toLowerCase()
+        .split(' ')
+        .map((w, i) => (i > 0 && ES_CONECTORES.has(w)) ? w : w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+    }
+
     function exportReportePDF(result, mergedRows, dataFecha) {
       const fmtCOP = v => v.toLocaleString('es-CO', { style:'currency', currency:'COP', maximumFractionDigits:0 });
       const alertaColor = a =>
@@ -1028,7 +1043,7 @@
 
       const tableRows = mergedRows.map(r => `
         <tr style="${r.alerta_lluvias === 'ALTA' ? 'background:#fff0f0' : r.alerta_lluvias === 'CRÍTICA' ? 'background:#fdf0f0' : ''}">
-          <td>${r.cod}</td><td>${r.nombre}</td>
+          <td>${r.cod}</td><td>${titleCaseMunicipio(r.nombre)}</td>
           <td style="text-align:right">${fmtCOP(r.cartera_total)}</td>
           <td style="text-align:center;color:${alertaColor(r.alerta_lluvias)};font-weight:600">${r.alerta_lluvias}</td>
         </tr>`).join('');
@@ -1146,7 +1161,7 @@
 
       const tableRows = mergedRows.map(r => `
         <tr style="${r.enRiesgo ? 'background:#fff0f0' : ''}">
-          <td>${r.cod}</td><td>${r.nombre}</td>
+          <td>${r.cod}</td><td>${titleCaseMunicipio(r.nombre)}</td>
           <td style="text-align:right">${fmtCOP(r.cartera_total)}</td>
           <td style="text-align:center;color:${r.enRiesgo ? alertColor : '#27ae60'};font-weight:600">${r.alerta_indicador}</td>
         </tr>`).join('');
