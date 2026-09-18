@@ -3516,7 +3516,7 @@
               <table style={{width:'100%', borderCollapse:'collapse', fontSize:'13px', color:'#ccc'}}>
                 <thead>
                   <tr style={{borderBottom:'1px solid #334'}}>
-                    {['Estación','Municipio','Departamento','Acumulado anual (mm)'].map(h => (
+                    {['Estación','Municipio','Departamento','Acumulado anual (mm)', ...CULTIVOS_PRECIP.map(c => c.nombre)].map(h => (
                       <th key={h} style={{padding:'8px 12px', textAlign:'left', color:'#aab', fontWeight:600}}>{h}</th>
                     ))}
                   </tr>
@@ -3530,6 +3530,14 @@
                       <td style={{padding:'8px 12px', color: acumAnualColor(d.precip_acumulada_anual_mm), fontWeight:700}}>
                         {d.precip_acumulada_anual_mm.toFixed(0)}
                       </td>
+                      {CULTIVOS_PRECIP.map(c => {
+                        const st = ALERTA_CULTIVO_STYLE[d[`alerta_${c.key}`]];
+                        return (
+                          <td key={c.key} style={{padding:'8px 12px', color: st?.color ?? '#666', fontWeight:600, whiteSpace:'nowrap'}}>
+                            {st?.label ?? '—'}
+                          </td>
+                        );
+                      })}
                     </tr>
                   ))}
                 </tbody>
