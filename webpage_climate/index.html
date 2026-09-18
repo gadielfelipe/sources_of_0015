@@ -943,6 +943,38 @@
       }).filter(r => r.COD_MPIO);
     }
 
+    // Parser para precipitacion_acumulada_anual.csv — una fila por estación
+    // IDEAM con su precipitación acumulada en la ventana móvil de 365 días
+    // más reciente (generado por datos precipitacion historicos.ipynb).
+    function parseAcumAnualRows(raw) {
+      return raw.map(r => {
+        const lat = parseFloat(r.Latitud), lon = parseFloat(r.Longitud);
+        return {
+          CodigoEstacion:             (r.CodigoEstacion ?? r['﻿CodigoEstacion'] ?? '').toString().trim(),
+          NombreEstacion:             (r.NombreEstacion ?? '').trim(),
+          Departamento:               (r.Departamento   ?? '').trim(),
+          Municipio:                  (r.Municipio      ?? '').trim(),
+          lat, lon,
+          fecha_corte:                (r.fecha_corte ?? '').trim(),
+          precip_acumulada_anual_mm:  parseFloat(r.precip_acumulada_anual_mm) || 0,
+        };
+      }).filter(r => !isNaN(r.lat) && !isNaN(r.lon));
+    }
+
+    // Escala de color continua para precipitación acumulada anual (mm) —
+    // rangos típicos de climatología anual en Colombia (~500 mm en La
+    // Guajira hasta >7000 mm en el Pacífico chocoano).
+    const ACUM_ANUAL_BINS = [
+      { max: 1000,     color: '#a8d8ff', label: '< 1.000 mm' },
+      { max: 2000,     color: '#4fa8e0', label: '1.000 – 2.000 mm' },
+      { max: 3000,     color: '#1c7ed6', label: '2.000 – 3.000 mm' },
+      { max: 5000,     color: '#0b4f8a', label: '3.000 – 5.000 mm' },
+      { max: Infinity, color: '#08306b', label: '> 5.000 mm' },
+    ];
+    function acumAnualColor(mm) {
+      return (ACUM_ANUAL_BINS.find(b => mm < b.max) ?? ACUM_ANUAL_BINS[ACUM_ANUAL_BINS.length - 1]).color;
+    }
+
     // KPIs de la sección Sequías a partir del dataset histórico (sin datos
     // de precipitación diaria — solo frecuencia/categoría de sequía).
     const SEQUIA_CAT_ORDER = { EXTREMA: 5, SEVERA: 4, ALTA: 3, MODERADA: 2, LEVE: 1, NORMAL: 0 };
@@ -2654,6 +2686,13 @@
           desc: 'Indicadores de déficit hídrico recurrente, categoría SPI y municipios con condiciones críticas de sequía.',
         },
         {
+          id: 'acumulado_anual',
+          accent: '#1c7ed6',
+          img: 'data/lluvia.jpeg',
+          title: 'Precipitación Acumulada Anual',
+          desc: 'Mapa de estaciones IDEAM con precipitación acumulada en la ventana móvil de los últimos 365 días, actualizada al último dato disponible.',
+        },
+        {
           id: 'deslizamientos',
           accent: '#2d6b3c',
           img: 'data/deslizamiento.jpeg',
@@ -3240,6 +3279,187 @@
           )}
           {result && result.error && (
             <div style={{color:'#e74c3c', fontSize:'13px'}}>Ingresa coordenadas válidas.</div>
+          )}
+        </div>
+      );
+    }
+
+    // ─── Precipitación Acumulada Anual — Map & Section ───────────────────────
+
+    function AcumAnualMap({ data, visible }) {
+      const mapDiv     = useRef(null);
+      const leafletMap = useRef(null);
+      const markersRef = useRef(null);
+
+      useEffect(() => {
+        if (!visible || !mapDiv.current) return;
+        if (!leafletMap.current) {
+          leafletMap.current = L.map(mapDiv.current, { zoomControl: true }).setView([4.5, -74], 5);
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; CARTO', maxZoom: 18
+          }).addTo(leafletMap.current);
+        } else {
+          leafletMap.current.invalidateSize();
+          if (markersRef.current) { markersRef.current.clearLayers(); }
+        }
+
+        const group = L.layerGroup();
+        data.forEach(pt => {
+          if (isNaN(pt.lat) || isNaN(pt.lon)) return;
+          const color = acumAnualColor(pt.precip_acumulada_anual_mm);
+          const marker = L.circleMarker([pt.lat, pt.lon], {
+            radius: Math.max(5, Math.min(Math.sqrt(pt.precip_acumulada_anual_mm) * 0.35, 18)),
+            color: '#fff', weight: 0.6,
+            fillColor: color, fillOpacity: 0.85,
+          });
+          marker.bindPopup(
+            `<div style="font-weight:700;font-size:13px;margin-bottom:4px">${pt.NombreEstacion}</div>` +
+            `<div style="color:#aab;font-size:12px;margin-bottom:6px">${pt.Municipio}, ${pt.Departamento}</div>` +
+            `<b>Acumulado anual:</b> ${pt.precip_acumulada_anual_mm.toFixed(0)} mm<br>` +
+            `<span style="color:#aaa;font-size:11px">Corte: ${pt.fecha_corte}</span>`
+          );
+          group.addLayer(marker);
+        });
+        group.addTo(leafletMap.current);
+        markersRef.current = group;
+      }, [visible, data]);
+
+      return (
+        <div ref={mapDiv} style={{width:'100%', height:'480px', borderRadius:'10px',
+          border:'1px solid #333', background:'#0d1b2a'}} />
+      );
+    }
+
+    function AcumAnualSection({ visible, onBack, data }) {
+      const [activeTab,  setActiveTab]  = React.useState('Mapa');
+      const [deptFilter, setDeptFilter] = React.useState('ALL');
+
+      const fechaCorte = React.useMemo(
+        () => data.find(d => d.fecha_corte)?.fecha_corte ?? '',
+        [data]
+      );
+
+      const departments = React.useMemo(() => {
+        const set = new Set(data.map(d => d.Departamento).filter(Boolean));
+        return ['ALL', ...Array.from(set).sort()];
+      }, [data]);
+
+      const filtered = React.useMemo(
+        () => deptFilter === 'ALL' ? data : data.filter(d => d.Departamento === deptFilter),
+        [data, deptFilter]
+      );
+
+      const stats = React.useMemo(() => {
+        if (!filtered.length) return { total: 0, promedio: '0', maximo: 0, maxEstacion: '' };
+        const total    = filtered.length;
+        const sum      = filtered.reduce((acc, d) => acc + d.precip_acumulada_anual_mm, 0);
+        const promedio = (sum / total).toFixed(0);
+        const maxRow   = filtered.reduce((a, b) => b.precip_acumulada_anual_mm > a.precip_acumulada_anual_mm ? b : a);
+        return { total, promedio, maximo: maxRow.precip_acumulada_anual_mm, maxEstacion: maxRow.NombreEstacion };
+      }, [filtered]);
+
+      const sorted = React.useMemo(
+        () => [...filtered].sort((a, b) => b.precip_acumulada_anual_mm - a.precip_acumulada_anual_mm),
+        [filtered]
+      );
+
+      function downloadCSV_() {
+        const headers = ['CodigoEstacion','NombreEstacion','Departamento','Municipio','fecha_corte','precip_acumulada_anual_mm'];
+        const rows = filtered.map(r => headers.map(h => {
+          const v = r[h] ?? '';
+          return typeof v === 'string' && v.includes(',') ? `"${v}"` : v;
+        }).join(','));
+        const csv  = '﻿' + [headers.join(','), ...rows].join('\r\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = `precipitacion_acumulada_anual_${fechaCorte || 'export'}.csv`; a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      if (!visible) return null;
+      return (
+        <div style={{padding:'0 0 40px'}}>
+          <div style={{display:'flex', alignItems:'center', gap:'12px', padding:'18px 0 14px',
+            borderBottom:'1px solid #2a3a4a', marginBottom:'18px'}}>
+            <button onClick={onBack} style={{background:'none', border:'1px solid #334',
+              color:'#aab', borderRadius:'6px', padding:'5px 12px', cursor:'pointer', fontSize:'13px'}}>
+              &larr; Volver
+            </button>
+            <span style={{color:'#aab', fontSize:'13px'}}>Dashboard</span>
+            <span style={{color:'#aab'}}>/</span>
+            <span style={{color:'#1c7ed6', fontWeight:600}}>Precipitación Acumulada Anual</span>
+          </div>
+
+          <div className="ov-section-title">Precipitaci&oacute;n Acumulada Anual &middot; Estaciones</div>
+          {fechaCorte && <div style={{color:'#aab', fontSize:'13px', marginBottom:'16px'}}>
+            Datos al: <b>{fechaCorte}</b> &mdash; ventana m&oacute;vil de 365 d&iacute;as por estaci&oacute;n, IDEAM
+          </div>}
+
+          <div style={{display:'flex', gap:'12px', flexWrap:'wrap', marginBottom:'20px'}}>
+            {[
+              { label:'Estaciones con dato', value: stats.total, color:'#1c7ed6' },
+              { label:'Promedio acumulado', value: `${Number(stats.promedio).toLocaleString('es-CO')} mm`, color:'#4fa8e0' },
+              { label:'Máximo acumulado', value: `${Number(stats.maximo).toLocaleString('es-CO')} mm`, color:'#0b4f8a' },
+              { label:'Estación más lluviosa', value: stats.maxEstacion || '—', color:'#08306b' },
+            ].map(k => (
+              <div key={k.label} style={{background:'#1a2a3a', borderRadius:'10px',
+                padding:'14px 20px', flex:'1', minWidth:'150px', textAlign:'center'}}>
+                <div style={{color: k.color, fontWeight:700, fontSize:'22px'}}>{k.value}</div>
+                <div style={{color:'#aab', fontSize:'12px', marginTop:'4px'}}>{k.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <OvSubTabs tabs={['Mapa','Tabla']} active={activeTab} accentColor="#1c7ed6" onSelect={setActiveTab} />
+
+          {activeTab === 'Mapa' && (
+            <div style={{marginTop:'16px'}}>
+              <div style={{display:'flex', gap:'10px', marginBottom:'12px', flexWrap:'wrap', alignItems:'center'}}>
+                <select value={deptFilter} onChange={e => setDeptFilter(e.target.value)}
+                  style={{padding:'6px 10px', borderRadius:'6px', border:'1px solid #334',
+                    background:'#0d1b2a', color:'#fff', fontSize:'13px'}}>
+                  <option value="ALL">Todos los departamentos</option>
+                  {departments.filter(d => d !== 'ALL').map(d => <option key={d} value={d}>{d}</option>)}
+                </select>
+                <button onClick={downloadCSV_} className="btn btn-success">&#x2B07; Descargar datos</button>
+              </div>
+              <AcumAnualMap data={filtered} visible={activeTab==='Mapa'} />
+              <div style={{marginTop:'12px', display:'flex', gap:'16px', flexWrap:'wrap'}}>
+                {ACUM_ANUAL_BINS.map(b => (
+                  <span key={b.label} style={{fontSize:'12px', color:'#ccc', display:'flex', alignItems:'center', gap:'6px'}}>
+                    <span style={{width:'12px', height:'12px', borderRadius:'50%', background:b.color, display:'inline-block'}}/>
+                    {b.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'Tabla' && (
+            <div style={{marginTop:'16px', overflowX:'auto'}}>
+              <table style={{width:'100%', borderCollapse:'collapse', fontSize:'13px', color:'#ccc'}}>
+                <thead>
+                  <tr style={{borderBottom:'1px solid #334'}}>
+                    {['Estación','Municipio','Departamento','Acumulado anual (mm)'].map(h => (
+                      <th key={h} style={{padding:'8px 12px', textAlign:'left', color:'#aab', fontWeight:600}}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {sorted.map(d => (
+                    <tr key={d.CodigoEstacion} style={{borderBottom:'1px solid #1e2d3d'}}>
+                      <td style={{padding:'8px 12px', color:'#fff', fontWeight:600}}>{d.NombreEstacion}</td>
+                      <td style={{padding:'8px 12px', color:'#aab'}}>{d.Municipio}</td>
+                      <td style={{padding:'8px 12px', color:'#aab'}}>{d.Departamento}</td>
+                      <td style={{padding:'8px 12px', color: acumAnualColor(d.precip_acumulada_anual_mm), fontWeight:700}}>
+                        {d.precip_acumulada_anual_mm.toFixed(0)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       );
@@ -4070,7 +4290,7 @@
 
     // ─── Overview Dashboard (orchestrator) ───────────────────────────────────
 
-    function OverviewDashboard({ allData, amenazasData, alertaHistData, alertaHistRows, apData, ecoData, incendiosData, terrData, dataFecha }) {
+    function OverviewDashboard({ allData, amenazasData, alertaHistData, alertaHistRows, apData, ecoData, incendiosData, terrData, acumAnualData, dataFecha }) {
       const [activeSection, setActiveSection] = React.useState(null);
 
       function showSection(name) {
@@ -4091,6 +4311,7 @@
           <div className="ov-sections-container">
             <LluviasSection          visible={activeSection === 'lluvias'}          onBack={goBack} data={allData}       alertaHistData={alertaHistData} alertaHistRows={alertaHistRows} dataFecha={dataFecha} />
             <SequiasSection          visible={activeSection === 'sequias'}          onBack={goBack} data={alertaHistRows} dataFecha={dataFecha} />
+            <AcumAnualSection        visible={activeSection === 'acumulado_anual'}  onBack={goBack} data={acumAnualData} />
             <DeslizSection           visible={activeSection === 'deslizamientos'}   onBack={goBack} amenazasData={amenazasData} dataFecha={dataFecha} />
             <IncendiosSection        visible={activeSection === 'incendios'}        onBack={goBack} incendiosData={incendiosData} />
             <AreasProtegidasSection  visible={activeSection === 'areas_protegidas'} onBack={goBack} apData={apData} ecoData={ecoData} />
@@ -4111,6 +4332,7 @@
       const [ecoData,        setEcoData]        = useState([]);
       const [incendiosData,  setIncendiosData]  = useState([]);
       const [terrData,       setTerrData]       = useState([]);
+      const [acumAnualData,  setAcumAnualData]  = useState([]);
       const [deptFilter,     setDeptFilter]     = useState('ALL');
       const [alertOnly,      setAlertOnly]      = useState(false);
       const [loading,        setLoading]        = useState(true);
@@ -4228,6 +4450,15 @@
         });
       }, []);
 
+      // Load precipitación acumulada anual por estación (ventana móvil 365 días)
+      useEffect(() => {
+        Papa.parse('data/precipitacion_acumulada_anual.csv', {
+          download: true, header: true, skipEmptyLines: true, encoding: 'UTF-8',
+          complete: ({ data }) => setAcumAnualData(parseAcumAnualRows(data)),
+          error: err => console.warn('No se pudo cargar precipitacion_acumulada_anual.csv:', err),
+        });
+      }, []);
+
       const filteredData = useMemo(() => {
         return allData
           .filter(d => deptFilter === 'ALL' || d.NOM_DPTO === deptFilter)
@@ -4254,7 +4485,7 @@
           <LandingHero />
           <div id="dashboard">
             <Header dataFecha={dataFecha} />
-            <OverviewDashboard allData={allData} amenazasData={amenazasData} alertaHistData={alertaHistData} alertaHistRows={alertaHistRows} apData={apData} ecoData={ecoData} incendiosData={incendiosData} terrData={terrData} dataFecha={dataFecha} />
+            <OverviewDashboard allData={allData} amenazasData={amenazasData} alertaHistData={alertaHistData} alertaHistRows={alertaHistRows} apData={apData} ecoData={ecoData} incendiosData={incendiosData} terrData={terrData} acumAnualData={acumAnualData} dataFecha={dataFecha} />
             <footer className="site-footer">
               <div>
                 <div className="footer-brand">GGGI &mdash; Sustainable Finance</div>
