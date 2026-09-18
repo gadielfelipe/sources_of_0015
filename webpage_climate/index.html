@@ -3378,18 +3378,42 @@
       }
 
       if (!visible) return null;
+
+      const breadcrumb = (
+        <div style={{display:'flex', alignItems:'center', gap:'12px', padding:'18px 0 14px',
+          borderBottom:'1px solid #2a3a4a', marginBottom:'18px'}}>
+          <button onClick={onBack} style={{background:'none', border:'1px solid #334',
+            color:'#aab', borderRadius:'6px', padding:'5px 12px', cursor:'pointer', fontSize:'13px'}}>
+            &larr; Volver
+          </button>
+          <span style={{color:'#aab', fontSize:'13px'}}>Dashboard</span>
+          <span style={{color:'#aab'}}>/</span>
+          <span style={{color:'#1c7ed6', fontWeight:600}}>Precipitación Acumulada Anual</span>
+        </div>
+      );
+
+      if (!data.length) {
+        return (
+          <div style={{padding:'0 0 40px'}}>
+            {breadcrumb}
+            <div className="ov-section-title">Precipitaci&oacute;n Acumulada Anual &middot; Estaciones</div>
+            <div style={{background:'#1a2a3a', border:'1px solid #334', borderRadius:'10px',
+              padding:'24px', marginTop:'16px', color:'#aab', fontSize:'13px', lineHeight:1.6}}>
+              <div style={{color:'#fff', fontWeight:600, fontSize:'15px', marginBottom:'8px'}}>
+                &#x26A0; Sin datos todav&iacute;a
+              </div>
+              No se encontr&oacute; <code>data/precipitacion_acumulada_anual.csv</code>. Este archivo lo genera
+              la secci&oacute;n final de <code>datos precipitacion historicos.ipynb</code> (&#8220;Precipitacion
+              acumulada anual&#8221;) &mdash; corre ese notebook una vez para publicarlo y esta secci&oacute;n
+              se llenar&aacute; autom&aacute;ticamente.
+            </div>
+          </div>
+        );
+      }
+
       return (
         <div style={{padding:'0 0 40px'}}>
-          <div style={{display:'flex', alignItems:'center', gap:'12px', padding:'18px 0 14px',
-            borderBottom:'1px solid #2a3a4a', marginBottom:'18px'}}>
-            <button onClick={onBack} style={{background:'none', border:'1px solid #334',
-              color:'#aab', borderRadius:'6px', padding:'5px 12px', cursor:'pointer', fontSize:'13px'}}>
-              &larr; Volver
-            </button>
-            <span style={{color:'#aab', fontSize:'13px'}}>Dashboard</span>
-            <span style={{color:'#aab'}}>/</span>
-            <span style={{color:'#1c7ed6', fontWeight:600}}>Precipitación Acumulada Anual</span>
-          </div>
+          {breadcrumb}
 
           <div className="ov-section-title">Precipitaci&oacute;n Acumulada Anual &middot; Estaciones</div>
           {fechaCorte && <div style={{color:'#aab', fontSize:'13px', marginBottom:'16px'}}>
