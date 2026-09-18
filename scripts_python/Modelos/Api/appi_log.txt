@@ -4446,3 +4446,22 @@ C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:7
   self._get_loop()
 [NbConvertApp] Writing 11488 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
 [14/09/2026 16:34:00.35] Ejecucion exitosa 
+[15/09/2026 17:18:04.60] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[15/09/2026 17:19:12.41] Ejecucion exitosa 
+[16/09/2026 16:32:21.49] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+Assertion failed: Connection reset by peer [10054] (C:\Users\runneradmin\AppData\Local\Temp\tmpm74nglni\build\_deps\bundled_libzmq-src\src\signaler.cpp:345)
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[16/09/2026 16:33:32.42] Ejecucion exitosa 
+[17/09/2026 16:32:21.67] Iniciando ejecucion 
+[NbConvertApp] Converting notebook C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb to notebook
+C:\Users\Usuario\AppData\Roaming\Python\Python314\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[NbConvertApp] Writing 11182 bytes to C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\2025\Outputs\Output1\Stress Test\3.Data\Scripts Python\scripts_python\Modelos\Api\appi diaria datos precipitacion.ipynb
+[17/09/2026 16:33:34.93] Ejecucion exitosa 
