@@ -958,9 +958,32 @@
           lat, lon,
           fecha_corte:                (r.fecha_corte ?? '').trim(),
           precip_acumulada_anual_mm:  parseFloat(r.precip_acumulada_anual_mm) || 0,
+          alerta_cana_azucar:         (r.alerta_cana_azucar  ?? '').trim(),
+          alerta_arroz:               (r.alerta_arroz        ?? '').trim(),
+          alerta_cafe:                (r.alerta_cafe         ?? '').trim(),
+          alerta_palma_aceite:        (r.alerta_palma_aceite ?? '').trim(),
+          alerta_cacao:               (r.alerta_cacao        ?? '').trim(),
         };
       }).filter(r => !isNaN(r.lat) && !isNaN(r.lon));
     }
+
+    // Cultivos evaluados contra la precipitación acumulada anual (rangos
+    // óptimos y umbral de sequía crítica definidos en
+    // datos precipitacion historicos.ipynb, celda de exportación).
+    const CULTIVOS_PRECIP = [
+      { key: 'cana_azucar',  nombre: 'Caña de azúcar' },
+      { key: 'arroz',        nombre: 'Arroz' },
+      { key: 'cafe',         nombre: 'Café' },
+      { key: 'palma_aceite', nombre: 'Palma de Aceite' },
+      { key: 'cacao',        nombre: 'Cacao' },
+    ];
+
+    const ALERTA_CULTIVO_STYLE = {
+      SEQUIA_CRITICA: { label: 'Sequía crítica', color: '#7b0000' },
+      ALERTA_SEQUIA:  { label: 'Alerta sequía',  color: '#e8590c' },
+      NORMAL:         { label: 'Normal',         color: '#2f9e44' },
+      ALERTA_EXCESO:  { label: 'Alerta exceso',  color: '#1c7ed6' },
+    };
 
     // Escala de color continua para precipitación acumulada anual (mm) —
     // rangos típicos de climatología anual en Colombia (~500 mm en La
@@ -3313,11 +3336,24 @@
             color: '#fff', weight: 0.6,
             fillColor: color, fillOpacity: 0.85,
           });
+          const cultivosRows = CULTIVOS_PRECIP.map(c => {
+            const alerta = pt[`alerta_${c.key}`];
+            const st = ALERTA_CULTIVO_STYLE[alerta];
+            if (!st) return '';
+            return `<tr><td style="padding:2px 8px 2px 0;color:#ccd">${c.nombre}</td>` +
+                   `<td style="padding:2px 0;text-align:right;color:${st.color};font-weight:600">${st.label}</td></tr>`;
+          }).join('');
+
           marker.bindPopup(
             `<div style="font-weight:700;font-size:13px;margin-bottom:4px">${pt.NombreEstacion}</div>` +
             `<div style="color:#aab;font-size:12px;margin-bottom:6px">${pt.Municipio}, ${pt.Departamento}</div>` +
             `<b>Acumulado anual:</b> ${pt.precip_acumulada_anual_mm.toFixed(0)} mm<br>` +
-            `<span style="color:#aaa;font-size:11px">Corte: ${pt.fecha_corte}</span>`
+            `<span style="color:#aaa;font-size:11px">Corte: ${pt.fecha_corte}</span>` +
+            (cultivosRows
+              ? `<hr style="margin:6px 0;border-color:rgba(200,169,110,0.15);">` +
+                `<div style="font-size:11px;color:#aab;margin-bottom:2px">Aptitud por cultivo</div>` +
+                `<table style="font-size:11px;width:100%">${cultivosRows}</table>`
+              : '')
           );
           group.addLayer(marker);
         });
@@ -3365,7 +3401,8 @@
       );
 
       function downloadCSV_() {
-        const headers = ['CodigoEstacion','COD_MPIO','NombreEstacion','Departamento','Municipio','fecha_corte','precip_acumulada_anual_mm'];
+        const headers = ['CodigoEstacion','COD_MPIO','NombreEstacion','Departamento','Municipio','fecha_corte','precip_acumulada_anual_mm',
+          ...CULTIVOS_PRECIP.map(c => `alerta_${c.key}`)];
         const rows = filtered.map(r => headers.map(h => {
           const v = r[h] ?? '';
           return typeof v === 'string' && v.includes(',') ? `"${v}"` : v;
@@ -3455,6 +3492,19 @@
                   <span key={b.label} style={{fontSize:'12px', color:'#ccc', display:'flex', alignItems:'center', gap:'6px'}}>
                     <span style={{width:'12px', height:'12px', borderRadius:'50%', background:b.color, display:'inline-block'}}/>
                     {b.label}
+                  </span>
+                ))}
+              </div>
+              <div style={{marginTop:'8px', color:'#8899aa', fontSize:'11px'}}>
+                Tama&ntilde;o del punto = volumen acumulado. Cada estaci&oacute;n muestra al hacer clic su aptitud
+                por cultivo (Ca&ntilde;a de az&uacute;car, Arroz, Caf&eacute;, Palma de Aceite, Cacao) seg&uacute;n
+                rangos &oacute;ptimos de precipitaci&oacute;n:
+              </div>
+              <div style={{marginTop:'6px', display:'flex', gap:'16px', flexWrap:'wrap'}}>
+                {Object.entries(ALERTA_CULTIVO_STYLE).map(([k, st]) => (
+                  <span key={k} style={{fontSize:'12px', color:'#ccc', display:'flex', alignItems:'center', gap:'6px'}}>
+                    <span style={{width:'12px', height:'12px', borderRadius:'50%', background:st.color, display:'inline-block'}}/>
+                    {st.label}
                   </span>
                 ))}
               </div>
