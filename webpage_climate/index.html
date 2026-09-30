@@ -3367,12 +3367,296 @@
       );
     }
 
+    // Severidad para agregar el estado de varias estaciones a nivel de
+    // municipio (se usa el peor caso entre las estaciones asignadas a ese
+    // COD_MPIO): mayor número = más severo.
+    const CULTIVO_SEVERIDAD = { NORMAL: 0, ALERTA_EXCESO: 1, ALERTA_SEQUIA: 2, SEQUIA_CRITICA: 3 };
+
+    function AcumAnualTableBox({ data }) {
+      const sorted = React.useMemo(
+        () => [...data].sort((a, b) => b.precip_acumulada_anual_mm - a.precip_acumulada_anual_mm),
+        [data]
+      );
+      return (
+        <div className="panel-card">
+          <div className="panel-card-title">Estaciones &middot; Acumulado anual y aptitud por cultivo</div>
+          <div className="table-scroll" style={{overflowX:'auto'}}>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Estaci&oacute;n</th>
+                  <th className="hide-sm">Municipio</th>
+                  <th className="hide-sm">Dpto.</th>
+                  <th className="right">Acum. anual (mm)</th>
+                  {CULTIVOS_PRECIP.map(c => <th key={c.key} className="center">{c.nombre}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {sorted.map(d => (
+                  <tr key={d.CodigoEstacion}>
+                    <td>{d.NombreEstacion}</td>
+                    <td className="td-muted hide-sm">{d.Municipio}</td>
+                    <td className="td-muted hide-sm">{d.Departamento}</td>
+                    <td className="td-right" style={{color: acumAnualColor(d.precip_acumulada_anual_mm), fontWeight:700}}>
+                      {d.precip_acumulada_anual_mm.toFixed(0)}
+                    </td>
+                    {CULTIVOS_PRECIP.map(c => {
+                      const st = ALERTA_CULTIVO_STYLE[d[`alerta_${c.key}`]];
+                      return (
+                        <td key={c.key} className="td-center" style={{color: st?.color ?? '#999', fontWeight: st ? 600 : 400, whiteSpace:'nowrap'}}>
+                          {st?.label ?? '—'}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    // ─── Cartera por Cultivo — cruce de cartera sectorial vs. estado hídrico ──
+    // A diferencia de CarteraBoxSection (un solo indicador por municipio),
+    // aquí la cartera viene desagregada POR SECTOR (una columna por cultivo)
+    // y cada columna se cruza contra el estado de PRECIPITACIÓN DE ESE
+    // CULTIVO en el municipio — un municipio puede estar en riesgo para
+    // Cacao y normal para Café al mismo tiempo.
+    const CULTIVO_COL_MATCH = {
+      cana_azucar:  /ca.a|azucar/i,
+      arroz:        /arroz/i,
+      cafe:         /caf[eé]/i,
+      palma_aceite: /palma/i,
+      cacao:        /cacao/i,
+    };
+
+    function CarteraCultivosBox({ municipioCultivoStatus }) {
+      const [carteraRows,  setCarteraRows]  = useState(null);
+      const [carteraError, setCarteraError] = useState(null);
+      const fileRef = useRef(null);
+
+      function processCartera(rawRows) {
+        if (!rawRows.length) { setCarteraError('El archivo está vacío.'); return; }
+        const keys    = Object.keys(rawRows[0]);
+        const codCol  = keys.find(k => /cod/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /cod/i.test(k)) ?? keys[0];
+        const nameCol = keys.find(k => /nom/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /nombre|name/i.test(k));
+
+        const cropCols = {};
+        CULTIVOS_PRECIP.forEach(c => {
+          cropCols[c.key] = keys.find(k => /cartera/i.test(k) && CULTIVO_COL_MATCH[c.key].test(k));
+        });
+        if (!Object.values(cropCols).some(Boolean)) {
+          setCarteraError('No se encontraron columnas de cartera por cultivo (ej: cartera_cana_azucar, cartera_arroz, cartera_cafe, cartera_palma_aceite, cartera_cacao).');
+          return;
+        }
+
+        const rows = rawRows.map(r => {
+          const cod    = (r[codCol] ?? '').toString().trim();
+          const nombre = nameCol ? (r[nameCol] ?? cod) : cod;
+          const estadoMpio = municipioCultivoStatus[cod] ?? municipioCultivoStatus[cod.padStart(5,'0')] ?? {};
+          const porCultivo = {};
+          CULTIVOS_PRECIP.forEach(c => {
+            const col   = cropCols[c.key];
+            const valor = col ? (parseFloat((r[col] ?? '').toString().replace(/[^0-9.-]/g,'')) || 0) : 0;
+            const estado = estadoMpio[c.key] ?? null;
+            porCultivo[c.key] = { valor, estado, enRiesgo: !!estado && estado !== 'NORMAL' };
+          });
+          return { cod, nombre, porCultivo };
+        });
+        setCarteraRows(rows);
+        setCarteraError(null);
+      }
+
+      function handleFile(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        setCarteraError(null); setCarteraRows(null);
+        if (/\.xlsx?$/i.test(file.name)) {
+          const reader = new FileReader();
+          reader.onload = evt => {
+            try {
+              const wb    = XLSX.read(evt.target.result, { type: 'array' });
+              const sheet = wb.Sheets[wb.SheetNames[0]];
+              processCartera(XLSX.utils.sheet_to_json(sheet, { defval: '' }));
+            } catch (err) {
+              setCarteraError('Error al leer el archivo Excel: ' + err.message);
+            }
+          };
+          reader.onerror = () => setCarteraError('Error al leer el archivo.');
+          reader.readAsArrayBuffer(file);
+        } else {
+          Papa.parse(file, {
+            header: true, skipEmptyLines: true,
+            complete: ({ data, errors }) => {
+              if (errors.length) console.warn('Cartera cultivos warnings:', errors);
+              processCartera(data);
+            },
+            error: err => setCarteraError('Error al leer el archivo: ' + err.message),
+          });
+        }
+        e.target.value = '';
+      }
+
+      const resumen = React.useMemo(() => {
+        if (!carteraRows) return null;
+        const porCultivo = {};
+        CULTIVOS_PRECIP.forEach(c => { porCultivo[c.key] = { total: 0, riesgo: 0 }; });
+        let totalGeneral = 0, riesgoGeneral = 0, nEnRiesgo = 0;
+        carteraRows.forEach(r => {
+          let algunoEnRiesgo = false;
+          CULTIVOS_PRECIP.forEach(c => {
+            const { valor, enRiesgo } = r.porCultivo[c.key];
+            if (valor <= 0) return;
+            porCultivo[c.key].total += valor;
+            totalGeneral += valor;
+            if (enRiesgo) { porCultivo[c.key].riesgo += valor; riesgoGeneral += valor; algunoEnRiesgo = true; }
+          });
+          if (algunoEnRiesgo) nEnRiesgo++;
+        });
+        return {
+          porCultivo, totalGeneral, riesgoGeneral, nEnRiesgo,
+          pctGeneral: totalGeneral > 0 ? (riesgoGeneral / totalGeneral * 100).toFixed(1) : '0.0',
+        };
+      }, [carteraRows]);
+
+      const filasEnRiesgo = React.useMemo(
+        () => (carteraRows ?? []).filter(r => CULTIVOS_PRECIP.some(c => r.porCultivo[c.key].enRiesgo)),
+        [carteraRows]
+      );
+
+      function handleExportCSV() {
+        if (!carteraRows) return;
+        const headers = ['cod', 'nombre'];
+        CULTIVOS_PRECIP.forEach(c => headers.push(`cartera_${c.key}`, `estado_${c.key}`));
+        const rows = carteraRows.map(r => {
+          const vals = [r.cod, `"${r.nombre}"`];
+          CULTIVOS_PRECIP.forEach(c => {
+            const cell = r.porCultivo[c.key];
+            vals.push(cell.valor, cell.estado ?? 'SIN_DATOS');
+          });
+          return vals.join(',');
+        });
+        const csv  = '﻿' + [headers.join(','), ...rows].join('\r\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = 'cartera_cultivos_en_riesgo.csv'; a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      const fmtM = v => (v / 1e6).toFixed(1) + ' M';
+
+      return (
+        <div className="panel-card">
+          <div className="panel-card-title">An&aacute;lisis de Cartera &middot; Por Cultivo</div>
+          <div className="btn-row">
+            <button onClick={() => { const a=document.createElement('a'); a.href='data/cartera_municipios_cultivos_codigos.csv'; a.download='cartera_municipios_cultivos_codigos.csv'; a.click(); }} className="btn btn-dark">
+              &#x1F4CB; Ejemplo
+            </button>
+            <button onClick={() => fileRef.current?.click()} className="btn btn-primary">
+              &#x1F4C2; Cargar cartera
+            </button>
+            <input ref={fileRef} type="file" accept=".csv,.xlsx,.xls" onChange={handleFile} style={{display:'none'}} />
+          </div>
+          <p className="hint-text">
+            CSV con <code>COD_MPIO</code> y una columna de cartera por cultivo:{' '}
+            <code>cartera_cana_azucar</code>, <code>cartera_arroz</code>, <code>cartera_cafe</code>,{' '}
+            <code>cartera_palma_aceite</code>, <code>cartera_cacao</code>. Cada columna se cruza SOLO contra el
+            estado h&iacute;drico de ese cultivo en el municipio (umbral/&oacute;ptimo propios de cada uno).
+          </p>
+          {carteraError && <div className="error-box">&#x26A0; {carteraError}</div>}
+          {resumen && (
+            <div>
+              <div className="indicator-box">
+                <div className="indicator-value">{resumen.pctGeneral}%</div>
+                <div className="indicator-label">Cartera total en riesgo (todos los cultivos)</div>
+              </div>
+              <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(140px, 1fr))', gap:'10px', margin:'14px 0'}}>
+                {CULTIVOS_PRECIP.map(c => {
+                  const r   = resumen.porCultivo[c.key];
+                  const pct = r.total > 0 ? (r.riesgo / r.total * 100).toFixed(1) : '0.0';
+                  return (
+                    <div key={c.key} style={{background:'#1a2a3a', borderRadius:'8px', padding:'10px', textAlign:'center'}}>
+                      <div style={{fontSize:'11px', color:'#aab', marginBottom:'4px'}}>{c.nombre}</div>
+                      <div style={{fontSize:'18px', fontWeight:700, color: r.riesgo > 0 ? '#e8590c' : '#4fa89b'}}>{pct}%</div>
+                      <div style={{fontSize:'10px', color:'#8899aa'}}>{fmtM(r.riesgo)} / {fmtM(r.total)} COP</div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="cartera-kpi-grid">
+                <div className="cartera-kpi danger">
+                  <div className="cartera-kpi-value">{fmtM(resumen.riesgoGeneral)} COP</div>
+                  <div className="cartera-kpi-label">Cartera en riesgo <span style={{marginLeft:'4px',color:'var(--danger)'}}>({resumen.nEnRiesgo} mpios)</span></div>
+                </div>
+                <div className="cartera-kpi">
+                  <div className="cartera-kpi-value">{fmtM(resumen.totalGeneral)} COP</div>
+                  <div className="cartera-kpi-label">Cartera total <span style={{marginLeft:'4px',color:'var(--accent-gold)'}}>({carteraRows.length} mpios)</span></div>
+                </div>
+              </div>
+
+              <div style={{fontWeight:600, color:'#fff', margin:'16px 0 8px', fontSize:'13px'}}>
+                Municipios con al menos un cultivo en riesgo ({filasEnRiesgo.length})
+              </div>
+              <div style={{overflowX:'auto'}}>
+                <table style={{width:'100%', borderCollapse:'collapse', fontSize:'12px', color:'#ccc'}}>
+                  <thead>
+                    <tr style={{borderBottom:'1px solid #334'}}>
+                      <th style={{padding:'6px 10px', textAlign:'left', color:'#aab'}}>Municipio</th>
+                      {CULTIVOS_PRECIP.map(c => (
+                        <th key={c.key} style={{padding:'6px 10px', textAlign:'right', color:'#aab'}}>{c.nombre}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filasEnRiesgo.map(r => (
+                      <tr key={r.cod} style={{borderBottom:'1px solid #1e2d3d'}}>
+                        <td style={{padding:'6px 10px', color:'#fff', fontWeight:600}}>{r.nombre}</td>
+                        {CULTIVOS_PRECIP.map(c => {
+                          const cell = r.porCultivo[c.key];
+                          if (cell.valor <= 0) return <td key={c.key} style={{padding:'6px 10px', textAlign:'right', color:'#556'}}>—</td>;
+                          const st = ALERTA_CULTIVO_STYLE[cell.estado];
+                          return (
+                            <td key={c.key} style={{padding:'6px 10px', textAlign:'right',
+                              color: cell.enRiesgo ? (st?.color ?? '#e8590c') : '#8899aa', fontWeight: cell.enRiesgo ? 700 : 400}}>
+                              {fmtM(cell.valor)}{cell.enRiesgo ? ' ⚠' : ''}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <button onClick={handleExportCSV} className="btn btn-success" style={{marginTop:'14px'}}>
+                &#x1F4BE; Exportar municipios en riesgo (CSV)
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
     function AcumAnualSection({ visible, onBack, data }) {
       const [activeTab,  setActiveTab]  = React.useState('Mapa');
       const [deptFilter, setDeptFilter] = React.useState('ALL');
+      const [alertOnly,  setAlertOnly]  = React.useState(false);
+      const TABS = ['Mapa', 'Tabla', 'Cartera por Cultivo'];
 
       const fechaCorte = React.useMemo(
         () => data.find(d => d.fecha_corte)?.fecha_corte ?? '',
+        [data]
+      );
+
+      const dataConAlerta = React.useMemo(
+        () => data.map(d => ({
+          ...d,
+          hasAlertaCultivo: CULTIVOS_PRECIP.some(c => {
+            const v = d[`alerta_${c.key}`];
+            return v && v !== 'NORMAL';
+          }),
+        })),
         [data]
       );
 
@@ -3382,8 +3666,15 @@
       }, [data]);
 
       const filtered = React.useMemo(
-        () => deptFilter === 'ALL' ? data : data.filter(d => d.Departamento === deptFilter),
-        [data, deptFilter]
+        () => dataConAlerta
+          .filter(d => deptFilter === 'ALL' || d.Departamento === deptFilter)
+          .filter(d => !alertOnly || d.hasAlertaCultivo),
+        [dataConAlerta, deptFilter, alertOnly]
+      );
+
+      const enAlertaCultivo = React.useMemo(
+        () => filtered.filter(d => d.hasAlertaCultivo).length,
+        [filtered]
       );
 
       const stats = React.useMemo(() => {
@@ -3395,10 +3686,27 @@
         return { total, promedio, maximo: maxRow.precip_acumulada_anual_mm, maxEstacion: maxRow.NombreEstacion };
       }, [filtered]);
 
-      const sorted = React.useMemo(
-        () => [...filtered].sort((a, b) => b.precip_acumulada_anual_mm - a.precip_acumulada_anual_mm),
-        [filtered]
-      );
+      // Estado del cultivo a nivel MUNICIPIO (peor caso entre las estaciones
+      // asignadas a ese COD_MPIO) — usado por CarteraCultivosBox para cruzar
+      // la cartera cargada por el usuario. Se calcula sobre el universo
+      // completo (sin filtro de departamento) para no perder municipios al
+      // cambiar el filtro del mapa.
+      const municipioCultivoStatus = React.useMemo(() => {
+        const map = {};
+        data.forEach(d => {
+          if (!d.COD_MPIO) return;
+          if (!map[d.COD_MPIO]) map[d.COD_MPIO] = {};
+          CULTIVOS_PRECIP.forEach(c => {
+            const val = d[`alerta_${c.key}`];
+            if (!val) return;
+            const actual = map[d.COD_MPIO][c.key];
+            if (!actual || CULTIVO_SEVERIDAD[val] > CULTIVO_SEVERIDAD[actual]) {
+              map[d.COD_MPIO][c.key] = val;
+            }
+          });
+        });
+        return map;
+      }, [data]);
 
       function downloadCSV_() {
         const headers = ['CodigoEstacion','COD_MPIO','NombreEstacion','Departamento','Municipio','fecha_corte','precip_acumulada_anual_mm',
@@ -3415,26 +3723,18 @@
         URL.revokeObjectURL(url);
       }
 
-      if (!visible) return null;
-
-      const breadcrumb = (
-        <div style={{display:'flex', alignItems:'center', gap:'12px', padding:'18px 0 14px',
-          borderBottom:'1px solid #2a3a4a', marginBottom:'18px'}}>
-          <button onClick={onBack} style={{background:'none', border:'1px solid #334',
-            color:'#aab', borderRadius:'6px', padding:'5px 12px', cursor:'pointer', fontSize:'13px'}}>
-            &larr; Volver
-          </button>
-          <span style={{color:'#aab', fontSize:'13px'}}>Dashboard</span>
-          <span style={{color:'#aab'}}>/</span>
-          <span style={{color:'#1c7ed6', fontWeight:600}}>Precipitación Acumulada Anual</span>
-        </div>
-      );
-
       if (!data.length) {
         return (
-          <div style={{padding:'0 0 40px'}}>
-            {breadcrumb}
-            <div className="ov-section-title">Precipitaci&oacute;n Acumulada Anual &middot; Estaciones</div>
+          <div className={`ov-content-section${visible ? ' ov-visible' : ''}`}>
+            <div className="ov-section-header">
+              <div className="ov-breadcrumb">
+                <button onClick={onBack}>Resumen general</button>
+                {' / Precipitación Acumulada Anual'}
+              </div>
+              <div className="ov-section-title-row">
+                <div className="ov-section-title">Precipitaci&oacute;n Acumulada Anual</div>
+              </div>
+            </div>
             <div style={{background:'#1a2a3a', border:'1px solid #334', borderRadius:'10px',
               padding:'24px', marginTop:'16px', color:'#aab', fontSize:'13px', lineHeight:1.6}}>
               <div style={{color:'#fff', fontWeight:600, fontSize:'15px', marginBottom:'8px'}}>
@@ -3450,100 +3750,80 @@
       }
 
       return (
-        <div style={{padding:'0 0 40px'}}>
-          {breadcrumb}
-
-          <div className="ov-section-title">Precipitaci&oacute;n Acumulada Anual &middot; Estaciones</div>
-          {fechaCorte && <div style={{color:'#aab', fontSize:'13px', marginBottom:'16px'}}>
+        <div className={`ov-content-section${visible ? ' ov-visible' : ''}`}>
+          <div className="ov-section-header">
+            <div className="ov-breadcrumb">
+              <button onClick={onBack}>Resumen general</button>
+              {' / Precipitación Acumulada Anual'}
+            </div>
+            <div className="ov-section-title-row">
+              <div className="ov-section-title">Precipitaci&oacute;n Acumulada Anual</div>
+              <span className="ov-alert-badge" style={{background:'#1c7ed6'}}>{enAlertaCultivo} estaciones en alerta</span>
+            </div>
+          </div>
+          {fechaCorte && <div style={{color:'#aab', fontSize:'13px', margin:'-8px 0 14px'}}>
             Datos al: <b>{fechaCorte}</b> &mdash; ventana m&oacute;vil de 365 d&iacute;as por estaci&oacute;n, IDEAM
           </div>}
 
-          <div style={{display:'flex', gap:'12px', flexWrap:'wrap', marginBottom:'20px'}}>
-            {[
-              { label:'Estaciones con dato', value: stats.total, color:'#1c7ed6' },
-              { label:'Promedio acumulado', value: `${Number(stats.promedio).toLocaleString('es-CO')} mm`, color:'#4fa8e0' },
-              { label:'Máximo acumulado', value: `${Number(stats.maximo).toLocaleString('es-CO')} mm`, color:'#0b4f8a' },
-              { label:'Estación más lluviosa', value: stats.maxEstacion || '—', color:'#08306b' },
-            ].map(k => (
-              <div key={k.label} style={{background:'#1a2a3a', borderRadius:'10px',
-                padding:'14px 20px', flex:'1', minWidth:'150px', textAlign:'center'}}>
-                <div style={{color: k.color, fontWeight:700, fontSize:'22px'}}>{k.value}</div>
-                <div style={{color:'#aab', fontSize:'12px', marginTop:'4px'}}>{k.label}</div>
+          <OvSubTabs tabs={TABS} active={activeTab} accentColor="#1c7ed6" onSelect={setActiveTab} />
+          <div style={{background:'var(--bg-primary)'}}>
+            <div className="dashboard-main">
+              <div className="kpi-grid reveal">
+                <KpiCard label="Estaciones filtradas"     value={filtered.length}                                                    icon={ICONS.municipios} />
+                <KpiCard label="Promedio acumulado"       value={`${Number(stats.promedio).toLocaleString('es-CO')} mm`}              icon={ICONS.precipMedia} />
+                <KpiCard label="M&#225;ximo acumulado"    value={`${Number(stats.maximo).toLocaleString('es-CO')} mm`}                icon={ICONS.precipMax}   accent="gold" sub={stats.maxEstacion} />
+                <KpiCard label="Con alg&#250;n cultivo en alerta" value={enAlertaCultivo}                                             icon={ICONS.alerta}      accent="red" />
               </div>
-            ))}
+
+              {activeTab === 'Mapa' && (
+                <div className="map-layout">
+                  <div className="map-main">
+                    <AcumAnualMap data={filtered} visible={visible && activeTab==='Mapa'} />
+                    <div style={{marginTop:'12px', display:'flex', gap:'16px', flexWrap:'wrap'}}>
+                      {ACUM_ANUAL_BINS.map(b => (
+                        <span key={b.label} style={{fontSize:'12px', color:'#ccc', display:'flex', alignItems:'center', gap:'6px'}}>
+                          <span style={{width:'12px', height:'12px', borderRadius:'50%', background:b.color, display:'inline-block'}}/>
+                          {b.label}
+                        </span>
+                      ))}
+                    </div>
+                    <div style={{marginTop:'8px', color:'#8899aa', fontSize:'11px'}}>
+                      Tama&ntilde;o del punto = volumen acumulado. Cada estaci&oacute;n muestra al hacer clic su
+                      aptitud por cultivo (Ca&ntilde;a de az&uacute;car, Arroz, Caf&eacute;, Palma de Aceite, Cacao):
+                    </div>
+                    <div style={{marginTop:'6px', display:'flex', gap:'16px', flexWrap:'wrap'}}>
+                      {Object.entries(ALERTA_CULTIVO_STYLE).map(([k, st]) => (
+                        <span key={k} style={{fontSize:'12px', color:'#ccc', display:'flex', alignItems:'center', gap:'6px'}}>
+                          <span style={{width:'12px', height:'12px', borderRadius:'50%', background:st.color, display:'inline-block'}}/>
+                          {st.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="map-side side-panel">
+                    <FilterBox
+                      departments={departments}
+                      deptFilter={deptFilter}
+                      alertOnly={alertOnly}
+                      onDeptChange={setDeptFilter}
+                      onAlertToggle={() => setAlertOnly(v => !v)}
+                      onDownload={downloadCSV_}
+                      alertLabel="Solo estaciones con alg&#250;n cultivo en alerta"
+                    />
+                    <StatsBox filteredCount={filtered.length} total={data.length} />
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'Tabla' && (
+                <AcumAnualTableBox data={filtered} />
+              )}
+
+              {activeTab === 'Cartera por Cultivo' && (
+                <CarteraCultivosBox municipioCultivoStatus={municipioCultivoStatus} />
+              )}
+            </div>
           </div>
-
-          <OvSubTabs tabs={['Mapa','Tabla']} active={activeTab} accentColor="#1c7ed6" onSelect={setActiveTab} />
-
-          {activeTab === 'Mapa' && (
-            <div style={{marginTop:'16px'}}>
-              <div style={{display:'flex', gap:'10px', marginBottom:'12px', flexWrap:'wrap', alignItems:'center'}}>
-                <select value={deptFilter} onChange={e => setDeptFilter(e.target.value)}
-                  style={{padding:'6px 10px', borderRadius:'6px', border:'1px solid #334',
-                    background:'#0d1b2a', color:'#fff', fontSize:'13px'}}>
-                  <option value="ALL">Todos los departamentos</option>
-                  {departments.filter(d => d !== 'ALL').map(d => <option key={d} value={d}>{d}</option>)}
-                </select>
-                <button onClick={downloadCSV_} className="btn btn-success">&#x2B07; Descargar datos</button>
-              </div>
-              <AcumAnualMap data={filtered} visible={activeTab==='Mapa'} />
-              <div style={{marginTop:'12px', display:'flex', gap:'16px', flexWrap:'wrap'}}>
-                {ACUM_ANUAL_BINS.map(b => (
-                  <span key={b.label} style={{fontSize:'12px', color:'#ccc', display:'flex', alignItems:'center', gap:'6px'}}>
-                    <span style={{width:'12px', height:'12px', borderRadius:'50%', background:b.color, display:'inline-block'}}/>
-                    {b.label}
-                  </span>
-                ))}
-              </div>
-              <div style={{marginTop:'8px', color:'#8899aa', fontSize:'11px'}}>
-                Tama&ntilde;o del punto = volumen acumulado. Cada estaci&oacute;n muestra al hacer clic su aptitud
-                por cultivo (Ca&ntilde;a de az&uacute;car, Arroz, Caf&eacute;, Palma de Aceite, Cacao) seg&uacute;n
-                rangos &oacute;ptimos de precipitaci&oacute;n:
-              </div>
-              <div style={{marginTop:'6px', display:'flex', gap:'16px', flexWrap:'wrap'}}>
-                {Object.entries(ALERTA_CULTIVO_STYLE).map(([k, st]) => (
-                  <span key={k} style={{fontSize:'12px', color:'#ccc', display:'flex', alignItems:'center', gap:'6px'}}>
-                    <span style={{width:'12px', height:'12px', borderRadius:'50%', background:st.color, display:'inline-block'}}/>
-                    {st.label}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'Tabla' && (
-            <div style={{marginTop:'16px', overflowX:'auto'}}>
-              <table style={{width:'100%', borderCollapse:'collapse', fontSize:'13px', color:'#ccc'}}>
-                <thead>
-                  <tr style={{borderBottom:'1px solid #334'}}>
-                    {['Estación','Municipio','Departamento','Acumulado anual (mm)', ...CULTIVOS_PRECIP.map(c => c.nombre)].map(h => (
-                      <th key={h} style={{padding:'8px 12px', textAlign:'left', color:'#aab', fontWeight:600}}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {sorted.map(d => (
-                    <tr key={d.CodigoEstacion} style={{borderBottom:'1px solid #1e2d3d'}}>
-                      <td style={{padding:'8px 12px', color:'#fff', fontWeight:600}}>{d.NombreEstacion}</td>
-                      <td style={{padding:'8px 12px', color:'#aab'}}>{d.Municipio}</td>
-                      <td style={{padding:'8px 12px', color:'#aab'}}>{d.Departamento}</td>
-                      <td style={{padding:'8px 12px', color: acumAnualColor(d.precip_acumulada_anual_mm), fontWeight:700}}>
-                        {d.precip_acumulada_anual_mm.toFixed(0)}
-                      </td>
-                      {CULTIVOS_PRECIP.map(c => {
-                        const st = ALERTA_CULTIVO_STYLE[d[`alerta_${c.key}`]];
-                        return (
-                          <td key={c.key} style={{padding:'8px 12px', color: st?.color ?? '#666', fontWeight:600, whiteSpace:'nowrap'}}>
-                            {st?.label ?? '—'}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
         </div>
       );
     }
