@@ -3417,68 +3417,67 @@
       );
     }
 
-    // ─── Cartera por Cultivo — cruce de cartera sectorial vs. estado hídrico ──
+    // ─── Cartera por Cultivo — un cargador independiente POR SECTOR ──────────
     // A diferencia de CarteraBoxSection (un solo indicador por municipio),
-    // aquí la cartera viene desagregada POR SECTOR (una columna por cultivo)
-    // y cada columna se cruza contra el estado de PRECIPITACIÓN DE ESE
-    // CULTIVO en el municipio — un municipio puede estar en riesgo para
-    // Cacao y normal para Café al mismo tiempo.
-    const CULTIVO_COL_MATCH = {
-      cana_azucar:  /ca.a|azucar/i,
-      arroz:        /arroz/i,
-      cafe:         /caf[eé]/i,
-      palma_aceite: /palma/i,
-      cacao:        /cacao/i,
+    // aquí cada cultivo tiene su PROPIO archivo (mismo formato simple
+    // COD_MPIO + cartera_total que ya usan Lluvias/Sequías/Deslizamientos),
+    // y se cruza SOLO contra el estado de precipitación de ESE cultivo en
+    // el municipio — así cada sector se sube y analiza por separado, y un
+    // municipio puede salir en riesgo para Cacao y normal para Café.
+    const CULTIVO_RIESGO_ESTADOS = ['SEQUIA_CRITICA', 'ALERTA_SEQUIA', 'ALERTA_EXCESO'];
+    const CULTIVO_EJEMPLO_CSV = {
+      cana_azucar:  'cartera_cana_azucar_codigos.csv',
+      arroz:        'cartera_arroz_codigos.csv',
+      cafe:         'cartera_cafe_codigos.csv',
+      palma_aceite: 'cartera_palma_aceite_codigos.csv',
+      cacao:        'cartera_cacao_codigos.csv',
     };
 
-    function CarteraCultivosBox({ municipioCultivoStatus }) {
-      const [carteraRows,  setCarteraRows]  = useState(null);
-      const [carteraError, setCarteraError] = useState(null);
+    function CarteraCultivoBox({ cultivo, municipioCultivoStatus }) {
+      const [carteraData,   setCarteraData]   = useState(null);
+      const [carteraResult, setCarteraResult] = useState(null);
+      const [carteraError,  setCarteraError]  = useState(null);
       const fileRef = useRef(null);
 
-      function processCartera(rawRows) {
+      function processRows(rawRows) {
         if (!rawRows.length) { setCarteraError('El archivo está vacío.'); return; }
-        const keys    = Object.keys(rawRows[0]);
-        const codCol  = keys.find(k => /cod/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /cod/i.test(k)) ?? keys[0];
-        const nameCol = keys.find(k => /nom/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /nombre|name/i.test(k));
+        const keys       = Object.keys(rawRows[0]);
+        const codCol     = keys.find(k => /cod/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /cod/i.test(k)) ?? keys[0];
+        const carteraCol = keys.find(k => /cartera/i.test(k)) ?? keys.find(k => /coloca/i.test(k)) ?? keys.find(k => /valor|monto/i.test(k));
+        const nameCol    = keys.find(k => /nom/i.test(k) && /mpio|muni/i.test(k)) ?? keys.find(k => /nombre|name/i.test(k));
+        if (!carteraCol) { setCarteraError('No se encontró columna de cartera/colocaciones. Verifique el formato.'); return; }
 
-        const cropCols = {};
-        CULTIVOS_PRECIP.forEach(c => {
-          cropCols[c.key] = keys.find(k => /cartera/i.test(k) && CULTIVO_COL_MATCH[c.key].test(k));
-        });
-        if (!Object.values(cropCols).some(Boolean)) {
-          setCarteraError('No se encontraron columnas de cartera por cultivo (ej: cartera_cana_azucar, cartera_arroz, cartera_cafe, cartera_palma_aceite, cartera_cacao).');
-          return;
-        }
-
-        const rows = rawRows.map(r => {
+        let totalCartera = 0, cartaRiesgo = 0, nTotal = 0, nRiesgo = 0;
+        const merged = [];
+        rawRows.forEach(r => {
           const cod    = (r[codCol] ?? '').toString().trim();
+          const val    = parseFloat((r[carteraCol] ?? '').toString().replace(/[^0-9.-]/g,'')) || 0;
           const nombre = nameCol ? (r[nameCol] ?? cod) : cod;
-          const estadoMpio = municipioCultivoStatus[cod] ?? municipioCultivoStatus[cod.padStart(5,'0')] ?? {};
-          const porCultivo = {};
-          CULTIVOS_PRECIP.forEach(c => {
-            const col   = cropCols[c.key];
-            const valor = col ? (parseFloat((r[col] ?? '').toString().replace(/[^0-9.-]/g,'')) || 0) : 0;
-            const estado = estadoMpio[c.key] ?? null;
-            porCultivo[c.key] = { valor, estado, enRiesgo: !!estado && estado !== 'NORMAL' };
-          });
-          return { cod, nombre, porCultivo };
+          const estado = municipioCultivoStatus[cod]?.[cultivo.key]
+                      ?? municipioCultivoStatus[cod.padStart(5,'0')]?.[cultivo.key]
+                      ?? null;
+          const enRiesgo = CULTIVO_RIESGO_ESTADOS.includes(estado);
+          totalCartera += val; nTotal++;
+          if (enRiesgo) { cartaRiesgo += val; nRiesgo++; }
+          merged.push({ cod, nombre, cartera_total: val, estado: estado ?? 'SIN_DATOS', enRiesgo });
         });
-        setCarteraRows(rows);
+        const indicator = totalCartera > 0 ? (cartaRiesgo / totalCartera * 100).toFixed(2) : '0.00';
+        setCarteraData(merged);
+        setCarteraResult({ totalCartera, cartaRiesgo, indicator, nTotal, nRiesgo });
         setCarteraError(null);
       }
 
       function handleFile(e) {
         const file = e.target.files[0];
         if (!file) return;
-        setCarteraError(null); setCarteraRows(null);
+        setCarteraError(null); setCarteraData(null); setCarteraResult(null);
         if (/\.xlsx?$/i.test(file.name)) {
           const reader = new FileReader();
           reader.onload = evt => {
             try {
               const wb    = XLSX.read(evt.target.result, { type: 'array' });
               const sheet = wb.Sheets[wb.SheetNames[0]];
-              processCartera(XLSX.utils.sheet_to_json(sheet, { defval: '' }));
+              processRows(XLSX.utils.sheet_to_json(sheet, { defval: '' }));
             } catch (err) {
               setCarteraError('Error al leer el archivo Excel: ' + err.message);
             }
@@ -3489,8 +3488,8 @@
           Papa.parse(file, {
             header: true, skipEmptyLines: true,
             complete: ({ data, errors }) => {
-              if (errors.length) console.warn('Cartera cultivos warnings:', errors);
-              processCartera(data);
+              if (errors.length) console.warn(`Cartera ${cultivo.key} warnings:`, errors);
+              processRows(data);
             },
             error: err => setCarteraError('Error al leer el archivo: ' + err.message),
           });
@@ -3498,60 +3497,26 @@
         e.target.value = '';
       }
 
-      const resumen = React.useMemo(() => {
-        if (!carteraRows) return null;
-        const porCultivo = {};
-        CULTIVOS_PRECIP.forEach(c => { porCultivo[c.key] = { total: 0, riesgo: 0 }; });
-        let totalGeneral = 0, riesgoGeneral = 0, nEnRiesgo = 0;
-        carteraRows.forEach(r => {
-          let algunoEnRiesgo = false;
-          CULTIVOS_PRECIP.forEach(c => {
-            const { valor, enRiesgo } = r.porCultivo[c.key];
-            if (valor <= 0) return;
-            porCultivo[c.key].total += valor;
-            totalGeneral += valor;
-            if (enRiesgo) { porCultivo[c.key].riesgo += valor; riesgoGeneral += valor; algunoEnRiesgo = true; }
-          });
-          if (algunoEnRiesgo) nEnRiesgo++;
-        });
-        return {
-          porCultivo, totalGeneral, riesgoGeneral, nEnRiesgo,
-          pctGeneral: totalGeneral > 0 ? (riesgoGeneral / totalGeneral * 100).toFixed(1) : '0.0',
-        };
-      }, [carteraRows]);
-
-      const filasEnRiesgo = React.useMemo(
-        () => (carteraRows ?? []).filter(r => CULTIVOS_PRECIP.some(c => r.porCultivo[c.key].enRiesgo)),
-        [carteraRows]
-      );
-
       function handleExportCSV() {
-        if (!carteraRows) return;
-        const headers = ['cod', 'nombre'];
-        CULTIVOS_PRECIP.forEach(c => headers.push(`cartera_${c.key}`, `estado_${c.key}`));
-        const rows = carteraRows.map(r => {
-          const vals = [r.cod, `"${r.nombre}"`];
-          CULTIVOS_PRECIP.forEach(c => {
-            const cell = r.porCultivo[c.key];
-            vals.push(cell.valor, cell.estado ?? 'SIN_DATOS');
-          });
-          return vals.join(',');
-        });
+        if (!carteraData) return;
+        const headers = ['cod','nombre','cartera_total','estado'];
+        const rows = carteraData.map(r => [r.cod, `"${r.nombre}"`, r.cartera_total, r.estado].join(','));
         const csv  = '﻿' + [headers.join(','), ...rows].join('\r\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
-        a.href = url; a.download = 'cartera_cultivos_en_riesgo.csv'; a.click();
+        a.href = url; a.download = `cartera_${cultivo.key}_resultado.csv`; a.click();
         URL.revokeObjectURL(url);
       }
 
       const fmtM = v => (v / 1e6).toFixed(1) + ' M';
+      const ejemplo = CULTIVO_EJEMPLO_CSV[cultivo.key];
 
       return (
         <div className="panel-card">
-          <div className="panel-card-title">An&aacute;lisis de Cartera &middot; Por Cultivo</div>
+          <div className="panel-card-title">{cultivo.nombre}</div>
           <div className="btn-row">
-            <button onClick={() => { const a=document.createElement('a'); a.href='data/cartera_municipios_cultivos_codigos.csv'; a.download='cartera_municipios_cultivos_codigos.csv'; a.click(); }} className="btn btn-dark">
+            <button onClick={() => { const a=document.createElement('a'); a.href=`data/${ejemplo}`; a.download=ejemplo; a.click(); }} className="btn btn-dark">
               &#x1F4CB; Ejemplo
             </button>
             <button onClick={() => fileRef.current?.click()} className="btn btn-primary">
@@ -3560,80 +3525,48 @@
             <input ref={fileRef} type="file" accept=".csv,.xlsx,.xls" onChange={handleFile} style={{display:'none'}} />
           </div>
           <p className="hint-text">
-            CSV con <code>COD_MPIO</code> y una columna de cartera por cultivo:{' '}
-            <code>cartera_cana_azucar</code>, <code>cartera_arroz</code>, <code>cartera_cafe</code>,{' '}
-            <code>cartera_palma_aceite</code>, <code>cartera_cacao</code>. Cada columna se cruza SOLO contra el
-            estado h&iacute;drico de ese cultivo en el municipio (umbral/&oacute;ptimo propios de cada uno).
+            CSV con <code>COD_MPIO</code> y <code>cartera_total</code> (colocaciones de {cultivo.nombre}).
+            Cruzado contra el estado de precipitaci&oacute;n de este cultivo en cada municipio.
           </p>
           {carteraError && <div className="error-box">&#x26A0; {carteraError}</div>}
-          {resumen && (
+          {carteraResult && (
             <div>
               <div className="indicator-box">
-                <div className="indicator-value">{resumen.pctGeneral}%</div>
-                <div className="indicator-label">Cartera total en riesgo (todos los cultivos)</div>
-              </div>
-              <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(140px, 1fr))', gap:'10px', margin:'14px 0'}}>
-                {CULTIVOS_PRECIP.map(c => {
-                  const r   = resumen.porCultivo[c.key];
-                  const pct = r.total > 0 ? (r.riesgo / r.total * 100).toFixed(1) : '0.0';
-                  return (
-                    <div key={c.key} style={{background:'#1a2a3a', borderRadius:'8px', padding:'10px', textAlign:'center'}}>
-                      <div style={{fontSize:'11px', color:'#aab', marginBottom:'4px'}}>{c.nombre}</div>
-                      <div style={{fontSize:'18px', fontWeight:700, color: r.riesgo > 0 ? '#e8590c' : '#4fa89b'}}>{pct}%</div>
-                      <div style={{fontSize:'10px', color:'#8899aa'}}>{fmtM(r.riesgo)} / {fmtM(r.total)} COP</div>
-                    </div>
-                  );
-                })}
+                <div className="indicator-value">{carteraResult.indicator}%</div>
+                <div className="indicator-label">Cartera en riesgo / Cartera total</div>
               </div>
               <div className="cartera-kpi-grid">
                 <div className="cartera-kpi danger">
-                  <div className="cartera-kpi-value">{fmtM(resumen.riesgoGeneral)} COP</div>
-                  <div className="cartera-kpi-label">Cartera en riesgo <span style={{marginLeft:'4px',color:'var(--danger)'}}>({resumen.nEnRiesgo} mpios)</span></div>
+                  <div className="cartera-kpi-value">{fmtM(carteraResult.cartaRiesgo)} COP</div>
+                  <div className="cartera-kpi-label">En riesgo <span style={{marginLeft:'4px',color:'var(--danger)'}}>({carteraResult.nRiesgo} mpios)</span></div>
                 </div>
                 <div className="cartera-kpi">
-                  <div className="cartera-kpi-value">{fmtM(resumen.totalGeneral)} COP</div>
-                  <div className="cartera-kpi-label">Cartera total <span style={{marginLeft:'4px',color:'var(--accent-gold)'}}>({carteraRows.length} mpios)</span></div>
+                  <div className="cartera-kpi-value">{fmtM(carteraResult.totalCartera)} COP</div>
+                  <div className="cartera-kpi-label">Total <span style={{marginLeft:'4px',color:'var(--accent-gold)'}}>({carteraResult.nTotal} mpios)</span></div>
                 </div>
               </div>
-
-              <div style={{fontWeight:600, color:'#fff', margin:'16px 0 8px', fontSize:'13px'}}>
-                Municipios con al menos un cultivo en riesgo ({filasEnRiesgo.length})
-              </div>
-              <div style={{overflowX:'auto'}}>
-                <table style={{width:'100%', borderCollapse:'collapse', fontSize:'12px', color:'#ccc'}}>
-                  <thead>
-                    <tr style={{borderBottom:'1px solid #334'}}>
-                      <th style={{padding:'6px 10px', textAlign:'left', color:'#aab'}}>Municipio</th>
-                      {CULTIVOS_PRECIP.map(c => (
-                        <th key={c.key} style={{padding:'6px 10px', textAlign:'right', color:'#aab'}}>{c.nombre}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filasEnRiesgo.map(r => (
-                      <tr key={r.cod} style={{borderBottom:'1px solid #1e2d3d'}}>
-                        <td style={{padding:'6px 10px', color:'#fff', fontWeight:600}}>{r.nombre}</td>
-                        {CULTIVOS_PRECIP.map(c => {
-                          const cell = r.porCultivo[c.key];
-                          if (cell.valor <= 0) return <td key={c.key} style={{padding:'6px 10px', textAlign:'right', color:'#556'}}>—</td>;
-                          const st = ALERTA_CULTIVO_STYLE[cell.estado];
-                          return (
-                            <td key={c.key} style={{padding:'6px 10px', textAlign:'right',
-                              color: cell.enRiesgo ? (st?.color ?? '#e8590c') : '#8899aa', fontWeight: cell.enRiesgo ? 700 : 400}}>
-                              {fmtM(cell.valor)}{cell.enRiesgo ? ' ⚠' : ''}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <button onClick={handleExportCSV} className="btn btn-success" style={{marginTop:'14px'}}>
-                &#x1F4BE; Exportar municipios en riesgo (CSV)
+              <button onClick={handleExportCSV} className="btn btn-success" style={{width:'100%', justifyContent:'center', marginTop:'8px'}}>
+                &#x1F4BE; Exportar resultado (CSV)
               </button>
             </div>
           )}
+        </div>
+      );
+    }
+
+    function CarteraCultivosGrid({ municipioCultivoStatus }) {
+      return (
+        <div>
+          <p className="hint-text" style={{marginBottom:'14px'}}>
+            Sube la cartera/colocaciones de cada sector por separado (un archivo por cultivo). Cada uno se eval&uacute;a
+            SOLO contra el rango &oacute;ptimo y umbral de sequ&iacute;a de ESE cultivo, as&iacute; un municipio puede
+            estar en riesgo para un sector y normal en otro.
+          </p>
+          <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(260px, 1fr))', gap:'16px'}}>
+            {CULTIVOS_PRECIP.map(c => (
+              <CarteraCultivoBox key={c.key} cultivo={c} municipioCultivoStatus={municipioCultivoStatus} />
+            ))}
+          </div>
         </div>
       );
     }
@@ -3687,7 +3620,7 @@
       }, [filtered]);
 
       // Estado del cultivo a nivel MUNICIPIO (peor caso entre las estaciones
-      // asignadas a ese COD_MPIO) — usado por CarteraCultivosBox para cruzar
+      // asignadas a ese COD_MPIO) — usado por CarteraCultivosGrid para cruzar
       // la cartera cargada por el usuario. Se calcula sobre el universo
       // completo (sin filtro de departamento) para no perder municipios al
       // cambiar el filtro del mapa.
@@ -3820,7 +3753,7 @@
               )}
 
               {activeTab === 'Cartera por Cultivo' && (
-                <CarteraCultivosBox municipioCultivoStatus={municipioCultivoStatus} />
+                <CarteraCultivosGrid municipioCultivoStatus={municipioCultivoStatus} />
               )}
             </div>
           </div>
