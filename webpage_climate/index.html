@@ -978,6 +978,17 @@
       { key: 'cacao',        nombre: 'Cacao' },
     ];
 
+    // Mismos umbrales usados en datos precipitacion historicos.ipynb (celda
+    // de exportación) — solo para mostrar la tabla en la pestaña Metodología;
+    // la clasificación real ya viene calculada en el CSV.
+    const CULTIVOS_PRECIP_RANGOS = [
+      { key: 'cana_azucar',  nombre: 'Caña de azúcar', min_optimo: 1500, max_optimo: 2000, umbral:  500 },
+      { key: 'arroz',        nombre: 'Arroz',           min_optimo: 1500, max_optimo: 2000, umbral:  500 },
+      { key: 'cafe',         nombre: 'Café',            min_optimo: 1400, max_optimo: 2300, umbral:  900 },
+      { key: 'palma_aceite', nombre: 'Palma de Aceite', min_optimo: 1500, max_optimo: 3000, umbral: 1500 },
+      { key: 'cacao',        nombre: 'Cacao',           min_optimo: 1200, max_optimo: 3000, umbral: 1800 },
+    ];
+
     const ALERTA_CULTIVO_STYLE = {
       SEQUIA_CRITICA: { label: 'Sequía crítica', color: '#7b0000' },
       ALERTA_SEQUIA:  { label: 'Alerta sequía',  color: '#e8590c' },
@@ -1746,6 +1757,22 @@
               <div key={e.label} className="legend-item">
                 <div className="legend-dot" style={{background: e.color}} />
                 <span className="legend-label">{e.label}</span>
+              </div>
+            ))}
+          </>) : mode === 'acumulado_anual' ? (<>
+            <div className="legend-title">Acumulado anual</div>
+            {ACUM_ANUAL_BINS.map(b => (
+              <div key={b.label} className="legend-item">
+                <div className="legend-dot" style={{background: b.color}} />
+                <span className="legend-label">{b.label}</span>
+              </div>
+            ))}
+            <hr className="legend-divider" />
+            <div className="legend-title">Aptitud por cultivo</div>
+            {Object.entries(ALERTA_CULTIVO_STYLE).map(([k, st]) => (
+              <div key={k} className="legend-item">
+                <div className="legend-dot" style={{background: st.color}} />
+                <span className="legend-label">{st.label}</span>
               </div>
             ))}
           </>) : (<>
@@ -3362,8 +3389,10 @@
       }, [visible, data]);
 
       return (
-        <div ref={mapDiv} style={{width:'100%', height:'480px', borderRadius:'10px',
-          border:'1px solid #333', background:'#0d1b2a'}} />
+        <div className="map-panel-wrap">
+          <div ref={mapDiv} className="map-div" style={{background:'#0d1b2a'}} />
+          <Legend mode="acumulado_anual" />
+        </div>
       );
     }
 
@@ -3575,7 +3604,7 @@
       const [activeTab,  setActiveTab]  = React.useState('Mapa');
       const [deptFilter, setDeptFilter] = React.useState('ALL');
       const [alertOnly,  setAlertOnly]  = React.useState(false);
-      const TABS = ['Mapa', 'Tabla', 'Cartera por Cultivo'];
+      const TABS = ['Mapa', 'Tabla', 'Cartera por Cultivo', 'Metodología'];
 
       const fechaCorte = React.useMemo(
         () => data.find(d => d.fecha_corte)?.fecha_corte ?? '',
@@ -3712,26 +3741,6 @@
                 <div className="map-layout">
                   <div className="map-main">
                     <AcumAnualMap data={filtered} visible={visible && activeTab==='Mapa'} />
-                    <div style={{marginTop:'12px', display:'flex', gap:'16px', flexWrap:'wrap'}}>
-                      {ACUM_ANUAL_BINS.map(b => (
-                        <span key={b.label} style={{fontSize:'12px', color:'#ccc', display:'flex', alignItems:'center', gap:'6px'}}>
-                          <span style={{width:'12px', height:'12px', borderRadius:'50%', background:b.color, display:'inline-block'}}/>
-                          {b.label}
-                        </span>
-                      ))}
-                    </div>
-                    <div style={{marginTop:'8px', color:'#8899aa', fontSize:'11px'}}>
-                      Tama&ntilde;o del punto = volumen acumulado. Cada estaci&oacute;n muestra al hacer clic su
-                      aptitud por cultivo (Ca&ntilde;a de az&uacute;car, Arroz, Caf&eacute;, Palma de Aceite, Cacao):
-                    </div>
-                    <div style={{marginTop:'6px', display:'flex', gap:'16px', flexWrap:'wrap'}}>
-                      {Object.entries(ALERTA_CULTIVO_STYLE).map(([k, st]) => (
-                        <span key={k} style={{fontSize:'12px', color:'#ccc', display:'flex', alignItems:'center', gap:'6px'}}>
-                          <span style={{width:'12px', height:'12px', borderRadius:'50%', background:st.color, display:'inline-block'}}/>
-                          {st.label}
-                        </span>
-                      ))}
-                    </div>
                   </div>
                   <div className="map-side side-panel">
                     <FilterBox
@@ -3754,6 +3763,76 @@
 
               {activeTab === 'Cartera por Cultivo' && (
                 <CarteraCultivosGrid municipioCultivoStatus={municipioCultivoStatus} />
+              )}
+
+              {activeTab === 'Metodología' && (
+                <div style={{padding:'32px 24px'}}>
+                  <div style={{maxWidth:'960px', margin:'0 auto'}}>
+                    <div style={{fontFamily:"'Cormorant Garamond',serif", fontSize:'22px', fontWeight:600, color:'var(--accent-gold)', marginBottom:'4px'}}>
+                      Metodolog&iacute;a &middot; Precipitaci&oacute;n Acumulada Anual
+                    </div>
+                    <div style={{fontFamily:"'DM Mono',monospace", fontSize:'10px', color:'var(--text-muted)', letterSpacing:'0.1em', marginBottom:'20px'}}>
+                      Ventana m&oacute;vil de 365 d&iacute;as por estaci&oacute;n &mdash; IDEAM
+                    </div>
+
+                    <p style={{color:'#ccc', fontSize:'13px', lineHeight:1.7, marginBottom:'18px'}}>
+                      Para cada estaci&oacute;n se calcula la suma m&oacute;vil de precipitaci&oacute;n diaria de
+                      los &uacute;ltimos 365 d&iacute;as, anclada al &uacute;ltimo d&iacute;a con dato disponible
+                      (no a la fecha del reloj del sistema): si a&uacute;n no ha llegado el dato de un d&iacute;a
+                      nuevo, la ventana se mantiene donde est&aacute; y avanza sola en cuanto ese d&iacute;a tenga
+                      informaci&oacute;n. El resultado se cruza contra los rangos &oacute;ptimos de precipitaci&oacute;n
+                      de 5 cultivos para estimar su aptitud h&iacute;drica municipio por municipio.
+                    </p>
+
+                    <div style={{fontWeight:600, color:'#fff', fontSize:'14px', marginBottom:'10px'}}>
+                      Rangos &oacute;ptimos por cultivo (mm/a&ntilde;o)
+                    </div>
+                    <div style={{overflowX:'auto', marginBottom:'22px'}}>
+                      <table style={{width:'100%', borderCollapse:'collapse', fontSize:'13px', color:'#ccc'}}>
+                        <thead>
+                          <tr style={{borderBottom:'1px solid #334'}}>
+                            {['Cultivo','M&iacute;n. &oacute;ptimo','M&aacute;x. &oacute;ptimo','Umbral sequ&iacute;a cr&iacute;tica'].map(h => (
+                              <th key={h} style={{padding:'8px 12px', textAlign:'left', color:'#aab', fontWeight:600}}
+                                dangerouslySetInnerHTML={{__html: h}} />
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {CULTIVOS_PRECIP_RANGOS.map(c => (
+                            <tr key={c.key} style={{borderBottom:'1px solid #1e2d3d'}}>
+                              <td style={{padding:'8px 12px', color:'#fff', fontWeight:600}}>{c.nombre}</td>
+                              <td style={{padding:'8px 12px'}}>{c.min_optimo.toLocaleString('es-CO')} mm</td>
+                              <td style={{padding:'8px 12px'}}>{c.max_optimo.toLocaleString('es-CO')} mm</td>
+                              <td style={{padding:'8px 12px', color:'#e8590c'}}>{c.umbral.toLocaleString('es-CO')} mm</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div style={{fontWeight:600, color:'#fff', fontSize:'14px', marginBottom:'10px'}}>
+                      Niveles de alerta por cultivo
+                    </div>
+                    <div style={{display:'flex', flexDirection:'column', gap:'8px'}}>
+                      <p style={{color:'#ccc', fontSize:'13px', margin:0}}>
+                        <span style={{color: ALERTA_CULTIVO_STYLE.SEQUIA_CRITICA.color, fontWeight:700}}>&#8226; Sequ&iacute;a cr&iacute;tica:</span>{' '}
+                        acumulado anual por debajo del umbral &mdash; riesgo de p&eacute;rdida del cultivo.
+                      </p>
+                      <p style={{color:'#ccc', fontSize:'13px', margin:0}}>
+                        <span style={{color: ALERTA_CULTIVO_STYLE.ALERTA_SEQUIA.color, fontWeight:700}}>&#8226; Alerta sequ&iacute;a:</span>{' '}
+                        entre el umbral y el m&iacute;nimo &oacute;ptimo &mdash; por debajo de lo ideal, sin ser cr&iacute;tico.
+                      </p>
+                      <p style={{color:'#ccc', fontSize:'13px', margin:0}}>
+                        <span style={{color: ALERTA_CULTIVO_STYLE.NORMAL.color, fontWeight:700}}>&#8226; Normal:</span>{' '}
+                        dentro del rango &oacute;ptimo del cultivo.
+                      </p>
+                      <p style={{color:'#ccc', fontSize:'13px', margin:0}}>
+                        <span style={{color: ALERTA_CULTIVO_STYLE.ALERTA_EXCESO.color, fontWeight:700}}>&#8226; Alerta exceso:</span>{' '}
+                        por encima del m&aacute;ximo &oacute;ptimo &mdash; riesgo por exceso de humedad/lluvia.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
           </div>
