@@ -5,8 +5,11 @@ set LOG="C:\Users\Usuario\OneDrive - Global Green Growth Institute\Documentos\20
 
 echo [%date% %time%] Iniciando ejecucion >> %LOG%
 %PYTHON% -m jupyter nbconvert --to notebook --execute --inplace %NOTEBOOK_PATH% >> %LOG% 2>&1
-if %ERRORLEVEL% == 0 (
+set RC=%ERRORLEVEL%
+if %RC% == 0 (
     echo [%date% %time%] Ejecucion exitosa >> %LOG%
 ) else (
-    echo [%date% %time%] ERROR en la ejecucion >> %LOG%
+    echo [%date% %time%] ERROR en la ejecucion, codigo %RC% >> %LOG%
 )
+rem Devuelve el codigo para que el Programador de tareas muestre el fallo en "Ultimo resultado"
+exit /b %RC%
