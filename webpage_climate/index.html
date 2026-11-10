@@ -1263,6 +1263,12 @@
           source: 'Mapa Nacional de Amenaza por Movimientos en Masa &#8211; SGC (Servicio Geol&#243;gico Colombiano), escala 1:500.000. Cruzado con alertas diarias de precipitaci&#243;n IDEAM y precipitaci&#243;n acumulada 3 y 10 d&#237;as.',
           metodologia: '&#8226; <b>BAJA:</b> amenaza SGC baja o media, sin alerta de lluvia activa.<br>&#8226; <b>MODERADA:</b> amenaza SGC media con precipitaci&#243;n elevada o amenaza alta sin alerta.<br>&#8226; <b>ALTA:</b> amenaza SGC ALTA con alerta de lluvia ALTA o precipitaci&#243;n acumulada 3 d&#237;as &gt; umbral regional.<br>&#8226; <b>CR&#205;TICA:</b> amenaza ALTA + lluvia CR&#205;TICA + antecedente de inundaci&#243;n hist&#243;rica.',
         },
+        incendios: {
+          desc: 'Mide la proporci&#243;n de cartera ubicada en municipios con puntos de calor activos detectados por sat&#233;lite en el &#250;ltimo d&#237;a disponible, como se&#241;al de incendios en curso en la zona de influencia de los proyectos.',
+          formula: 'Exposici&#243;n (%) = (Cartera en mpios. con puntos de calor) / (Cartera total) &times; 100',
+          source: 'IDEAM &#8211; Sistema de Monitoreo de Puntos de Calor (puntosdecalor.ideam.gov.co), sensores VIIRS y MODIS. Cada punto se asigna a su municipio por cruce punto en pol&#237;gono con los l&#237;mites municipales.',
+          metodologia: '&#8226; <b>CON PUNTOS DE CALOR:</b> el municipio tiene al menos un punto de calor con confianza Nominal o Alta en el &#250;ltimo d&#237;a disponible.<br>&#8226; <b>SIN PUNTOS:</b> ning&#250;n punto de calor, o solo puntos de confianza Baja.<br>Nota: algunos puntos persistentes corresponden a fuentes industriales (miner&#237;a de carb&#243;n, refiner&#237;as, ladrilleras) y no a incendios de vegetaci&#243;n.',
+        },
       };
 
       const meta = INDICATOR_META[indicador] || INDICATOR_META.lluvias;
@@ -2146,6 +2152,7 @@
         lluvias:        { indicador:'lluvias',        title: 'Reporte Cartera – Alerta Lluvias',        indicadorLabel: 'Precipitación / Lluvias',    alertColor: '#e03131', csv: 'cartera_lluvias.csv'        },
         sequias:        { indicador:'sequias',        title: 'Reporte Cartera – Sequía Alta/Severa',    indicadorLabel: 'Sequía recurrente (SPI)',    alertColor: '#e8590c', csv: 'cartera_sequias.csv'        },
         deslizamientos: { indicador:'deslizamientos', title: 'Reporte Cartera – Deslizamientos ALTA',   indicadorLabel: 'Movimientos en masa (SGC)',       alertColor: '#2d6b3c', csv: 'cartera_deslizamientos.csv' },
+        incendios:      { indicador:'incendios',      title: 'Reporte Cartera – Puntos de calor',       indicadorLabel: 'Puntos de calor / Incendios (IDEAM)', alertColor: '#c0392b', csv: 'cartera_incendios.csv' },
       };
       const cfg = CONFIGS[indicador] ?? CONFIGS.lluvias;
 
@@ -3846,9 +3853,15 @@
       );
     }
 
-    function IncendiosSection({ visible, onBack, incendiosData }) {
+    // Un municipio queda "en alerta" si tiene al menos un punto de confianza
+    // Nominal o Alta en el último día (los de confianza Baja no cuentan).
+    const INCENDIO_EN_ALERTA = ['CON PUNTOS DE CALOR'];
+
+    function IncendiosSection({ visible, onBack, incendiosData, amenazasData }) {
       const [activeTab, setActiveTab] = React.useState('Mapa');
       const [confFilter, setConfFilter] = React.useState('Todas');
+      const [deptFilter, setDeptFilter] = React.useState('ALL');
+      const [conPuntosOnly, setConPuntosOnly] = React.useState(false);
 
       const fecha = React.useMemo(() => {
         if (!incendiosData.length) return '';
@@ -3879,6 +3892,61 @@
         const nMpios = mpioList.length;
         return { total, porConf, porFuente, mpioList, nMpios };
       }, [incendiosData]);
+
+      // Tabla municipal: todos los municipios de la lista maestra, con ceros
+      // donde no hubo puntos de calor.
+      const mpioRows = React.useMemo(() => {
+        const agg = {};
+        incendiosData.forEach(d => {
+          const cod = String(parseInt(d.cod_mpio, 10));
+          if (cod === 'NaN') return;
+          const a = agg[cod] ?? (agg[cod] = { n_puntos: 0, n_alta: 0, n_nominal: 0, n_baja: 0 });
+          a.n_puntos++;
+          if (d.confianza === 'Alta') a.n_alta++;
+          else if (d.confianza === 'Nominal') a.n_nominal++;
+          else if (d.confianza === 'Baja') a.n_baja++;
+        });
+        return Object.entries(amenazasData).map(([cod, m]) => {
+          const a = agg[cod] ?? { n_puntos: 0, n_alta: 0, n_nominal: 0, n_baja: 0 };
+          return {
+            COD_MPIO: cod, NOM_MPIO: m.nom_mpio, NOM_DPTO: m.nom_dpto, ...a,
+            alerta_incendio: (a.n_alta + a.n_nominal) > 0 ? INCENDIO_EN_ALERTA[0] : 'SIN PUNTOS',
+          };
+        }).sort((x, y) => y.n_puntos - x.n_puntos || x.NOM_MPIO.localeCompare(y.NOM_MPIO));
+      }, [incendiosData, amenazasData]);
+
+      const departments = React.useMemo(() => {
+        const set = new Set(mpioRows.map(r => r.NOM_DPTO).filter(Boolean));
+        return ['ALL', ...Array.from(set).sort()];
+      }, [mpioRows]);
+
+      const mpioFiltered = React.useMemo(() =>
+        mpioRows
+          .filter(r => deptFilter === 'ALL' || r.NOM_DPTO === deptFilter)
+          .filter(r => !conPuntosOnly || r.alerta_incendio === INCENDIO_EN_ALERTA[0]),
+        [mpioRows, deptFilter, conPuntosOnly]
+      );
+
+      // Claves con y sin cero inicial, para cruzar códigos DANE como 5001 o 05001
+      const incendioAlertaLookup = React.useMemo(() => {
+        const m = {};
+        mpioRows.forEach(r => { m[r.COD_MPIO] = r.alerta_incendio; m[r.COD_MPIO.padStart(5, '0')] = r.alerta_incendio; });
+        return m;
+      }, [mpioRows]);
+
+      function downloadIncendiosCSV(rows) {
+        const headers = ['COD_MPIO','NOM_MPIO','NOM_DPTO','n_puntos','n_alta','n_nominal','n_baja','alerta_incendio','fecha'];
+        const lines = rows.map(r =>
+          [r.COD_MPIO, `"${r.NOM_MPIO}"`, `"${r.NOM_DPTO}"`, r.n_puntos, r.n_alta, r.n_nominal, r.n_baja,
+           r.alerta_incendio, fecha].join(',')
+        );
+        const csv  = '﻿' + [headers.join(','), ...lines].join('\r\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = `incendios_municipal_${fecha || 'export'}.csv`; a.click();
+        URL.revokeObjectURL(url);
+      }
 
       if (!visible) return null;
       return (
@@ -3939,6 +4007,27 @@
                     {k}
                   </span>
                 ))}
+              </div>
+              <div style={{marginTop:'20px', display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(300px, 1fr))', gap:'14px', alignItems:'start'}}>
+                <div className="side-panel">
+                  <FilterBox
+                    departments={departments}
+                    deptFilter={deptFilter}
+                    alertOnly={conPuntosOnly}
+                    onDeptChange={setDeptFilter}
+                    onAlertToggle={() => setConPuntosOnly(v => !v)}
+                    onDownload={() => downloadIncendiosCSV(mpioFiltered)}
+                    alertLabel="Solo municipios con puntos de calor"
+                  />
+                  <StatsBox filteredCount={mpioFiltered.length} total={mpioRows.length} />
+                </div>
+                <CarteraBoxSection
+                  indicador="incendios"
+                  alertaLookup={incendioAlertaLookup}
+                  alertTargets={INCENDIO_EN_ALERTA}
+                  alertLabel="Municipios con puntos de calor (confianza Nominal o Alta)"
+                  dataFecha={fecha}
+                />
               </div>
             </div>
           )}
@@ -4694,7 +4783,7 @@
             <SequiasSection          visible={activeSection === 'sequias'}          onBack={goBack} data={alertaHistRows} dataFecha={dataFecha} />
             <AcumAnualSection        visible={activeSection === 'acumulado_anual'}  onBack={goBack} data={acumAnualData} />
             <DeslizSection           visible={activeSection === 'deslizamientos'}   onBack={goBack} amenazasData={amenazasData} dataFecha={dataFecha} />
-            <IncendiosSection        visible={activeSection === 'incendios'}        onBack={goBack} incendiosData={incendiosData} />
+            <IncendiosSection        visible={activeSection === 'incendios'}        onBack={goBack} incendiosData={incendiosData} amenazasData={amenazasData} />
             <AreasProtegidasSection  visible={activeSection === 'areas_protegidas'} onBack={goBack} apData={apData} ecoData={ecoData} />
             <TerritoriosSection      visible={activeSection === 'territorios'}      onBack={goBack} terrData={terrData} />
           </div>
