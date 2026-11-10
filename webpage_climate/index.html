@@ -1264,10 +1264,28 @@
           metodologia: '&#8226; <b>BAJA:</b> amenaza SGC baja o media, sin alerta de lluvia activa.<br>&#8226; <b>MODERADA:</b> amenaza SGC media con precipitaci&#243;n elevada o amenaza alta sin alerta.<br>&#8226; <b>ALTA:</b> amenaza SGC ALTA con alerta de lluvia ALTA o precipitaci&#243;n acumulada 3 d&#237;as &gt; umbral regional.<br>&#8226; <b>CR&#205;TICA:</b> amenaza ALTA + lluvia CR&#205;TICA + antecedente de inundaci&#243;n hist&#243;rica.',
         },
         incendios: {
-          desc: 'Mide la proporci&#243;n de cartera ubicada en municipios con puntos de calor activos detectados por sat&#233;lite en el &#250;ltimo d&#237;a disponible, como se&#241;al de incendios en curso en la zona de influencia de los proyectos.',
-          formula: 'Exposici&#243;n (%) = (Cartera en mpios. con puntos de calor) / (Cartera total) &times; 100',
-          source: 'IDEAM &#8211; Sistema de Monitoreo de Puntos de Calor (puntosdecalor.ideam.gov.co), sensores VIIRS y MODIS. Cada punto se asigna a su municipio por cruce punto en pol&#237;gono con los l&#237;mites municipales.',
-          metodologia: '&#8226; <b>CON PUNTOS DE CALOR:</b> el municipio tiene al menos un punto de calor con confianza Nominal o Alta en el &#250;ltimo d&#237;a disponible.<br>&#8226; <b>SIN PUNTOS:</b> ning&#250;n punto de calor, o solo puntos de confianza Baja.<br>Nota: algunos puntos persistentes corresponden a fuentes industriales (miner&#237;a de carb&#243;n, refiner&#237;as, ladrilleras) y no a incendios de vegetaci&#243;n.',
+          desc: 'Mide qué proporción de la cartera está ubicada en municipios donde los satélites detectaron <b>puntos de calor activos</b> (anomalías térmicas compatibles con fuego) durante el último día con datos disponibles. Es un indicador de <b>exposición a incendios en curso</b>: señala dónde hay fuego activo detectado en la fecha del reporte, no la probabilidad de que ocurra un incendio en el futuro ni el área quemada.',
+          formula: 'Alerta del municipio = CON PUNTOS DE CALOR si (n.º de puntos con confianza Alta + n.º con confianza Nominal) &ge; 1<br>Exposición (%) = (Cartera en municipios CON PUNTOS DE CALOR) / (Cartera total cargada) &times; 100',
+          source: 'IDEAM – Sistema de Monitoreo de Puntos de Calor (puntosdecalor.ideam.gov.co). Detecciones de los sensores <b>VIIRS</b> (satélites Suomi-NPP, NOAA-20 y NOAA-21; píxel de 375 m) y <b>MODIS</b> (satélites Aqua y Terra; píxel de 1 km), con fecha y hora de Colombia (UTC−5). Límites municipales con código DANE (DIVIPOLA) de 5 dígitos.',
+          metodologia:
+            '<b>Qué significa la alerta</b><br>' +
+            '&#8226; <b>CON PUNTOS DE CALOR:</b> dentro del límite del municipio se registró al menos un punto de calor con confianza <b>Nominal o Alta</b> en el último día disponible (la fecha del reporte). Indica fuego activo o una fuente de calor intensa detectada desde el espacio en ese día.<br>' +
+            '&#8226; <b>SIN PUNTOS:</b> no se registró ningún punto de calor en el municipio, o solo puntos de confianza <b>Baja</b>, que se descartan por su alta probabilidad de ser falsas detecciones.<br><br>' +
+            '<b>Cómo se calcula</b><br>' +
+            '1. <b>Descarga:</b> se toman todos los puntos de calor del último día del archivo de IDEAM, de todos los satélites disponibles.<br>' +
+            '2. <b>Normalización de la confianza:</b> VIIRS reporta la confianza como Baja, Nominal o Alta. MODIS la reporta en porcentaje y se convierte así: Alta si es &ge; 65 %, Nominal entre 30 % y 64 %, Baja si es &lt; 30 %.<br>' +
+            '3. <b>Asignación al municipio:</b> cada punto se ubica en su municipio por cruce geográfico <i>punto en polígono</i> con los límites municipales oficiales (sin áreas de influencia ni centroides).<br>' +
+            '4. <b>Conteo por municipio:</b> número total de puntos (n_puntos) y su desglose por confianza (n_alta, n_nominal, n_baja).<br>' +
+            '5. <b>Clasificación:</b> se aplica la regla de la fórmula: un solo punto de confianza Nominal o Alta basta para que el municipio quede CON PUNTOS DE CALOR.<br>' +
+            '6. <b>Cruce con la cartera:</b> se une la cartera cargada con la clasificación usando el código DANE del municipio (se acepta con o sin cero inicial, p. ej. 5001 o 05001). Los códigos sin coincidencia aparecen como <i>Sin datos</i> y no suman a la cartera en riesgo.<br><br>' +
+            '<b>Cómo interpretar el número de puntos</b><br>' +
+            '&#8226; Un punto de calor es un píxel satelital con temperatura anómala, no un incendio. Un mismo incendio grande puede generar varios puntos, y varios satélites pueden detectar el mismo fuego en el día, por lo que <b>n_puntos no equivale al número de incendios</b>, sino a la intensidad de la detección.<br><br>' +
+            '<b>Limitaciones</b><br>' +
+            '&#8226; <b>Fotografía de un solo día:</b> la alerta cambia con cada actualización y no refleja la recurrencia histórica del fuego en el municipio.<br>' +
+            '&#8226; <b>Detecciones no vistas:</b> las nubes, el humo denso o la vegetación muy cerrada pueden ocultar incendios, y los fuegos pequeños o de corta duración entre pasos del satélite pueden no detectarse.<br>' +
+            '&#8226; <b>Fuentes industriales:</b> algunos municipios tienen fuentes de calor persistentes que no son incendios de vegetación (minería de carbón, refinerías, coquizadoras, ladrilleras, teas de gas). Por ejemplo, Cartagena, Cúcuta, San Cayetano, Barrancas, Albania y Samacá registran puntos casi todos los días, por lo que pueden aparecer CON PUNTOS DE CALOR de forma recurrente.<br>' +
+            '&#8226; <b>Municipios sin polígono:</b> Río Viejo, Guachené, San José de Uré, Tuchín, Teruel, Maicao y Sucre (Santander) no tienen polígono en la capa municipal usada, por lo que siempre aparecen SIN PUNTOS.<br>' +
+            '&#8226; <b>No mide propensión:</b> un municipio SIN PUNTOS hoy puede tener alta susceptibilidad a incendios. El Indicador de Propensión a Incendios (IPI), basado en el histórico 2024–2026, está en desarrollo.',
         },
       };
 
